@@ -1,0 +1,370 @@
+$shade: #111;
+$more_shade: #333;
+$max_shade: #eee;
+
+@mixin setThemeColor($color1, $color2){
+    $color1LessShaded: adjust_color($color1, $red: -(red($more_shade)), $green: -(green($more_shade)), $blue: -(blue($more_shade)));
+    $color2Shaded: adjust_color($color2, $red: -(red($shade)), $green: -(green($shade)), $blue: -(blue($shade)));
+    $color2MinusColor2: adjust_color($color2, $red: -(red($color2)), $green: -(green($color2)), $blue: -(blue($color2)));
+
+
+    @include text-emphasis-variant(".text-color", $color1);
+
+    #layout-wrapper {
+        &::before {
+            background: linear-gradient(135deg, $color1, $color2) !important;
+        }
+    }
+    table.color thead, .bg-color {
+        background-color: $color1;
+        color: #ffffff
+    }
+    tr.bg-color {
+        background-color: $color1 !important;
+    }
+    button.color, .button.color, a.color {
+        background-color: $color1;
+        color: #fff;
+
+        &:hover, &:focus, &:active {
+            background-color: $color2; /* hover-contras color shade */
+        }
+    }
+    :focus {
+        outline: $color1 auto 5px
+    }
+    .table-striped tr.color, tr.color {
+        background: $color1;
+        color: #fff;
+    }
+
+
+    /* --------------- jQuery --------------  */
+    .ui-widget-header {
+        border: 1px solid $color1LessShaded;
+        background: $color1;
+    }
+    .ui-state-hover,
+    .ui-widget-content .ui-state-hover,
+    .ui-widget-header .ui-state-hover,
+    .ui-state-focus,
+    .ui-widget-content .ui-state-focus,
+    .ui-widget-header .ui-state-focus {
+        border: 1px solid $color1LessShaded;
+        background: $color1;
+        font-weight: normal;
+        color: #fff;
+    }
+    .ui-autocomplete {
+        background: #fafafa;
+        .ui-state-focus {
+            width: 100%;
+        }
+    }
+    .ui-state-active,
+    .ui-widget-content .ui-state-active,
+    .ui-widget-header .ui-state-active {
+        border: 1px solid $color1LessShaded;
+        background: adjust_color($color1, $red: (red($max_shade)), $green: (green($max_shade)), $blue: (blue($max_shade)));
+        font-weight: bold;
+        color: $color1LessShaded;
+    }
+    ul.ui-widget-content.ui-autocomplete.ui-front {
+        li {
+            .ui-state-highlight {
+                color: $color1 !important;
+            }
+        }
+    }
+    /* --------------- jQuery --------------  */
+
+
+    /* --------------- Data Table -------------- */
+    table.dataTable.no-footer {
+        border-bottom-color: $color2;
+    }
+    table.dataTable thead th, table.dataTable thead td {
+        border-bottom-color: $color2;
+    }
+    table.color.dataTable.no-footer {
+        border-bottom-color: $color1;
+    }
+    table.color.dataTable thead th, table.dataTable thead td {
+        border-bottom-color: $color1;
+    }
+    .dataTables_wrapper .dataTables_info {
+        color: $color1LessShaded; /* dark color shade */
+    }
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        color: #FFF !important;
+        /*border: 1px solid $color2 - $shade;*/
+        background: $color1 linear-gradient(to bottom, $color2 0%, $color2Shaded 100%);
+    }
+    .page-item.active .page-link {
+        background-color: $color1;
+        border-color: transparent;
+
+        &:hover {
+            background-color: $color2;
+            border-color: transparent;
+        }
+    }
+    /* --------------- Data Table -------------- */
+
+
+    /* ------------- Pagination ------------ */
+    #paging_pageno  {
+        li.current, li:not(.no-style):hover {
+            a {
+                color: #FFF !important;
+            }
+            border: 1px solid $color2MinusColor2;
+            background: $color1 linear-gradient(to bottom, $color2 0%, $color2Shaded 100%);
+        }
+    }
+    /* ------------- Pagination ------------ */
+
+
+    table.dynamic {
+        thead {
+            tr {
+                border-right-color: $color1;
+            }
+        }
+        tbody {
+            tr {
+                td {
+                    input, select, textarea {
+                        &:focus {
+                            border: solid 1px $color1 !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    .mm-active {
+        /*color: $color2 !important;*/
+
+        &>i {
+            /*color: $color2 !important;*/
+        }
+        .active {
+            /*color: $color2 !important;*/
+        }
+    }
+
+    .vertical-menu {
+        background: #000035 !important;
+    }
+
+    &.vertical-collpsed {
+        .vertical-menu #sidebar-menu > ul > li:hover > a {
+            background-color: $color1;
+         }
+    }
+
+    a {
+        color: $color1;
+    }
+
+    .nav-tabs-custom .nav-item .nav-link::after {
+        background: $color1;
+    }
+    .nav-tabs-custom .nav-item .nav-link.active {
+        color: $color1;
+    }
+}
+
+@mixin setCardColor($color1){
+    $color2: darken($color1, 10%);
+    $color1LessShaded: adjust_color($color1, $red: -(red($more_shade)), $green: -(green($more_shade)), $blue: -(blue($more_shade)));
+    $color2Shaded: adjust_color($color2, $red: -(red($shade)), $green: -(green($shade)), $blue: -(blue($shade)));
+    $color2MinusColor2: adjust_color($color2, $red: -(red($color2)), $green: -(green($color2)), $blue: -(blue($color2)));
+
+    &.card {
+
+        table.color thead, .bg-color {
+            background-color: $color1;
+            color: #ffffff
+        }
+        tr.bg-color {
+            background-color: $color1 !important;
+        }
+        button.color, .button.color, a.color {
+            background-color: $color1;
+            color: #fff;
+
+            &:hover, &:focus, &:active {
+                background-color: $color2; /* hover-contras color shade */
+            }
+        }
+        :focus {
+            outline: $color1 auto 5px
+        }
+        .table-striped tr.color, tr.color {
+            background: $color1;
+            color: #fff;
+        }
+
+
+        /* --------------- Data Table -------------- */
+        table.dataTable.no-footer {
+            border-bottom-color: $color2;
+        }
+        table.dataTable thead th, table.dataTable thead td {
+            border-bottom-color: $color2;
+        }
+        table.color.dataTable.no-footer {
+            border-bottom-color: $color1;
+        }
+        table.color.dataTable thead th, table.dataTable thead td {
+            border-bottom-color: $color1;
+        }
+        .dataTables_wrapper .dataTables_info {
+            color: $color1LessShaded; /* dark color shade */
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            color: #FFF !important;
+            /*border: 1px solid $color2 - $shade;*/
+            background: $color1 linear-gradient(to bottom, $color2 0%, $color2Shaded 100%);
+        }
+        .page-item.active .page-link {
+            background-color: $color1;
+            border-color: transparent;
+
+            &:hover {
+                background-color: $color2;
+                border-color: transparent;
+            }
+        }
+        /* --------------- Data Table -------------- */
+
+
+        /* ------------- Pagination ------------ */
+        #paging_pageno  {
+            li.current, li:not(.no-style):hover {
+                a {
+                    color: #FFF !important;
+                }
+                border: 1px solid $color2MinusColor2;
+                background: $color1 linear-gradient(to bottom, $color2 0%, $color2Shaded 100%);
+            }
+        }
+        /* ------------- Pagination ------------ */
+
+
+        table.dynamic {
+            thead {
+                tr {
+                    border-right-color: $color1;
+                }
+            }
+            tbody {
+                tr {
+                    td {
+                        input, select, textarea {
+                            &:focus {
+                                border: solid 1px $color1 !important;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        a {
+            color: $color1;
+        }
+    }
+
+}
+
+
+/* ************* COLOR STYLE *********** */
+@mixin setThemeSolidColor($color){
+    @include setThemeColor($color, adjust_color($color, $red: -(red($more_shade)), $green: -(green($more_shade)), $blue: -(blue($more_shade))));
+}
+
+@mixin setThemeGradientColor($color1, $color2){
+    @include setThemeColor($color1, $color2);
+}
+/* ************* COLOR STYLE *********** */
+
+
+
+/* -=-=-=-=-=-=- Solid Color Theme -=-=-=-=-=-=- */
+.navy{
+    @include setThemeSolidColor(#000035);
+    @include setCardColor(#000053);
+}
+.cyan {
+    @include setThemeSolidColor(#02B09A);
+    @include setCardColor(#02B09A);
+}
+.orange {
+    @include setThemeSolidColor(#C7844A);
+    @include setCardColor(#C7844A);
+}
+.green {
+    @include setThemeSolidColor(#48A06D);
+    @include setCardColor(#48A06D);
+}
+.red {
+    @include setThemeSolidColor(#b76b65);
+    @include setCardColor(#b76b65);
+}
+.blue {
+    @include setThemeSolidColor(#4B90BE);
+    @include setCardColor(#4B90BE);
+}
+.purple {
+    @include setThemeSolidColor(#9a7aae);
+    @include setCardColor(#9a7aae);
+}
+.black {
+    @include setThemeSolidColor(#616161);
+    @include setCardColor(#616161);
+}
+.yellow {
+    @include setThemeSolidColor(#aea600);
+    @include setCardColor(#aea600);
+}
+.popup_window {
+    @include setThemeSolidColor(#6c6c6c);
+    @include setCardColor(#6c6c6c);
+}
+/* -=-=-=-=-=-=- Solid Color Theme -=-=-=-=-=-=- */
+
+
+
+/* -=-=-=-=-=-=- Gradient Color Theme -=-=-=-=-=-=- */
+.gradient-navy{
+    @include setThemeGradientColor(#000035, #000053);
+}
+.gradient-blue {
+    @include setThemeGradientColor(#327FAB, #00b29c);
+}
+.gradient-purple {
+    @include setThemeGradientColor(#956cbb, #2a8fb2);
+}
+.gradient-green {
+    @include setThemeGradientColor(#177d8f, #71B280);
+}
+.gradient-golden {
+    @include setThemeGradientColor(#7F6F24, #CCB139);
+}
+.gradient-brown {
+    @include setThemeGradientColor(#855439, #CFA76E);
+}
+.gradient-cyan {
+    @include setThemeGradientColor(#0b8287, #11a2a1);
+}
+.gradient-black {
+    @include setThemeGradientColor(#201c20, #021d1c);
+}
+.gradient-mh {
+    @include setThemeGradientColor(#7b272d, #711a36);
+}
+/* -=-=-=-=-=-=- Gradient Color Theme -=-=-=-=-=-=- */

@@ -1,0 +1,51 @@
+// 
+// Page-title
+// 
+
+.container-fluid.right-panel {
+    width: #{calc(100% - 220px)};
+
+    @include media-breakpoint-down(md) {
+        width: 100%;
+    }
+}
+
+.page-title-box {
+    
+
+    .breadcrumb {
+        background-color: transparent;
+        padding: 0;
+
+        .voucher-action-button {
+            button {
+                padding: 2px;
+                background-color: rgb(255 255 255 / 88%);
+                border: none;
+
+                a {
+                    font-size: 16px;
+                    padding: 2px;
+                    line-height: 15px;
+
+                    &:hover {
+                        background-color: $warning;
+                    }
+                    i {
+                        padding-right: 0;
+                    }
+                }
+            }
+        }
+    }
+
+    h4 {
+        text-transform: uppercase;
+        font-weight: $font-weight-bold;
+        font-size: 16px !important;
+    }
+
+    .page-title {
+        line-height: 70px;
+    }
+}

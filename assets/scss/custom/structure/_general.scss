@@ -1,0 +1,20 @@
+.card {
+    border: solid 1px #f0f0f0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.085);
+    border-radius: 4px;
+}
+header {
+    .loading {
+        background-color: $yellow;
+        padding: 0 6px;
+        border-radius: 4px;
+        display: inline-block;
+
+        i {
+            color: white;
+        }
+    }
+}
+.text-darker-green {
+    color: #3c763d;
+}

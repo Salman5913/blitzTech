@@ -1,0 +1,51 @@
+form[data-form-type="ProjectQuote"] {
+    table.dynamic {
+        tbody {
+            tr {
+                td {
+                    textarea {
+                        height: 200px !important;
+                        max-height: 200px !important;
+                        
+                        &:focus {
+                            position: relative !important;
+                            height: 200px !important;
+                            max-height: 200px !important;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+.project_quote {
+    table.modules {
+        tr {
+            td {
+                border-bottom: solid 4px $gray-400 !important;
+
+                textarea {
+                    height: 150px !important;
+                    max-height: 100% !important;
+                    width: 100% !important;
+                    max-width: 100% !important;
+
+                    &:focus {
+                        height: 150px !important;
+                        max-height: 150px !important;
+                    }
+                }
+                .currency_field {
+                    min-width: auto !important;
+                }
+            }
+        }
+    }
+    .additional-details {
+        textarea {
+            height: 150px !important;
+            max-height: 100% !important;
+        }
+    }
+}

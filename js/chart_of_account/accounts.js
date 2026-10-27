@@ -1,0 +1,9 @@
+$(function() {
+    $("#category_id").on("coaSelected", function () {
+        ChartOfAccount.getHierarchy($(this).attr("data-ac-id"), ".hierarchy-table");
+    });
+
+    if ($("#account_id").length > 0)
+        ChartOfAccount.getHierarchy($("#category_id").attr("data-ac-id"), ".hierarchy-table");
+});
+

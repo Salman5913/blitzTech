@@ -1,0 +1,198 @@
+.status-list {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 40%;
+    background: #fff;
+    box-shadow: 0 0 5px #ccc;
+    z-index: 10000;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    overflow: hidden;
+    border-top: inherit;
+
+    @include media-breakpoint-down(sm) {
+        width: 70%;
+    }
+    @include media-breakpoint-down(xs) {
+        width: 100%;
+    }
+    .heading {
+        padding: 8px 20px;
+        color: $white;
+
+        button {
+            float: right;
+            margin: 1px -15px 0 0;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: 500ms all;
+            border: inherit;
+            background: transparent;
+            color: $white;
+        }
+    }
+    ul {
+        margin: 0;
+        padding: 0;
+
+        li {
+            line-height: 35px;
+            list-style: none;
+            font-size: 0.9em;
+            border-bottom: solid 1px #eee;
+            padding: 0 15px;
+            color: #999;
+            &:last-child {
+                border-bottom: none;
+            }
+            i {
+                margin: 0 10px 0 0px;
+                font-size: 1.4em;
+            }
+        }
+    }
+
+    &.error-list {
+        color: #5B2223;
+
+        .heading {
+            button {
+                &:hover {
+                    color: #930B0B;
+                }
+            }
+        }
+        ul{
+            li{
+                i {
+                    color: $red;
+                }
+            }
+        }
+    }
+    &.success-list {
+        color: #fff;
+
+        .heading {
+            button {
+                &:hover {
+                    color: #3A9424;
+                }
+            }
+        }
+        ul{
+            li{
+                i {
+                    color: $green
+                }
+            }
+        }
+    }
+}
+
+
+// Notification Container
+#notification-container {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    bottom: 1rem;
+    right: 1rem;
+    z-index: 1050;
+
+    .notification {
+        border: 1px solid;
+        border-radius: 0.25rem;
+        box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.5rem;
+        width: 20rem;
+        opacity: 0;
+        transform: translateY(-20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
+
+        // Show animation
+        &.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        // Hide animation
+        &.hide {
+            opacity: 0;
+            transform: translateY(-20px);
+        }
+    }
+
+    // Success Notification
+    .notification-success {
+        background-color: $success;
+        color: #fff;
+        border-color: $success;
+    }
+
+    .notification-failure {
+        background-color: $danger;
+        color: #fff;
+        border-color: $danger;
+    }
+
+    .notification-message {
+        color: #fff;
+        font-size: 14px;
+        margin-right: 0.5rem;
+    }
+
+    .close-btn {
+        background-color: transparent;
+        border: none;
+        color: #fff;
+        padding: 0;
+        font-size: 1.25rem;
+        line-height: 1;
+    }
+
+    .close-btn:hover {
+        color: #f8f9fa;
+    }
+}
+
+// Base Notification Styling
+
+/*.error-listHD button
+
+.error-listHD i:hover {
+    color: #FFE6E7
+}*/
+
+/*.success-listHD button {
+    background: #47B32D;
+}
+
+.success-listHD button:hover {
+    background: #3A9424;
+}
+
+.success-listHD i:hover {
+    color: #64B450
+}*/
+
+/*@media (max-width: 991px) {
+    .status-list {
+        width: 70%;
+    }
+}*/
+
+/*@media (max-width: 767px) {
+    .status-list {
+        width: 100%;
+    }
+}*/
+
+

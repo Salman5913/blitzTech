@@ -1,0 +1,115 @@
+.crm-badges {
+    .badge.crm-badge {
+        font-size: 100% !important;
+        margin-bottom: 5px;
+    }
+}
+section.crm-dashboard {
+    .scrollable-row {
+        display: flex;
+        overflow-x: auto; /* Add horizontal scrolling */
+    }
+    .card.bin-card.stage {
+        width: 100% !important;
+        height: auto !important;
+
+        &:has(li.ui-sortable-placeholder) {
+            background-color: #ffeaea;
+            border: 3px dashed #fcbfbf !important;
+        }
+        ul {
+            li {
+                display: inline-block;
+                margin-right: 10px;
+                width: 230px !important;
+            }
+        }
+    }
+    .card.stage {
+        width: 250px; /* Adjust column width as needed */
+        flex-shrink: 0; /* Prevent shrinking */
+        padding: 10px;
+        margin-right: 16px;
+
+        &:has(li.ui-sortable-placeholder) {
+            background-color: #fbfbda;
+            border: 3px dashed #c1c1a4 !important;
+        }
+        ul {
+            padding: 0 !important;
+            margin: 0 !important;
+            min-height: 100px;
+            height: 100%;
+
+            li {
+                list-style-type: none;
+                padding: 10px 7px !important;
+                background-color: #f5f5f5;
+                border: solid 1px #d8d8d8;
+                margin-bottom: 10px;
+                min-height: 60px;
+                cursor: move;
+                color: #000000;
+
+                &.bg-soft-danger {
+                    border-color: $danger !important;
+                }
+                &.bg-soft-info {
+                    border-color: $info !important;
+                }
+                &.ui-sortable-helper {
+                    cursor: grabbing;
+                }
+                .lead-id a {
+                    font-weight: bold;
+                    color: #000000;
+
+                    small {
+                        font-weight: normal;
+                    }
+                }
+                .lead-type-icon {
+                    img {
+                        max-height: 15px;
+                    }
+                }
+                .nickname {
+                    text-wrap: nowrap; 
+                    text-overflow: ellipsis;
+                    overflow: hidden;
+                }
+                .contact-icons {
+                    display: flex;
+                    justify-content: space-between;
+                    margin-top: 5px;
+
+                    i {
+                        padding-right: 3px;
+                    }
+                }
+                .additional-details {
+                    display: none;
+                    padding-top: 10px;
+
+                    .contact-icons {
+                        a {
+                            color: #fff;
+                            padding: 0 5px;
+                            display: flex;
+                            flex-wrap: nowrap;
+                            justify-content: flex-start;
+                            align-items: center;
+                        }
+                    }
+                }
+                &:hover {
+                    font-weight: bold;
+                    .additional-details {
+                        font-weight: normal;
+                        display: flex;
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,32 @@
+.slide-popup {
+    position: fixed;
+    top: 0;
+    right: -2000px;
+    bottom: 0;
+    width: 80%;
+    background-color: #f3f5f7;
+    padding: 2em 3em;
+    z-index: 99999;
+    box-shadow: -2px 0px 14px 0px #26262680;
+    height: 100%;
+
+    .slider-popup-heading {
+        margin-bottom: 20px;
+        border-bottom: solid 1px #aaa;
+
+        h4 {
+            padding-bottom: 10px;
+        }
+        button {
+            margin-left: 10px;
+
+            &.btn.btn-light {
+                background-color: #e2e2e2;
+            }
+        }
+    }
+    .slide-popup-content {
+        height: #{calc(100% - 50px)};
+        overflow: scroll;
+    }
+}

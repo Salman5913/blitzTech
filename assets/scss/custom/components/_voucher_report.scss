@@ -1,0 +1,30 @@
+section.voucher-report {
+    table.data-table-report {
+        td, th {
+            vertical-align: middle;
+        }
+        td.report-actions {
+            .btn-group {
+                border-radius: 0.25rem;
+                color: white;
+
+                & > a {
+                    color: white;
+                }
+                .dropdown-menu {
+                    right: 0 !important;
+                    left: auto !important;
+
+                    .dropdown-item {
+                        padding-left: 0.8rem;
+                        padding-right: 0.8rem;
+
+                        i {
+                            padding-right: 10px;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,117 @@
+body.customized-report {
+    h3.popup-header_voucher {
+        padding-top: 8px;
+        margin-bottom: 0;
+    }
+    .subheading {
+        color: #0000008a;
+        padding-top: 4px;
+    }
+    a.load-data {
+        width: 270px;
+        margin-top: 50px;
+    }
+
+    ul.tabs {
+        display: flex;
+        list-style-type: none;
+        margin: 20px 0 0 0;
+        padding: 0;
+
+        li {
+            padding: 10px 20px;
+            border: solid 1px #000000;
+            border-bottom: none;
+            border-top-right-radius: 5px;
+            border-top-left-radius: 5px;
+            margin-right: 10px;
+            cursor: pointer;
+
+            &:first-child {
+                margin-left: 20px
+            }
+            &.active {
+                position: relative;
+                background: rgb(253,183,19);
+                background: linear-gradient(180deg, rgb(109, 200, 183) 0%, rgba(255,255,255,1) 100%);
+
+                &:before {
+                    position: absolute;
+                    content: " ";
+                    display: block;
+                    height: 1px;
+                    background-color: white;
+                    z-index: 1;
+                    width: 100%;
+                    bottom: -1px;
+                    left: 0;
+                }
+            }
+        }
+    }
+    .tab-body {
+        border-top: solid 1px #000000;
+        padding: 10px 0;
+    }
+
+    table.pivot-table {
+        border-spacing: 0;
+        border-collapse: separate;
+
+        &>tbody {
+            &>tr {
+                &:nth-of-type(odd) {
+                    >td {
+                        &:first-child {
+                            background-color: #f8f9fa;
+                        }
+                    }
+                }
+
+                &>td {
+                    padding: 3px;
+
+                    &:first-child {
+                        left: 0;
+                        position: sticky;
+                        background-color: white;
+                    }
+                }
+            }
+        }
+        &>tfoot {
+            &>tr {
+                &>td {
+                    &:first-child {
+                        left: 0;
+                        position: sticky;
+                        background-color: white;
+                    }
+                }
+            }
+        }
+        &>thead {
+            top: 0;
+            position: sticky;
+            background: var(--secondary);
+            color: #ffffff;
+            z-index: 1;
+
+            &>tr {
+                &>th {
+                    border-collapse: separate;
+                    padding: 3px;
+
+                    &:first-child {
+                        position: sticky;
+                        z-index: 45;
+                        background-color: var(--secondary);
+                        left: 0;
+                        top: 0;
+                    }
+                }
+            }
+        }
+    }
+
+}

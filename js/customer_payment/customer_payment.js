@@ -1,0 +1,93 @@
+$(function() {
+
+    $("table")
+        .on("change", "input[data-type='int'], input[data-type='float']", function() {
+
+            $("[data-type='int'], [data-type='float']").each(function () {
+                if ($(this).val() == '')
+                    $(this).val(0);
+            });
+
+            var total_amount = 0;
+
+            $("table.bills tbody tr").each(function() {
+
+                total_amount += NumberHelper.parseInput($("[data-js='amount']", this));
+            });
+
+            $(".total_amount").html(thousandSep(round(total_amount)));
+
+        });
+    $('[name="btn_mark"]').hide();
+
+    $("table.bills tbody tr").each(function() {
+
+        $(".mark_as_discount", this).on("click, change", function () {
+
+            var _this = $(this);
+
+            var amount_paid = _this.closest("tr").find("[data-js='amount']");
+            var remaining = _this.closest("tr").find(".remaining_amount");
+
+            if (_this.is(':checked'))
+            {
+                if (_this.val() === 'N')
+                {
+                    $('.tax').removeClass('hidden');
+                    $('.discount').removeClass('hidden');
+                    $('.bad_debts').removeClass('hidden');
+                    amount_paid.attr('value', amount_paid.data("old-value"));
+                    remaining.text(remaining.data("old-value"));
+                    $('.payment_details_panel').removeClass('hidden');
+                    $('[name="submit"]').show();
+                    $('[name="btn_delete"]').show();
+                    $('[name="btn_mark"]').hide();
+                }
+                else if(_this.val() === 'D') {
+                    $('.tax').addClass('hidden');
+                    $('.bad_debts').addClass('hidden');
+                    amount_paid.attr('value', remaining.text().replace(/,/g, ''));
+                    remaining.text(0);
+                    amount_paid.attr("readonly", true);
+                    $('.payment_details_panel').addClass('hidden');
+                    $('[name="submit"]').hide();
+                    $('[name="btn_delete"]').hide();
+                    $('[name="btn_mark"]').show();
+                }
+                else if(_this.val() === 'T') {
+                    $('.discount').addClass('hidden');
+                    $('.bad_debts').addClass('hidden');
+                    amount_paid.attr('value', remaining.text().replace(/,/g, ''));
+                    remaining.text(0);
+                    amount_paid.attr("readonly", true);
+                    $('.payment_details_panel').addClass('hidden');
+                    $('[name="submit"]').hide();
+                    $('[name="btn_delete"]').hide();
+                    $('[name="btn_mark"]').show();
+                }
+                else if(_this.val() === 'B') {
+                    $('.tax').addClass('hidden');
+                    $('.discount').addClass('hidden');
+                    amount_paid.attr('value', remaining.text().replace(/,/g, ''));
+                    remaining.text(0);
+                    amount_paid.attr("readonly", true);
+                    $('.payment_details_panel').addClass('hidden');
+                    $('[name="submit"]').hide();
+                    $('[name="btn_delete"]').hide();
+                    $('[name="btn_mark"]').show();
+                }
+            }
+
+        });
+    });
+
+    if ($("#voucher_number").length)
+    {
+        $("table input[data-type='float']:first-child").trigger("change");
+        if ($(".mark_as_discount:checked").length > 0)
+        {
+            $('.payment_details_panel').addClass('hidden');
+        }
+
+    }
+});

@@ -1,0 +1,25 @@
+.card {
+    flex: 1 1 auto;
+    padding: 1.25rem;
+
+    .card-title {
+        margin-bottom: 1.5rem !important;
+    }
+    &.note-editor.note-frame {
+        padding: 0;
+    }
+}
+.hidden {
+    display: none !important;
+}
+button {
+    i {
+        padding-right: 5px;
+    }
+}
+table.dataTable {
+    width: 100% !important;
+}
+.select2-container--default .select2-search--inline .select2-search__field {
+    height: auto !important;
+}

@@ -1,0 +1,177 @@
+body {
+    color: black;
+    background: white;
+    @media print {
+        font-size: 1rem !important;
+    }
+
+    .logo{
+        height: 60px;
+        width: 200px;
+        margin-top: -20px;
+    }
+    @media print {
+        .print-container {
+            max-height: 1000px;
+            padding-top: 40px;
+            background: white;
+            font-size: 20px;
+        }
+    }
+    .table {
+        color: #000000 !important;
+    }
+    .table thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid black;
+    }
+    .table th, .table td {
+        padding: .75rem;
+        vertical-align: top;
+        border-top: 1px solid black;
+    }
+    .font-color{
+        color: black;
+    }
+    .note{
+        width: 70%;
+    }
+    .note>label{
+        font-weight: bold;
+    }
+    .margin{
+        margin-top: -80px;
+    }
+    .reference{
+        margin: -20px 0 18px 110px  /*18px 0 18px 71px*/
+    }
+    .terms{
+        margin: -18px 0 8px 162px
+    }
+    .label-title{
+        font-size: 14px;
+        text-decoration: underline;
+    }
+    .table-title{
+        text-decoration: underline;
+        margin-bottom: 0;
+        font-weight: bolder;
+    }
+    .feedback{
+        margin-top: 53px;
+    }
+    .feedback-box{
+        margin-top: 53px;
+        border: 1px solid;
+        padding: 5px;
+    }
+    .signature{
+        margin-top: 65px;
+    }
+    .quotation{
+        font-size: 16px;
+        border: 1px solid;
+        padding: 2px 30px 2px 30px;
+    }
+    .total-title{
+        font-weight: bolder;
+    }
+    .subject{
+        margin-top: -20px;
+    }
+    .invoice-no{
+        padding: 5px;
+        border: 1px solid;
+        margin: 0 10px 0 0;
+    }
+    .invoice-address{
+        border-bottom: 1px solid;
+        width: 340px;
+        padding-bottom: 0;
+    }
+    .invoice-title-box{
+        padding: 5px;
+    }
+    .border-title{
+        border: 1px solid;
+        margin: 53px -25px 0 0;
+    }
+    .invoice-side-border{
+        margin-top: 53px;
+        border: 1px solid;
+        padding: 5px 0 26px 9px;
+    }
+    .border-size{
+        text-align: center;
+        border: 1px solid;
+        width: 332px;
+        margin-left: 274px;
+    }
+    @media print {
+        .invoice-address{
+            border-bottom: 1px solid;
+            width: 388px;
+            padding-bottom: 0;
+        }
+        .invoice-side-border{
+            margin-top: 53px;
+            border: 1px solid;
+            padding: 5px 0 33px 9px;
+        }
+        .border-size{
+            text-align: center;
+            border: 1px solid;
+            width: 390px;
+            margin-left: 329px;
+        }
+    }
+    .table-bordered th, .table-bordered td {
+        border: 1px solid black !important;
+    }
+    .print-hidden {
+        display: none;
+    }
+    h3.popup-header {
+        padding-top: 8px;
+    }
+    .non-print-hidden {
+        display: table-cell !important;
+    }
+    .voucher_print {
+        h4 {
+            border: solid 1px #000000;
+            padding: 5px;
+            font-size: 15px;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 0;
+            color: #000000;
+        }
+        .date {
+            padding: 5px;
+            font-size: 13px;
+            text-align: center;
+        }
+        .popup-header_voucher {
+            padding-top: 18px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: #000000;
+        }
+        .border {
+            border: solid 1px #000000 !important;
+        }
+        .main-table-bordered {
+            .main-table-label, .main-table-data {
+                border: solid 1px #000000 !important;
+                margin-top: 15px;
+            }
+            .main-table-data {
+                border-left: none !important;
+            }
+            .border-left {
+                border-left: solid 1px #000000 !important;
+            }
+        }
+    }
+}

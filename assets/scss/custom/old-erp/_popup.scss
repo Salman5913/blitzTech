@@ -1,0 +1,106 @@
+.error-popupBG,
+.popup_bg {
+    display: none;
+    background: #000;
+    background: rgba(0, 0, 0, 0.55);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 199900;
+    transition: none;
+}
+.errorbox {
+    display: none;
+    background: #FFF7F7;
+    width: 60%;
+    margin: auto;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 15px;
+    z-index: 200000;
+}
+.errorbox * {
+    transition: none;
+}
+.errorbox span.fa-stack {
+    font-size: 2em;
+    margin: 0 auto;
+    display: block;
+}
+.errorbox span.fa-stack i.fa-circle {
+    color: #DF6255;
+}
+.errorbox ul {
+    padding: 0;
+    margin: 15px 0;
+}
+.errorbox li {
+    text-align: center;
+    font-weight: 300;
+    color: #680001;
+    list-style: none;
+    margin-bottom: 10px;
+}
+.errorbox li i {
+    color: #DF6255;
+}
+.errorbox button {
+    display: block;
+    margin: auto;
+}
+.errorbox .btn-danger {
+    background-color: #DF6255;
+}
+.errorbox .btn-danger:focus {
+    outline: #DF6255 !important;
+}
+.popup {
+    display: none;
+    background: #ffffff;
+    width: 80%;
+    margin: auto;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    padding: 15px;
+    z-index: 2000;
+}
+.popup,
+.popup * {
+    transition: none;
+}
+.popup .popup-data {
+    max-height: 450px;
+    overflow-y: auto;
+    margin-bottom: 20px;
+}
+@media (max-width: 900px) {
+    .errorbox,
+    .popup {
+        width: 80%;
+    }
+}
+@media (max-width: 767px) {
+    .errorbox,
+    .popup {
+        width: 90%;
+    }
+}
+@media (max-width: 600px) {
+    .errorbox,
+    .popup {
+        font-size: 0.9em;
+    }
+}
+@media (max-width: 480px) {
+    .errorbox,
+    .popup {
+        font-size: 0.8em;
+        width: 100%;
+    }
+}

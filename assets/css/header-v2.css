@@ -1,0 +1,95 @@
+/* ==========================================================================
+   Header v2 — friendlier topbar (brand · search · branch/year · user menu)
+   Loads after finac-theme.css. Colours: #0b3866 / #b57bee
+   ========================================================================== */
+
+/* Brand ------------------------------------------------------------------- */
+html body[data-layout][class] .finac-brand { gap: 10px; }
+html body[data-layout][class] .finac-brand-mark {
+    width: 34px; height: 34px; border-radius: 10px;
+    background: #ffffff; box-shadow: 0 2px 8px rgba(11, 56, 102, .28);
+}
+html body[data-layout][class] .finac-brand-text { font-size: 1.02rem !important; letter-spacing: .14em !important; }
+
+/* Menu toggle ------------------------------------------------------------- */
+html body[data-layout][class] #vertical-menu-btn i { font-size: 22px !important; line-height: 1; }
+
+/* Search ------------------------------------------------------------------ */
+.hdr-search {
+    position: relative; flex: 1 1 auto; max-width: 460px; margin: 0 24px !important;
+}
+.hdr-search > i {
+    position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
+    font-size: 20px; color: #0b3866; opacity: .7; pointer-events: none;
+}
+html body[data-layout][class] .hdr-search .form-control {
+    height: 40px !important; width: 100%; padding: 0 16px 0 42px !important;
+    border-radius: 999px !important; border: 1px solid transparent !important;
+    background: rgba(255, 255, 255, .94) !important; color: #0b2240; font-size: .86rem;
+    box-shadow: 0 2px 8px rgba(11, 56, 102, .15) !important; transition: box-shadow .15s, border-color .15s;
+}
+html body[data-layout][class] .hdr-search .form-control::placeholder { color: #6b7d92; }
+html body[data-layout][class] .hdr-search .form-control:focus {
+    border-color: #b57bee !important; box-shadow: 0 0 0 4px rgba(255, 255, 255, .35) !important; outline: none;
+}
+
+/* Right zone -------------------------------------------------------------- */
+html body[data-layout][class] .hdr-right { gap: 10px !important; flex: 0 0 auto; }
+
+.hdr-info {
+    display: flex !important; align-items: center; gap: 10px;
+    height: 40px; padding: 0 14px 0 10px; border-radius: 12px;
+    background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .28);
+    color: #fff;
+}
+.hdr-info > i { font-size: 20px; line-height: 1; color: #fff; }
+.hdr-info > span { display: flex; flex-direction: column; line-height: 1.1; }
+.hdr-info small { font-size: .62rem; text-transform: uppercase; letter-spacing: .08em; opacity: .8; }
+.hdr-info b { font-size: .82rem; font-weight: 650; white-space: nowrap; max-width: 150px; overflow: hidden; text-overflow: ellipsis; }
+
+.hdr-icon-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; padding: 0; border-radius: 12px; cursor: pointer;
+    background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .28);
+    color: #fff; transition: background .15s;
+}
+.hdr-icon-btn i { font-size: 22px; line-height: 1; color: #fff; }
+.hdr-icon-btn:hover, .hdr-icon-btn:focus { background: rgba(255, 255, 255, .26); outline: none; }
+
+/* User button ------------------------------------------------------------- */
+.hdr-user {
+    display: inline-flex; align-items: center; gap: 8px; height: 40px;
+    padding: 0 10px 0 4px; border-radius: 999px; cursor: pointer;
+    background: rgba(255, 255, 255, .16); border: 1px solid rgba(255, 255, 255, .28);
+    color: #fff; font-weight: 600; font-size: .85rem; transition: background .15s;
+}
+.hdr-user:hover, .hdr-user:focus, .show > .hdr-user { background: rgba(255, 255, 255, .26); outline: none; }
+.hdr-user i { font-size: 18px; opacity: .9; }
+.hdr-avatar {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: #fff; color: #0b3866; font-weight: 800; font-size: .85rem;
+}
+.hdr-avatar-lg {
+    width: 42px; height: 42px; font-size: 1.05rem; color: #fff;
+    background: linear-gradient(135deg, #0b3866 0%, #b57bee 100%);
+}
+
+/* User dropdown ----------------------------------------------------------- */
+html body[data-layout][class] .hdr-menu { min-width: 250px; padding: 8px !important; margin-top: 10px !important; }
+.hdr-menu-head { display: flex; align-items: center; gap: 12px; padding: 8px 10px 10px; }
+.hdr-menu-head b { display: block; color: #0b2240; font-size: .92rem; }
+.hdr-menu-head small { display: block; color: #62797a; font-size: .76rem; }
+.hdr-menu .dropdown-divider { margin: 4px 0 6px; }
+.hdr-logout { display: flex; align-items: center; gap: 10px; color: #c0392b !important; font-weight: 600; }
+.hdr-logout i { font-size: 19px; }
+html body[data-layout][class] .navbar-header .hdr-menu .dropdown-item.hdr-logout:hover { background: #fdeceb !important; }
+
+/* Responsive -------------------------------------------------------------- */
+@media (max-width: 1199.98px) {
+    .hdr-info b { max-width: 90px; }
+    .hdr-search { max-width: 300px; margin: 0 14px !important; }
+}
+@media (max-width: 991.98px) {
+    .hdr-user-name { display: none !important; }
+}

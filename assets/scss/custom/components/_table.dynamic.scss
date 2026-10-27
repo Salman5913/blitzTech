@@ -1,0 +1,99 @@
+table.dynamic {
+    thead {
+        tr {
+            border-right: solid 1px;
+
+            th {
+                font-size: 13px !important;
+                border-bottom: none !important;
+            }
+        }
+    }
+    tbody {
+        tr {
+            &:first-child {
+                td {
+                    border-top: none;
+                }
+            }
+            td {
+                padding: 0;
+                font-size: 13px !important;
+                color: $gray-700;
+                vertical-align: middle;
+                border: solid 1px $gray-400;
+                position: relative;
+
+                label {
+                    padding-top: 0;
+                    padding-bottom: 0;
+                    width: 100%;
+                    display: block;
+                    border-top: solid 1px $gray-400;
+
+                    &:first-child {
+                        border-top: none;
+                    }
+                }
+                input:not([type='checkbox']):not([type='radio']), select, textarea, input[readonly], input[disabled] {
+                    width: 100% !important;
+                    font-size: 13px !important;
+                    padding: 3px 7px !important;
+                    height: #{calc(2rem + 6px)} !important;
+                    border-radius: 0 !important;
+                    border: solid 1px transparent !important;
+                    background-color: $card-bg;
+
+                    &:focus {
+                        outline: none !important;
+                    }
+                    &[data-type="int"], &[data-type="float"] {
+                        text-align: center;
+                    }
+                    &.bg-danger {
+                        background-color: $danger !important;
+                        color: $white;
+                        border-color: $danger !important;
+                    }
+                }
+                textarea {
+                    height: auto !important;
+                    max-height: #{calc(2rem + 6px)} !important;
+
+                    &:focus {
+                        height: 120px !important;
+                        max-height: 120px !important;
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        right: 0;
+                        z-index: 10;
+                    }
+                }
+                &.text {
+                    padding: 3px 7px !important;
+                    background-color: $gray-200;
+                }
+                &.action {
+                    text-align: center;
+
+                    button {
+                        background: transparent;
+                        border: none;
+                        color: $gray-600;
+                        text-align: center;
+
+                        i {
+                            padding: 0 !important;
+                        }
+                        &:hover {
+                            i {
+                                color: $red;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

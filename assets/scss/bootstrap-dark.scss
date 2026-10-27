@@ -1,0 +1,62 @@
+/*
+Template Name: Qovex - Responsive Bootstrap 4 Admin Dashboard
+Author: Themesbrand
+Version: 1.0.0
+Website: https://themesbrand.com/
+Contact: themesbrand@gmail.com
+File: Custom Bootstrap dark Css File
+*/
+
+
+//Core files
+@import "custom/bootstrap/functions";
+@import "custom/bootstrap/variables";
+@import "variables-dark";
+@import "custom/bootstrap/mixins.scss";
+
+@import "custom/bootstrap/root";
+@import "custom/bootstrap/reboot";
+@import "custom/bootstrap/type";
+@import "custom/bootstrap/images";
+@import "custom/bootstrap/code";
+@import "custom/bootstrap/grid";
+@import "custom/bootstrap/tables";
+@import "custom/bootstrap/forms";
+@import "custom/bootstrap/buttons";
+@import "custom/bootstrap/transitions";
+@import "custom/bootstrap/dropdown";
+@import "custom/bootstrap/button-group";
+@import "custom/bootstrap/input-group";
+@import "custom/bootstrap/custom-forms";
+@import "custom/bootstrap/nav";
+@import "custom/bootstrap/navbar";
+@import "custom/bootstrap/card";
+@import "custom/bootstrap/breadcrumb";
+@import "custom/bootstrap/pagination";
+@import "custom/bootstrap/badge";
+@import "custom/bootstrap/jumbotron";
+@import "custom/bootstrap/alert";
+@import "custom/bootstrap/progress";
+@import "custom/bootstrap/media";
+@import "custom/bootstrap/list-group";
+@import "custom/bootstrap/close";
+@import "custom/bootstrap/toasts";
+@import "custom/bootstrap/modal";
+@import "custom/bootstrap/tooltip";
+@import "custom/bootstrap/popover";
+@import "custom/bootstrap/carousel";
+@import "custom/bootstrap/spinners";
+@import "custom/bootstrap/utilities";
+@import "custom/bootstrap/print";
+
+@import "custom/components/reboot";
+@import "custom/components/backgrounds";
+@import "custom/components/badge";
+@import "custom/components/buttons";
+@import "custom/components/breadcrumb";
+@import "custom/components/card";
+@import "custom/components/dropdown";
+@import "custom/components/nav";
+@import "custom/components/table";
+@import "custom/components/pagination";
+@import "custom/components/progress";

@@ -1,0 +1,11 @@
+.page-kpi {
+    h2.sub-heading {
+        font-size: 16px;
+
+        &:not(.first-sub-heading) {
+            margin-top: 10px;
+            border-top: solid 1px #dfdfdf;
+            padding-top: 20px;
+        }
+    }
+}

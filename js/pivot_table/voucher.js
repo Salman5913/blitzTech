@@ -1,0 +1,37 @@
+$(function () {
+    let selectedRow;
+    const $oSliderPopup = new SliderPopup();
+
+    $("table.table-Filter")
+        .on("rowUpdated", function () {
+            $(this).find('[data-table-column="select_filter_option"]').each(function () {
+                $(this).addClass("text-center").html("<a href='javascript:void(0)' data-type='value-selector'>Select Values</a>");
+            })
+        })
+        .on("click", 'a[data-type="value-selector"]', function () {
+            selectedRow = $(this).closest("tr");
+            $oSliderPopup.loadWithData('Value Selection', 'Loading...');
+
+            $.get(SiteURL+'_pivot_table/ajax_get_view_column_value_hints.php', {
+                pivot_table_class: $("#pivot_table_class").val(),
+                column_name: selectedRow.find('[data-table-column="filter_column"]').find(":selected").val(),
+                existing_values: selectedRow.find('[data-table-column="filter_value"]').val()
+            }, function (data) {
+                $oSliderPopup.loadWithData('Value Selection', data);
+            });
+        }).trigger("rowUpdated");
+
+    $("body").on("click", '#btn-pull-values', function () {
+
+        var output = $.map($(':checkbox[data-js="value_selection_hint"]:checked'), function(n, i){
+            return n.value;
+        });
+
+        selectedRow.find('[data-table-column="filter_value"]').val(output.join(','));
+
+        if (output.length > 1)
+            selectedRow.find('[data-table-column="filter_condition"]').val('inorequal');
+
+        $oSliderPopup.closeSlider();
+    })
+})

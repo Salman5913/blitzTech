@@ -1,0 +1,14 @@
+section.lead_management {
+    .meeting_date, .meeting_time {
+        font-size: 18px;
+        font-weight: 500;
+    }
+    .meeting_agenda {
+        padding: 7px 0;
+    }
+    .meeting_at {
+        padding: 7px 0 20px;
+        color: $red;
+
+    }
+}

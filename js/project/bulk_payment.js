@@ -1,0 +1,46 @@
+$(function (){
+    $("#amount").on("blur", function (){
+        var heading = "Total Received: ";
+        $("table tfoot tr:eq(1) td[data-js='total_received_amount']:eq(0)").html(heading + "<span class='font-weight-bold'>" + $(this).val() + "</span>");
+
+        $("input[data-type='float']:first-child").trigger("blur");
+    });
+
+    $("table").on("blur", "input.project_amount", function () {
+        var _this = $(this);
+        var adjusted_amount = NumberHelper.parseInput($(this));
+        var amount = parseFloat(_this.closest("tr").find("td[data-js='amount']").attr("data-amount"));
+        var remaining_amount = parseFloat(_this.closest("tr").find("td[data-js='remaining_amount']").attr("data-remaining_amount"));
+        var received_amount = NumberHelper.parseInput($("#amount"));
+
+        if ((adjusted_amount > remaining_amount && remaining_amount >= 0) || received_amount <= 0) {
+            $(this).val(0);
+            _this.addClass("bg-danger");
+
+            swal.fire({
+                title: "Alert!",
+                text: "You can not adjust greater than remaining amount."
+            });
+        } else {
+            _this.removeClass("bg-danger");
+        }
+    });
+
+    $("body").on("change", "input[data-type='float']", function () {
+        var received_amount = NumberHelper.parseInput($("#amount"));
+        var total_adjusted = parseFloat(NumberHelper.clearThousandSep($('[data-input-sum=".project_amount"]').html()));
+        var balance = received_amount - total_adjusted;
+
+        $("td span[data-js='amount_balance']").html(NumberHelper.thousandSep(NumberHelper.round(balance)));
+
+        if (total_adjusted !== received_amount) {
+            $("td span[data-js='amount_balance']").addClass("text-danger");
+            $("td[data-js='balance_error']").html("<span class='text-danger font-weight-bold font-size-14'>" + "Kindly adjust only Rs." + round(thousandSep(round(received_amount))) + "</span>")
+            $("[name='submit']").addClass("hidden");
+        } else {
+            $("td span[data-js='amount_balance']").removeClass("text-danger");
+            $("td[data-js='balance_error']").html("");
+            $("[name='submit']").removeClass("hidden");
+        }
+    });
+});

@@ -1,0 +1,62 @@
+<component name="libraryTable">
+  <library name="Generated files" type="javaScript">
+    <properties>
+      <sourceFilesUrls>
+        <item url="file://$PROJECT_DIR$/js_live/ai.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/app.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/chart_of_account/accounts.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/chart_of_account/chart_of_account.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/customer_payment/customer_payment.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/default.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/finac-app.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/fnLengthChange.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/jquery.table2excel.min.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/project/bulk_payment.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/project/estimate.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/project/payment.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/project/quote.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/purchase/purchase.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/salary/salary.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/salary/salary_management.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/sales/sales.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/shortcut.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/stock-row.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/stock_category/stock_attributes.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/stock_category/stock_category.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/table.dynamic.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/voucher_helper.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/vouchers/journal_voucher.min.js" />
+        <item url="file://$PROJECT_DIR$/js_live/vouchers/payment_receipt.min.js" />
+      </sourceFilesUrls>
+    </properties>
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/js_live/ai.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/app.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/chart_of_account/accounts.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/chart_of_account/chart_of_account.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/customer_payment/customer_payment.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/default.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/finac-app.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/fnLengthChange.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/jquery.table2excel.min.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/project/bulk_payment.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/project/estimate.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/project/payment.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/project/quote.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/purchase/purchase.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/salary/salary.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/salary/salary_management.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/sales/sales.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/shortcut.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/stock-row.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/stock_category/stock_attributes.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/stock_category/stock_category.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/table.dynamic.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/voucher_helper.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/vouchers/journal_voucher.min.js" />
+      <root url="file://$PROJECT_DIR$/js_live/vouchers/payment_receipt.min.js" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

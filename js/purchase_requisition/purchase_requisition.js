@@ -1,0 +1,12 @@
+$(function() {
+    $("table").on("change", "input[data-type='int'], input[data-type='float']", function() {
+
+        $("[data-type='int'], [data-type='float']").each(function () {
+            if ($(this).val() === '')
+                $(this).val(0);
+        });
+    });
+});
+
+
+

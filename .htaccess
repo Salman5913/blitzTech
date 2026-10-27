@@ -1,0 +1,14 @@
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^Controller/([A-Za-z0-9]+)$ _voucher_defaults/voucher.php?voucher_class=$1 [L,QSA]
+    RewriteRule ^AjaxController/([A-Za-z0-9]+)$ _voucher_defaults/ajax_voucher.php?voucher_class=$1 [L,QSA]
+    RewriteRule ^CustomizedReport/(.*)$ _pivot_table/print_voucher.php [L,QSA]
+    RewriteRule ^Print/([A-Za-z0-9]+)$ _voucher_defaults/voucher_print.php?voucher_class=$1 [L,QSA]
+    RewriteRule ^Report/([A-Za-z0-9]+)$ _voucher_defaults/report.php?voucher_class=$1 [L,QSA]
+</IfModule>

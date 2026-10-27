@@ -1,0 +1,30 @@
+#paging_summary {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+#paging_pageno {
+
+    ul {
+        margin: 0;
+        padding: 0;
+        float:right;
+
+        li:first-child {
+            border-color: transparent;
+            background-color: transparent;
+        }
+        li {
+            display: inline;
+            border: solid 1px #C1C1C1;
+            padding: 4px 7px;
+            min-width: 20px;
+            margin: 5px;
+            border-radius: 3px;
+            background-color: #FFF;
+            line-height: 30px;
+        }
+        li.current {
+
+        }
+    }
+}

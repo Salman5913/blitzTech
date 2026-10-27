@@ -1,0 +1,459 @@
+/* ==========================================================================
+   FINAC ERP - TEAL DUAL-GRADIENT THEME (#0b3866 & #b57bee)
+   ========================================================================== */
+
+:root {
+    --finac-primary: #b57bee;
+    --finac-primary-dark: #0b3866;
+    --finac-primary-light: #d2adf5;
+    --finac-secondary: #0b3866;
+    --finac-secondary-dark: #082a4d;
+    --finac-dark-base: #061d38;
+    --finac-dark-surface: #0a2f55;
+    --finac-dark-muted: #2d6b65;
+    --finac-gray-bg: #f4f8f7;
+    --finac-border: #d4e3e1;
+    --finac-gradient-main: linear-gradient(135deg, #0b3866 0%, #b57bee 100%);
+    --finac-gradient-btn: linear-gradient(135deg, #0b3866 0%, #b57bee 100%);
+    --finac-gradient-btn-hover: linear-gradient(135deg, #0b3866 0%, #c897f2 100%);
+    --finac-gradient-dark: linear-gradient(135deg, #0b3866 0%, #b57bee 100%);
+    --finac-text-black: #000000;
+    --finac-text-white: #ffffff;
+}
+
+/* Custom ERP Status Badges */
+span.bg_voucher_status {
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    font-size: 11px;
+    border: 1.5px solid #0b3866;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 6px;
+    padding: 3px 8px;
+    display: inline-block;
+}
+
+/* 1. Universal Table Layout Overhaul */
+table.table, table.dataTable, table.dynamic {
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100% !important;
+    margin-top: 0.5rem !important;
+    margin-bottom: 1.5rem !important;
+    background-color: #ffffff !important;
+    border-radius: 10px !important;
+    overflow: hidden !important;
+    box-shadow: 0 4px 16px rgba(11, 56, 102, 0.06) !important;
+    border: 1px solid var(--finac-border) !important;
+}
+
+/* 2. Column Header Styling */
+table.table thead th, table.dataTable thead th, table.dynamic thead th {
+    background-color: #f2f7f6 !important;
+    color: #000000 !important;
+    font-weight: 700 !important;
+    font-size: 0.78rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.04em !important;
+    padding: 12px 14px !important;
+    border-bottom: 2px solid var(--finac-border) !important;
+    border-top: none !important;
+    vertical-align: middle !important;
+}
+
+/* 3. Table Row Styling */
+table.table tbody td, table.dataTable tbody td, table.dynamic tbody td {
+    padding: 0 !important;
+    color: #000000 !important;
+    border-bottom: 1px solid #edf4f3 !important;
+    vertical-align: middle !important;
+    font-size: 0.84rem !important;
+    background-color: #ffffff !important;
+}
+
+table.table tbody td:not(:has(input)):not(:has(select)):not(:has(textarea)):not(:has(button)):not(.dt-action):not(.dt_sno),
+table.dataTable tbody td:not(:has(input)):not(:has(select)):not(:has(textarea)):not(:has(button)):not(.dt-action):not(.dt_sno) {
+    padding: 6px 10px !important;
+}
+
+/* 4. Bold Footer Aggregate Alignments */
+table.table tfoot td, table.dataTable tfoot td, table.dynamic tfoot td {
+    font-weight: 700 !important;
+    background-color: #f2f7f6 !important;
+    color: #000000 !important;
+    border-top: 2px solid var(--finac-border) !important;
+    border-bottom: none !important;
+    padding: 4px 8px !important;
+    font-size: 0.86rem !important;
+}
+
+/* 5. Smooth Row Hover Transitions */
+table.table tbody tr:hover td, table.dataTable tbody tr:hover td, table.dynamic tbody tr:hover td {
+    background-color: rgba(181, 123, 238, 0.08) !important;
+    transition: background-color 0.15s ease-in-out !important;
+}
+
+/* 6. Padded Elegant Card Wrappers */
+.card {
+    border: 1px solid var(--finac-border) !important;
+    border-radius: 12px !important;
+    box-shadow: 0 4px 20px rgba(11, 56, 102, 0.05) !important;
+    background-color: #ffffff !important;
+    margin-bottom: 1.5rem !important;
+    overflow: hidden !important;
+    transition: all 0.25s ease !important;
+}
+.card:hover {
+    box-shadow: 0 8px 28px rgba(11, 56, 102, 0.12) !important;
+    border-color: rgba(11, 56, 102, 0.35) !important;
+}
+.card-body {
+    padding: 1.4rem !important;
+}
+.card-title {
+    color: #000000 !important;
+    font-size: 1.05rem !important;
+    font-weight: 700 !important;
+    margin-bottom: 1.2rem !important;
+    letter-spacing: -0.01em !important;
+}
+
+/* 7. Form Controls & Inputs */
+.card select, 
+.card input[type="text"], 
+.card input[type="date"], 
+.card input[type="search"],
+.card input[type="password"],
+.card input[type="number"],
+.card textarea,
+.select2-container--default .select2-selection--single {
+    background-color: #ffffff !important;
+    border: 1.5px solid var(--finac-border) !important;
+    border-radius: 8px !important;
+    padding: 6px 12px !important;
+    color: #000000 !important;
+    font-size: 0.85rem !important;
+    height: 38px !important;
+    box-shadow: none !important;
+    transition: all 0.2s ease-in-out !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 26px !important;
+    padding-left: 0 !important;
+    color: #000000 !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 36px !important;
+}
+
+.card select:focus, 
+.card input[type="text"]:focus, 
+.card input[type="date"]:focus, 
+.card input[type="search"]:focus,
+.card input[type="password"]:focus,
+.card input[type="number"]:focus,
+.card textarea:focus,
+.select2-container--default.select2-container--open .select2-selection--single {
+    border-color: var(--finac-primary) !important;
+    box-shadow: 0 0 0 3.5px rgba(11, 56, 102, 0.2) !important;
+    outline: none !important;
+}
+
+/* 8. Branded Dynamic Button Overrides */
+.btn-primary, 
+.filter-submit-btn, 
+.btn-success,
+button[type="submit"] {
+    background: var(--finac-gradient-btn) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 8px 18px !important;
+    font-size: 0.85rem !important;
+    font-weight: 600 !important;
+    color: #ffffff !important;
+    height: 38px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+    box-shadow: 0 3px 12px rgba(11, 56, 102, 0.25) !important;
+}
+.btn-primary:hover, 
+.filter-submit-btn:hover, 
+.btn-success:hover,
+button[type="submit"]:hover {
+    background: var(--finac-gradient-btn-hover) !important;
+    box-shadow: 0 6px 18px rgba(11, 56, 102, 0.4) !important;
+    transform: translateY(-1px) !important;
+}
+.btn-primary:active,
+button[type="submit"]:active {
+    transform: translateY(1px) !important;
+}
+
+/* 9. Soft Badges */
+.badge {
+    padding: 5px 11px !important;
+    font-size: 0.72rem !important;
+    font-weight: 600 !important;
+    border-radius: 30px !important;
+    letter-spacing: 0.02em !important;
+}
+.badge-success, .badge-soft-success {
+    background-color: rgba(11, 56, 102, 0.12) !important;
+    color: #082a4d !important;
+    border: 1px solid rgba(11, 56, 102, 0.25) !important;
+}
+.badge-secondary, .badge-soft-secondary {
+    background-color: rgba(181, 123, 238, 0.15) !important;
+    color: #0b3866 !important;
+    border: 1px solid rgba(181, 123, 238, 0.3) !important;
+}
+.badge-danger, .badge-soft-danger {
+    background-color: rgba(0, 0, 0, 0.08) !important;
+    color: #000000 !important;
+    border: 1px solid rgba(0, 0, 0, 0.15) !important;
+}
+.badge-warning, .badge-soft-warning {
+    background-color: rgba(181, 123, 238, 0.1) !important;
+    color: #061d38 !important;
+    border: 1px solid rgba(181, 123, 238, 0.25) !important;
+}
+.badge-info, .badge-soft-info {
+    background-color: rgba(11, 56, 102, 0.1) !important;
+    color: #0b3866 !important;
+    border: 1px solid rgba(11, 56, 102, 0.25) !important;
+}
+
+/* 10. Clean Data Table Typography & Links */
+table a {
+    color: var(--finac-primary) !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    transition: color 0.15s ease !important;
+}
+table a:hover {
+    color: var(--finac-primary-dark) !important;
+    text-decoration: underline !important;
+}
+
+/* 11. Voucher Designer Specific Styles */
+.form-group label {
+    font-weight: 600 !important;
+    font-size: 0.82rem !important;
+    color: #000000 !important;
+    margin-bottom: 0.4rem !important;
+}
+
+table.table-bordered,
+table.dynamic {
+    border-collapse: collapse !important;
+    border: 1px solid var(--finac-border) !important;
+}
+
+table.table-bordered thead th,
+table.table-bordered tbody td,
+table.table-bordered tfoot td,
+table.dynamic thead th,
+table.dynamic tbody td,
+table.dynamic tfoot td {
+    border: 1px solid var(--finac-border) !important;
+}
+
+table.table-bordered thead th,
+table.dynamic thead th {
+    background: var(--finac-gradient-main) !important;
+    color: #ffffff !important;
+    border-bottom: 2px solid var(--finac-primary-dark) !important;
+    font-size: 0.78rem !important;
+}
+
+table.table-bordered tfoot td,
+table.dynamic tfoot td {
+    border-top: 2px solid var(--finac-border) !important;
+}
+
+table.table-bordered tbody tr:last-child td,
+table.dynamic tbody tr:last-child td {
+    border-bottom: 1px solid var(--finac-border) !important;
+}
+
+table.dynamic tbody td,
+table.table-bordered tbody td {
+    padding: 0 !important;
+}
+
+.table.dynamic tbody td input,
+.table.dynamic tbody td select,
+.table.dynamic tbody td textarea {
+    width: 100% !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 4px 8px !important;
+    font-size: 0.83rem !important;
+    color: #000000 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    transition: all 0.2s ease !important;
+}
+
+.table.dynamic tbody td input:focus,
+.table.dynamic tbody td select:focus,
+.table.dynamic tbody td textarea:focus {
+    border: none !important;
+    box-shadow: inset 0 0 0 2px var(--finac-primary) !important;
+    background: #ffffff !important;
+    outline: none !important;
+}
+
+/* 12. Sidebar Scrollbar & Subtle Accents */
+.vertical-menu .simplebar-scrollbar:before {
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+    opacity: 0.6 !important;
+}
+.vertical-menu .simplebar-scrollbar.simplebar-visible:before {
+    opacity: 0.9 !important;
+}
+.vertical-menu .badge {
+    background: var(--finac-gradient-main) !important;
+    color: #ffffff !important;
+}
+
+/* 13. Connected Split Button Group (Print + Arrow) in Reports & Lists */
+.btn-group {
+    display: inline-flex !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    border-radius: 8px !important;
+    box-shadow: 0 1px 3px rgba(11, 56, 102, 0.15) !important;
+    white-space: nowrap !important;
+}
+
+.btn-group > .btn,
+.btn-group > a.btn,
+.btn-group > button.btn,
+.btn-group > a.color,
+.btn-group > button.color {
+    box-shadow: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+}
+
+.btn-group > .btn:first-child,
+.btn-group > a.btn:first-child,
+.btn-group > button.btn:first-child,
+.btn-group > a.color:first-child,
+.btn-group > button.color:first-child {
+    border-top-left-radius: 8px !important;
+    border-bottom-left-radius: 8px !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right: none !important;
+    padding: 0 12px !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 4px;
+}
+
+.btn-group > .dropdown-toggle-split,
+.btn-group > button.dropdown-toggle-split {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: 8px !important;
+    border-bottom-right-radius: 8px !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 0 8px !important;
+    min-width: 28px !important;
+    width: auto !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-group > .dropdown-toggle-split::after,
+.btn-group > button.dropdown-toggle-split::after {
+    display: none !important;
+}
+
+.btn-group > .btn:hover,
+.btn-group > .btn:focus {
+    z-index: 2 !important;
+    opacity: 0.95;
+}
+
+.btn-group.show,
+tr:has(.btn-group.show) {
+    z-index: 1050 !important;
+    position: relative !important;
+}
+
+.table-responsive:has(.dropdown-menu.show),
+.table-responsive:has(.btn-group.show) {
+    overflow: visible !important;
+}
+
+/* Report Action Dropdown Menus */
+.report-actions .dropdown-menu,
+.table .dropdown-menu,
+.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
+    top: 100% !important;
+    margin-top: 4px !important;
+    min-width: 160px !important;
+    background: #ffffff !important;
+    border: 1px solid #cfdcda !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 25px rgba(11, 56, 102, 0.2) !important;
+    padding: 6px 0 !important;
+    z-index: 1060 !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item,
+.table .dropdown-menu .dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px 16px !important;
+    font-size: 0.83rem !important;
+    font-weight: 500 !important;
+    color: #212529 !important;
+    background: transparent !important;
+    transition: background 0.15s ease, color 0.15s ease !important;
+    border: none !important;
+    text-decoration: none !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item:hover,
+.table .dropdown-menu .dropdown-item:hover {
+    background: #f1f5f9 !important;
+    color: #0b3866 !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item i,
+.table .dropdown-menu .dropdown-item i {
+    font-size: 1rem !important;
+    color: #64748b !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item:hover i,
+.table .dropdown-menu .dropdown-item:hover i {
+    color: #0b3866 !important;
+}
+
+.report-actions .dropdown-menu .dropdown-divider,
+.table .dropdown-menu .dropdown-divider {
+    margin: 4px 0 !important;
+    border-top: 1px solid #e2e8f0 !important;
+}
+

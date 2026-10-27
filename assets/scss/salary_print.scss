@@ -1,0 +1,71 @@
+body {
+    background-color: white;
+
+    h1, .table, * {
+        color: #000000 !important;
+    }
+
+    .border-bottom {
+        border-bottom-color: #000000 !important;
+    }
+    .payslip-heading {
+        font-size: 40px;
+        font-weight: 500;
+        text-transform: uppercase;
+        line-height: 47px;
+    }
+    .date {
+        font-size: 18px;
+        text-transform: uppercase;
+        font-weight: 500;
+        margin-top: 10px;
+    }
+
+    .table-bordered {
+        thead {
+            th {
+                vertical-align: bottom;
+                border-bottom: 2px solid black;
+            }
+        }
+        th, td {
+            padding: .75rem;
+            vertical-align: top;
+            border: 1px solid #000000;
+        }
+        .double-border{
+            td {
+                border-top-width: 3px !important;
+            }
+        }
+        .header-column {
+            vertical-align: middle;
+            font-weight: bold;
+        }
+    }
+    .break-after {
+        display: block;
+        page-break-after: always;
+        position: relative;
+    }
+    .page {
+        margin-top: 30px;
+        margin-bottom: 100px;
+    }
+
+    @media print {
+        .table-bordered {
+            th, td {
+                border: 1px solid #000000 !important;
+            }
+            .double-border{
+                td {
+                    border-top-width: 3px !important;
+                }
+            }
+        }
+        .border-bottom {
+            border-bottom-color: #000000;
+        }
+    }
+}

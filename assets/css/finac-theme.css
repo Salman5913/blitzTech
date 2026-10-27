@@ -1,0 +1,872 @@
+/* ==========================================================================
+   FINAC ERP — Redesign v1
+   Loads AFTER app.css / custom.css, so it wins by order.
+   Sections: 1 Tokens · 2 Base · 3 Layout · 4 Topbar · 5 Sidebar · 6 Page title
+             7 Cards · 8 Tables · 9 Forms · 10 Buttons · 11 Badges · 12 Misc
+   ========================================================================== */
+
+/* 1. TOKENS ---------------------------------------------------------------- */
+:root {
+    --f-brand: #0b3866;
+    --f-brand-600: #082d54;
+    --f-brand-500: #124777;
+    --f-brand-100: #f3eafc;
+    --f-brand-50: #f9f4fd;
+
+    --f-side: #0b3866;
+    --f-side-2: #f5eefc;
+    --f-side-text: #ffffff;
+    --f-side-text-hi: #ffffff;
+    --f-dark: #0b2240;
+    --f-top: #0b3866;
+    --f-top-border: #164a85;
+    --f-side-w: 264px;
+    --f-side-w-sm: 70px;
+    --f-top-h: 64px;
+
+    --f-bg: #f6faf9;
+    --f-surface: #ffffff;
+    --f-border: #e2eae9;
+    --f-border-strong: #cfdcda;
+    --f-text: #0b2240;
+    --f-muted: #62797a;
+
+    --f-radius: 12px;
+    --f-radius-sm: 8px;
+    --f-shadow-sm: 0 1px 2px rgba(16, 42, 40, .06);
+    --f-shadow: 0 1px 3px rgba(16, 42, 40, .06), 0 6px 18px rgba(16, 42, 40, .05);
+    --f-ring: 0 0 0 3px rgba(31, 122, 114, .18);
+
+    /* keep legacy variable names alive for older pages */
+    --finac-primary: var(--f-brand-500);
+    --finac-primary-dark: var(--f-brand);
+    --finac-primary-light: #c897f2;
+    --finac-border: var(--f-border);
+    --finac-gradient-main: var(--f-brand);
+    --finac-gradient-btn: var(--f-brand);
+    --finac-gradient-btn-hover: var(--f-brand-600);
+}
+
+/* 2. BASE ------------------------------------------------------------------ */
+html, body {
+    font-family: 'Inter', 'Segoe UI', system-ui, Arial, sans-serif;
+}
+body {
+    background: var(--f-bg) !important;
+    color: var(--f-text);
+    font-size: 0.875rem;
+    -webkit-font-smoothing: antialiased;
+}
+a { color: var(--f-brand); }
+a:hover { color: var(--f-brand-600); }
+h1, h2, h3, h4, h5, h6 { color: var(--f-text); font-weight: 650; letter-spacing: -0.01em; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #c4d3d1; border-radius: 10px; border: 2px solid var(--f-bg); }
+::-webkit-scrollbar-thumb:hover { background: #a9bdbb; }
+
+/* 3. LAYOUT ---------------------------------------------------------------- */
+body[data-layout="detached"] #layout-wrapper::before { display: none !important; content: none !important; }
+
+body[data-layout="detached"] #layout-wrapper {
+    display: flex !important;
+    align-items: flex-start;
+    position: relative;
+    width: 100% !important;
+    background: var(--f-bg);
+}
+
+.vertical-menu,
+body > #layout-wrapper > .vertical-menu {
+    flex: 0 0 var(--f-side-w) !important;
+    width: var(--f-side-w) !important;
+    min-width: var(--f-side-w) !important;
+    max-width: var(--f-side-w) !important;
+    background: var(--f-side) !important;
+    border-right: 1px solid #a866e6 !important;
+    box-shadow: none !important;
+    position: sticky !important;
+    top: 0 !important;
+    height: 100vh !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    z-index: 1001;
+}
+
+body.vertical-collpsed .vertical-menu {
+    flex-basis: var(--f-side-w-sm) !important;
+    width: var(--f-side-w-sm) !important;
+    min-width: var(--f-side-w-sm) !important;
+    max-width: var(--f-side-w-sm) !important;
+}
+
+body[data-layout="detached"] .right-panel,
+.right-panel {
+    flex: 1 1 auto !important;
+    width: calc(100% - var(--f-side-w)) !important;
+    max-width: calc(100% - var(--f-side-w)) !important;
+    min-width: 0 !important;
+    padding: 0 28px 60px 28px !important;
+}
+body.vertical-collpsed .right-panel,
+body[data-layout="detached"].vertical-collpsed .right-panel {
+    width: calc(100% - var(--f-side-w-sm)) !important;
+    max-width: calc(100% - var(--f-side-w-sm)) !important;
+}
+
+body[data-layout="detached"] .main-content,
+.main-content { margin-left: 0 !important; width: 100% !important; min-width: 0 !important; }
+
+body[data-layout="detached"] .page-content,
+.page-content { padding: calc(var(--f-top-h) + 24px) 0 40px 0 !important; }
+
+/* 4. TOPBAR ---------------------------------------------------------------- */
+body[data-topbar] #page-topbar,
+body[data-topbar=colored] #page-topbar,
+body[data-topbar=dark] #page-topbar,
+#page-topbar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--f-top-h);
+    z-index: 1002;
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+    background-color: #0b3866 !important;
+    border-bottom: 1px solid var(--f-top-border);
+    box-shadow: var(--f-shadow-sm);
+}
+#page-topbar > .container-fluid { padding: 0 !important; height: var(--f-top-h) !important; max-width: none; }
+
+.navbar-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    height: var(--f-top-h) !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 28px 0 0 !important;
+}
+.navbar-header > div { display: flex !important; align-items: center !important; height: var(--f-top-h) !important; }
+
+/* left zone = sidebar colour & width, so sidebar looks full-height */
+.navbar-header > div:first-child {
+    flex: 0 0 var(--f-side-w) !important;
+    width: var(--f-side-w) !important;
+    padding: 0 18px 0 22px !important;
+    justify-content: space-between !important;
+    background: var(--f-top);
+    border-right: 1px solid var(--f-top-border);
+}
+body.vertical-collpsed .navbar-header > div:first-child {
+    flex-basis: var(--f-side-w-sm) !important;
+    width: var(--f-side-w-sm) !important;
+    padding: 0 !important;
+    justify-content: center !important;
+}
+body.vertical-collpsed .finac-brand-text { display: none; }
+body.vertical-collpsed .finac-brand { display: none; }
+
+.finac-brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none !important; }
+.finac-brand-mark {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 32px; height: 32px; border-radius: 9px;
+    background: #ffffff;
+    color: #b57bee; font-weight: 800; font-size: 17px; line-height: 1;
+}
+.finac-brand-text { color: #ffffff; font-weight: 700; font-size: 1.05rem; letter-spacing: .12em; }
+
+#vertical-menu-btn {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    width: 36px !important; height: 36px !important; padding: 0 !important; margin: 0 !important;
+    border-radius: 9px !important;
+    background: rgba(255,255,255,.18) !important;
+    border: 1px solid rgba(255,255,255,.4) !important;
+    color: #ffffff !important; box-shadow: none !important; font-size: 15px !important;
+    transition: background .15s;
+}
+#vertical-menu-btn:hover { background: rgba(255,255,255,.3) !important; color: #ffffff !important; }
+
+.navbar-header > div:last-child { justify-content: flex-end !important; gap: 10px; }
+.navbar-header > div:last-child > .dropdown { display: flex !important; align-items: center; height: 38px; margin: 0 !important; }
+.navbar-header > div:last-child > .dropdown.d-none { display: none !important; }
+@media (min-width: 992px) {
+    .navbar-header > div:last-child > .dropdown.d-lg-inline-block { display: flex !important; }
+}
+
+.header-chip-btn {
+    display: inline-flex !important; align-items: center; justify-content: center;
+    height: 38px !important; padding: 0 14px !important; margin: 0 !important;
+    background: rgba(255,255,255,.18) !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(255,255,255,.4) !important;
+    border-radius: 10px !important;
+    font-size: .84rem !important; font-weight: 600 !important; line-height: 1 !important;
+    white-space: nowrap; box-shadow: none !important; transition: all .15s;
+}
+.header-chip-btn i {
+    display: inline-flex !important; align-items: center;
+    color: #ffffff !important; font-size: 17px !important; line-height: 1 !important;
+    margin-top: 0 !important; vertical-align: middle !important;
+}
+.header-chip-btn span { line-height: 1 !important; }
+.header-chip-btn:hover, .header-chip-btn:focus {
+    background: rgba(255,255,255,.3) !important; border-color: #ffffff !important;
+    color: #ffffff !important; box-shadow: none !important;
+}
+.dropdown-menu { border: 1px solid var(--f-border) !important; border-radius: 12px !important; box-shadow: var(--f-shadow) !important; }
+
+/* header search (mobile) */
+.app-search .form-control {
+    height: 38px !important; border-radius: 10px !important; background: #fff !important;
+    border: 1px solid var(--f-border-strong) !important; box-shadow: none !important; padding: 0 14px !important;
+}
+
+/* 5. SIDEBAR --------------------------------------------------------------- */
+#sidebar-menu { padding: calc(var(--f-top-h) + 14px) 12px 60px 12px !important; }
+
+#sidebar-menu .menu-title {
+    display: block; margin: 0 !important;
+    padding: 20px 12px 8px 12px !important;
+    color: rgba(255,255,255,.75) !important; opacity: 1;
+    font-size: .68rem !important; font-weight: 700 !important;
+    letter-spacing: .12em !important; text-transform: uppercase !important;
+}
+
+#sidebar-menu ul li { width: 100% !important; margin: 0 !important; padding: 0 !important; }
+
+#sidebar-menu ul li a {
+    display: flex !important; align-items: center !important; position: relative !important;
+    width: 100% !important; margin: 2px 0 !important; padding: 10px 12px !important;
+    gap: 0 !important; text-align: left !important;
+    color: var(--f-side-text) !important;
+    font-size: .875rem !important; font-weight: 500 !important;
+    background: transparent !important; border: none !important; border-radius: 9px !important;
+    box-shadow: none !important; transform: none !important;
+    transition: background-color .15s, color .15s !important;
+}
+#sidebar-menu ul li a i {
+    display: inline-flex !important; align-items: center !important; justify-content: flex-start !important;
+    flex: 0 0 26px !important; width: 26px !important; min-width: 26px !important;
+    margin-right: 12px !important; font-size: 1.25rem !important; line-height: 1 !important;
+    color: #ffffff !important; opacity: 1 !important; transform: none !important;
+}
+
+#sidebar-menu ul li a:hover {
+    background: rgba(255,255,255,.16) !important; color: #ffffff !important;
+}
+#sidebar-menu ul li a:hover i { color: #ffffff !important; }
+
+/* open / active parent */
+#sidebar-menu ul li.mm-active > a,
+#sidebar-menu ul li a.active {
+    background: rgba(0,0,0,.16) !important; color: #ffffff !important; font-weight: 600 !important;
+}
+#sidebar-menu ul li.mm-active > a i,
+#sidebar-menu ul li a.active i { color: #ffffff !important; }
+
+/* chevron */
+#sidebar-menu ul li a.has-arrow:after {
+    content: "" !important; position: absolute !important; right: 14px !important; top: 50% !important;
+    width: 7px !important; height: 7px !important; display: inline-block !important;
+    border: solid currentColor !important; border-width: 0 1.8px 1.8px 0 !important;
+    transform: translateY(-65%) rotate(45deg) !important; opacity: .7 !important;
+    transition: transform .2s ease !important;
+}
+#sidebar-menu ul li.mm-active > a.has-arrow:after,
+#sidebar-menu ul li a.has-arrow[aria-expanded="true"]:after {
+    transform: translateY(-25%) rotate(-135deg) !important;
+}
+
+/* sub menu */
+#sidebar-menu ul li ul.sub-menu {
+    background: transparent !important; border: none !important; border-radius: 0 !important;
+    margin: 0 !important; padding: 0 !important; width: 100% !important;
+}
+#sidebar-menu ul li > ul.sub-menu:first-of-type { padding-top: 2px !important; }
+#sidebar-menu ul li > ul.sub-menu:last-of-type { padding-bottom: 6px !important; }
+/* thin divider between grouped sub-menus (Inventory, Reports…) */
+#sidebar-menu ul li > ul.sub-menu + ul.sub-menu {
+    margin-top: 4px !important; padding-top: 4px !important; border-top: 1px dashed rgba(255,255,255,.35) !important;
+}
+
+#sidebar-menu ul li ul.sub-menu li { display: flex !important; align-items: center !important; position: relative; }
+#sidebar-menu ul li ul.sub-menu li > a:first-child {
+    flex: 1 1 auto !important; width: auto !important; min-width: 0 !important;
+    padding: 8px 10px 8px 50px !important;      /* 12 + 26 + 12 → text lines up under parent label */
+    font-size: .84rem !important; font-weight: 450 !important; line-height: 1.35;
+    color: var(--f-side-text) !important; white-space: normal;
+}
+#sidebar-menu ul li ul.sub-menu li > a:first-child:before {
+    content: ""; position: absolute; left: 22px; top: 50%; width: 5px; height: 5px;
+    margin-top: -2.5px; border-radius: 50%; background: rgba(255,255,255,.6); transition: background .15s;
+}
+#sidebar-menu ul li ul.sub-menu li > a:first-child:hover { color: #ffffff !important; background: rgba(255,255,255,.16) !important; }
+#sidebar-menu ul li ul.sub-menu li > a:first-child:hover:before,
+#sidebar-menu ul li ul.sub-menu li > a.active:before { background: #ffffff; }
+#sidebar-menu ul li ul.sub-menu li > a.active { color: #ffffff !important; font-weight: 600 !important; background: rgba(0,0,0,.16) !important; }
+
+/* "view all" eye icon */
+#sidebar-menu ul li ul.sub-menu li > span { flex: 0 0 auto !important; display: flex !important; align-items: center; padding-right: 4px; }
+#sidebar-menu ul li ul.sub-menu li > span a {
+    width: 30px !important; height: 30px !important; padding: 0 !important; margin: 0 !important;
+    justify-content: center !important; border-radius: 7px !important;
+}
+#sidebar-menu ul li ul.sub-menu li > span a i {
+    flex: 0 0 auto !important; width: auto !important; min-width: 0 !important; margin: 0 !important;
+    font-size: 1.05rem !important; justify-content: center !important; color: rgba(255,255,255,.85) !important;
+}
+#sidebar-menu ul li ul.sub-menu li > span a:hover i { color: #ffffff !important; }
+
+.vertical-menu::-webkit-scrollbar-thumb { background: rgba(255,255,255,.4); border-color: var(--f-side); }
+.vertical-menu .simplebar-scrollbar:before { background: rgba(255,255,255,.5) !important; }
+
+/* 6. PAGE TITLE ------------------------------------------------------------ */
+.page-title-box { padding: 0 0 18px 0 !important; background: transparent !important; }
+.page-title { font-size: 1.35rem !important; font-weight: 700 !important; color: var(--f-text) !important; letter-spacing: -0.02em; }
+.breadcrumb { background: transparent !important; font-size: .8rem; }
+.breadcrumb-item.active { color: var(--f-muted) !important; }
+
+/* 7. CARDS ----------------------------------------------------------------- */
+.card {
+    background: var(--f-surface) !important;
+    border: 1px solid var(--f-border) !important;
+    border-radius: var(--f-radius) !important;
+    box-shadow: var(--f-shadow) !important;
+    margin-bottom: 20px !important;
+    overflow: visible !important;           /* lets select2 / dropdowns escape */
+    transition: none !important;
+}
+.card:hover { box-shadow: var(--f-shadow) !important; border-color: var(--f-border) !important; }
+.card-body { padding: 20px 22px !important; }
+.card-title { font-size: 1rem !important; font-weight: 650 !important; color: var(--f-text) !important; margin-bottom: 16px !important; letter-spacing: -0.01em !important; }
+.card-header { background: transparent !important; border-bottom: 1px solid var(--f-border) !important; padding: 14px 22px !important; font-weight: 600; }
+
+/* notices / soft banners */
+div.bg-soft-success {
+    background: var(--f-brand-50) !important; color: var(--f-brand-600) !important;
+    border: 1px solid var(--f-border) !important; border-left: 4px solid var(--f-brand) !important;
+    border-radius: 10px !important; box-shadow: none !important; font-weight: 600 !important;
+}
+.bg-soft-info {
+    background: #eef6fb !important; color: #1d4b66 !important;
+    border: 1px solid #d6e8f2; border-radius: 10px !important; padding: 10px 14px !important;
+}
+
+/* 8. TABLES ---------------------------------------------------------------- */
+table.table, table.dataTable, table.dynamic {
+    border-collapse: separate !important; border-spacing: 0 !important;
+    width: 100% !important; margin: .5rem 0 1.25rem 0 !important;
+    background: var(--f-surface) !important;
+    border: 1px solid var(--f-border) !important; border-radius: 10px !important;
+    overflow: visible !important; box-shadow: none !important;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+.table-responsive:has(.dropdown-menu.show),
+.table-responsive:has(.btn-group.show) {
+    overflow: visible !important;
+}
+table.table thead th, table.dataTable thead th, table.dynamic thead th,
+.table.dynamic thead th, .color th {
+    background: #f3f7f7 !important; color: #3d5654 !important;
+    font-size: .72rem !important; font-weight: 700 !important;
+    text-transform: uppercase !important; letter-spacing: .06em !important;
+    padding: 12px 14px !important; vertical-align: middle !important;
+    border: none !important; border-bottom: 1px solid var(--f-border-strong) !important;
+}
+table.table tbody td, table.dataTable tbody td, table.dynamic tbody td {
+    background: var(--f-surface) !important; color: var(--f-text) !important;
+    padding: 0 !important; font-size: .84rem !important; vertical-align: middle !important;
+    border: none !important; border-bottom: 1px solid #edf2f2 !important;
+}
+table.table tbody tr:last-child td, table.dataTable tbody tr:last-child td { border-bottom: none !important; }
+table.table tbody tr:hover td, table.dataTable tbody tr:hover td, table.dynamic tbody tr:hover td {
+    background: var(--f-brand-50) !important; transition: background-color .12s;
+}
+table.table tfoot td, table.dataTable tfoot td, table.dynamic tfoot td {
+    background: #f3f7f7 !important; color: var(--f-text) !important; font-weight: 700 !important;
+    border-top: 1px solid var(--f-border-strong) !important; border-bottom: none !important;
+    padding: 4px 8px !important; font-size: .85rem !important;
+}
+table.table tbody td:not(:has(input)):not(:has(select)):not(:has(textarea)):not(:has(button)):not(.dt-action):not(.dt_sno),
+table.dataTable tbody td:not(:has(input)):not(:has(select)):not(:has(textarea)):not(:has(button)):not(.dt-action):not(.dt_sno) {
+    padding: 6px 10px !important;
+}
+table.dynamic tbody tr td.text { background: var(--f-brand-100) !important; color: var(--f-brand-600) !important; padding: 4px 8px !important; font-weight: 600; }
+table.dynamic tbody tr td.dt_sno { padding: 4px 6px !important; text-align: center; }
+table.dynamic tbody tr td.action, table.dynamic tbody tr td.dt-action { padding: 2px 4px !important; text-align: center; }
+table a { color: var(--f-brand) !important; font-weight: 600 !important; text-decoration: none !important; }
+table a:hover { color: var(--f-brand-600) !important; text-decoration: underline !important; }
+
+/* Bordered tables & Voucher dynamic data tables */
+table.table-bordered,
+table.dynamic,
+.voucher_print table {
+    border-collapse: collapse !important;
+    border: 1px solid var(--f-border-strong) !important;
+}
+table.table-bordered thead th,
+table.table-bordered tbody td,
+table.table-bordered tfoot td,
+table.dynamic thead th,
+table.dynamic tbody td,
+table.dynamic tfoot td,
+.voucher_print table thead th,
+.voucher_print table tbody td,
+.voucher_print table tfoot td {
+    border: 1px solid var(--f-border-strong) !important;
+}
+table.table-bordered thead th,
+table.dynamic thead th,
+.voucher_print table thead th {
+    border-bottom: 2px solid var(--f-border-strong) !important;
+}
+table.table-bordered tfoot td,
+table.dynamic tfoot td,
+.voucher_print table tfoot td {
+    border-top: 2px solid var(--f-border-strong) !important;
+}
+table.table-bordered tbody tr:last-child td,
+table.dynamic tbody tr:last-child td,
+.voucher_print table tbody tr:last-child td {
+    border-bottom: 1px solid var(--f-border-strong) !important;
+}
+table.dynamic tbody td,
+table.table-bordered tbody td {
+    padding: 0 !important;
+}
+.voucher_print table tbody td,
+.voucher_print table tfoot td {
+    padding: 4px 8px !important;
+}
+
+/* in-table inputs */
+.table.dynamic tbody td input,
+.table.dynamic tbody td select,
+.table.dynamic tbody td textarea {
+    width: 100% !important;
+    min-height: 34px !important;
+    height: 34px !important;
+    border: none !important;
+    border-radius: 0 !important;
+    padding: 4px 8px !important;
+    font-size: .83rem !important;
+    color: var(--f-text) !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+.table.dynamic tbody td textarea {
+    min-height: 34px !important;
+    height: auto !important;
+}
+.table.dynamic tbody td input:focus,
+.table.dynamic tbody td select:focus,
+.table.dynamic tbody td textarea:focus {
+    border: none !important;
+    box-shadow: inset 0 0 0 2px var(--f-brand) !important;
+    background: #ffffff !important;
+    outline: none !important;
+}
+
+/* datatables chrome */
+.dataTables_wrapper .dataTables_filter input,
+.dataTables_wrapper .dataTables_length select {
+    border: 1px solid var(--f-border-strong) !important; border-radius: 8px !important;
+    height: 34px; padding: 0 10px; background: #fff;
+}
+.dataTables_wrapper .dataTables_info { color: var(--f-muted); font-size: .8rem; }
+.page-item.active .page-link { background: var(--f-brand) !important; border-color: var(--f-brand) !important; color: #fff !important; }
+.page-link { color: var(--f-brand); border-color: var(--f-border); }
+
+/* 9. FORMS ----------------------------------------------------------------- */
+.form-group label, label { font-weight: 600 !important; font-size: .8rem !important; color: #3d5654 !important; margin-bottom: 6px !important; }
+
+.card select, .card input[type="text"], .card input[type="date"], .card input[type="search"],
+.card input[type="password"], .card input[type="number"], .card input[type="email"], .card textarea,
+.form-control, .select2-container--default .select2-selection--single {
+    background: #fff !important; color: var(--f-text) !important;
+    border: 1px solid var(--f-border-strong) !important; border-radius: var(--f-radius-sm) !important;
+    padding: 6px 12px !important; font-size: .86rem !important; min-height: 38px;
+    box-shadow: none !important; transition: border-color .15s, box-shadow .15s !important;
+}
+.card textarea, textarea.form-control { height: auto !important; }
+.card select, .card input[type="text"], .card input[type="date"], .card input[type="number"], .card input[type="search"],
+.card input[type="password"], .card input[type="email"], .form-control:not(textarea), .select2-container--default .select2-selection--single {
+    height: 38px !important;
+}
+.select2-container--default .select2-selection--single .select2-selection__rendered { line-height: 24px !important; padding-left: 0 !important; color: var(--f-text) !important; }
+.select2-container--default .select2-selection--single .select2-selection__arrow { height: 36px !important; }
+.select2-dropdown { border: 1px solid var(--f-border-strong) !important; border-radius: 10px !important; box-shadow: var(--f-shadow) !important; overflow: hidden; }
+.select2-container--default .select2-results__option--highlighted[aria-selected] { background: var(--f-brand) !important; }
+
+.card select:focus, .card input:focus, .card textarea:focus, .form-control:focus,
+.select2-container--default.select2-container--open .select2-selection--single,
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--f-brand) !important; box-shadow: var(--f-ring) !important; outline: none !important;
+}
+.input-group-prepend span, .input-group-text {
+    background: var(--f-brand-50) !important; border: 1px solid var(--f-border-strong) !important;
+    color: var(--f-brand) !important; border-radius: var(--f-radius-sm) 0 0 var(--f-radius-sm) !important;
+}
+.input-group-text i { color: var(--f-brand) !important; }
+
+/* 10. BUTTONS -------------------------------------------------------------- */
+.btn { border-radius: var(--f-radius-sm) !important; font-weight: 600; font-size: .85rem; transition: background .15s, box-shadow .15s, border-color .15s; }
+
+.btn-primary, .btn-success, .filter-submit-btn, button[type="submit"],
+body[data-layout="detached"] button.color, body[data-layout="detached"] .button.color, body[data-layout="detached"] a.color,
+td > button {
+    background: var(--f-brand) !important; border: 1px solid var(--f-brand) !important;
+    color: #fff !important; border-radius: var(--f-radius-sm) !important;
+    padding: 0 18px !important; min-height: 38px;
+    display: inline-flex !important; align-items: center; justify-content: center;
+    font-size: .85rem !important; font-weight: 600 !important;
+    box-shadow: 0 1px 2px rgba(16, 42, 40, .12) !important; transform: none !important;
+}
+.btn-primary:hover, .btn-success:hover, .filter-submit-btn:hover, button[type="submit"]:hover,
+body[data-layout="detached"] button.color:hover, body[data-layout="detached"] a.color:hover, td > button:hover {
+    background: var(--f-brand-600) !important; border-color: var(--f-brand-600) !important;
+    box-shadow: 0 4px 12px rgba(31, 122, 114, .28) !important; transform: none !important;
+}
+.btn-primary:focus, .btn-success:focus, button[type="submit"]:focus { box-shadow: var(--f-ring) !important; }
+.btn-light, .btn-secondary {
+    background: #fff !important; color: var(--f-text) !important; border: 1px solid var(--f-border-strong) !important;
+}
+.btn-light:hover, .btn-secondary:hover { background: var(--f-brand-50) !important; border-color: var(--f-brand-500) !important; color: var(--f-brand-600) !important; }
+.btn-danger { background: #c2410c !important; border-color: #c2410c !important; color: #fff !important; }
+.btn-danger:hover { background: #9a3412 !important; border-color: #9a3412 !important; }
+.btn-sm { min-height: 30px !important; padding: 0 12px !important; font-size: .78rem !important; }
+
+/* Connected Split Button Group (Print + Arrow) in Reports & Lists */
+.btn-group {
+    display: inline-flex !important;
+    vertical-align: middle !important;
+    position: relative !important;
+    border-radius: var(--f-radius-sm, 8px) !important;
+    box-shadow: 0 1px 2px rgba(16, 42, 40, .12) !important;
+    white-space: nowrap !important;
+}
+
+.btn-group > .btn,
+.btn-group > a.btn,
+.btn-group > button.btn {
+    box-shadow: none !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    transform: none !important;
+}
+
+.btn-group > .btn:first-child,
+.btn-group > a.btn:first-child,
+.btn-group > button.btn:first-child {
+    border-top-left-radius: var(--f-radius-sm, 8px) !important;
+    border-bottom-left-radius: var(--f-radius-sm, 8px) !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+    border-right: none !important;
+    padding: 0 12px !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+}
+
+.btn-group > .dropdown-toggle-split,
+.btn-group > button.dropdown-toggle-split {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+    border-top-right-radius: var(--f-radius-sm, 8px) !important;
+    border-bottom-right-radius: var(--f-radius-sm, 8px) !important;
+    border-left: 1px solid rgba(255, 255, 255, 0.35) !important;
+    padding: 0 8px !important;
+    min-width: 28px !important;
+    width: auto !important;
+    min-height: 30px !important;
+    height: 30px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+.btn-group > .dropdown-toggle-split::after,
+.btn-group > button.dropdown-toggle-split::after {
+    display: none !important;
+}
+
+.btn-group > .btn:hover,
+.btn-group > .btn:focus {
+    z-index: 2 !important;
+    background: var(--f-brand-600) !important;
+}
+
+.btn-group.show,
+tr:has(.btn-group.show) {
+    z-index: 1050 !important;
+    position: relative !important;
+}
+
+/* Report Action Dropdown Menus */
+.report-actions .dropdown-menu,
+.table .dropdown-menu,
+.dropdown-menu-right {
+    right: 0 !important;
+    left: auto !important;
+    top: 100% !important;
+    margin-top: 3px !important;
+    min-width: 155px !important;
+    background: #ffffff !important;
+    border: 1px solid var(--f-border-strong, #cfdcda) !important;
+    border-radius: 10px !important;
+    box-shadow: 0 10px 25px rgba(11, 56, 102, 0.18) !important;
+    padding: 6px 0 !important;
+    z-index: 1060 !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item,
+.table .dropdown-menu .dropdown-item {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 8px 14px !important;
+    font-size: 0.84rem !important;
+    font-weight: 500 !important;
+    color: var(--f-text, #0b2240) !important;
+    background: transparent !important;
+    text-decoration: none !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+    transition: background-color 0.15s ease, color 0.15s ease !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item:hover,
+.report-actions .dropdown-menu .dropdown-item:focus,
+.table .dropdown-menu .dropdown-item:hover,
+.table .dropdown-menu .dropdown-item:focus {
+    background-color: var(--f-brand-50, #f9f4fd) !important;
+    color: var(--f-brand, #0b3866) !important;
+}
+
+.report-actions .dropdown-menu .dropdown-item i,
+.table .dropdown-menu .dropdown-item i {
+    font-size: 1.05rem !important;
+    color: var(--f-brand, #0b3866) !important;
+    margin-right: 4px !important;
+    line-height: 1 !important;
+}
+
+.report-actions .dropdown-menu .dropdown-divider,
+.table .dropdown-menu .dropdown-divider {
+    margin: 4px 0 !important;
+    border-top: 1px solid var(--f-border, #e2eae9) !important;
+    height: 0 !important;
+}
+
+
+/* 11. BADGES --------------------------------------------------------------- */
+.badge { padding: 5px 10px !important; font-size: .7rem !important; font-weight: 650 !important; border-radius: 999px !important; letter-spacing: .02em; }
+.badge-success, .badge-soft-success { background: #e2f5ec !important; color: #176b43 !important; border: 1px solid #bfe6d1 !important; }
+.badge-danger,  .badge-soft-danger  { background: #fdeceb !important; color: #a52a22 !important; border: 1px solid #f5cac6 !important; }
+.badge-warning, .badge-soft-warning { background: #fff5dc !important; color: #8a5a00 !important; border: 1px solid #f1deaa !important; }
+.badge-info,    .badge-soft-info    { background: #e6f1fa !important; color: #1d5a85 !important; border: 1px solid #c7ddef !important; }
+.badge-secondary, .badge-soft-secondary { background: var(--f-brand-100) !important; color: var(--f-brand-600) !important; border: 1px solid #c3e2dd !important; }
+
+span.bg_voucher_status {
+    font-size: .68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
+    background: var(--f-brand-50); color: var(--f-brand-600);
+    border: 1px solid #c3e2dd; border-radius: 999px; padding: 3px 10px; display: inline-block;
+}
+
+/* 12. MISC ----------------------------------------------------------------- */
+.mab { background: var(--f-brand-100) !important; }
+.col.border-right.bg-color.p-2.text-white.d-block { background: var(--f-brand-100) !important; color: var(--f-brand-600) !important; border-radius: 6px; }
+
+.footer {
+    left: var(--f-side-w) !important; background: transparent !important;
+    border-top: 1px solid var(--f-border) !important; color: var(--f-muted) !important;
+}
+body.vertical-collpsed .footer { left: var(--f-side-w-sm) !important; }
+.footer a { color: var(--f-brand) !important; font-weight: 600; }
+
+/* sweetalert / popups pick up the radius */
+.swal2-popup { border-radius: 16px !important; font-family: inherit; }
+.swal2-confirm { background: var(--f-brand) !important; }
+
+/* mobile */
+@media (max-width: 991.98px) {
+    .vertical-menu { position: fixed !important; left: 0; top: 0; }
+    body[data-layout="detached"] .right-panel, .right-panel { width: 100% !important; max-width: 100% !important; padding: 0 14px 60px 14px !important; }
+    .navbar-header > div:first-child { flex-basis: auto !important; width: auto !important; background: transparent; }
+}
+
+/* print: hide chrome */
+@media print {
+    #page-topbar, .vertical-menu, .footer { display: none !important; }
+    .right-panel { width: 100% !important; max-width: 100% !important; padding: 0 !important; }
+    .page-content { padding-top: 0 !important; }
+    body { background: #fff !important; }
+}
+
+/* 13. THEME-CLASS KILLERS ---------------------------------------------------
+   app.css paints purple/navy/golden via  .blue / .gradient-*  body classes
+   (e.g. ".blue .vertical-menu", ".gradient-purple #layout-wrapper::before").
+   These selectors out-rank everything above, so no module can recolour the shell. */
+html body[data-layout][class] #layout-wrapper::before,
+html body[data-layout][class] #layout-wrapper:before {
+    display: none !important; content: none !important; background: none !important; box-shadow: none !important; height: 0 !important;
+}
+html body[data-layout][class] .vertical-menu,
+html body[data-layout][class] > #layout-wrapper > .vertical-menu {
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+}
+html body[data-layout][class] #page-topbar {
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important; background-color: #0b3866 !important;
+}
+html body[data-layout][class] .navbar-header,
+html body[data-layout][class] .navbar-header > div:first-child {
+    background: transparent !important; background-image: none !important;
+}
+html body[data-layout][class] #page-topbar .header-item,
+html body[data-layout][class] #page-topbar .header-chip-btn { color: #ffffff !important; }
+html body[data-layout][class].vertical-collpsed #sidebar-menu > ul > li:hover > a { background-color: rgba(255,255,255,.16) !important; }
+html body[data-layout][class] :focus { outline-color: #b57bee; }
+html body[data-layout][class] a { color: var(--f-brand); }
+html body[data-layout][class] #sidebar-menu a { color: #ffffff !important; }
+html body[data-layout][class] .page-item.active .page-link { background-color: var(--f-brand) !important; }
+html body[data-layout][class] .ui-widget-header,
+html body[data-layout][class] .ui-state-hover,
+html body[data-layout][class] .ui-state-focus { background: var(--f-brand) !important; border-color: var(--f-brand-600) !important; }
+
+/* 14. TOP HEADER — final design ---------------------------------------------
+   Flat brand teal (#b57bee), white type, one continuous bar with the sidebar. */
+html body[data-layout][class] #page-topbar {
+    height: 64px;
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+    border-bottom: 1px solid rgba(255, 255, 255, .22) !important;
+    box-shadow: 0 2px 10px rgba(30, 90, 84, .18) !important;
+}
+html body[data-layout][class] .navbar-header { padding-right: 24px !important; }
+
+/* left zone: brand + toggle, divided from the rest by a soft line */
+html body[data-layout][class] .navbar-header > div:first-child {
+    border-right: 1px solid rgba(255, 255, 255, .22) !important;
+    padding: 0 16px 0 24px !important;
+}
+.finac-brand-text {
+    color: #ffffff !important; font-size: 1.1rem !important; font-weight: 800 !important;
+    letter-spacing: .16em !important; text-shadow: 0 1px 2px rgba(0, 0, 0, .12);
+}
+html body[data-layout][class] #vertical-menu-btn {
+    width: 38px !important; height: 38px !important; border-radius: 10px !important;
+    background: rgba(255, 255, 255, .20) !important; border: 1px solid rgba(255, 255, 255, .38) !important;
+    color: #ffffff !important; box-shadow: none !important;
+}
+html body[data-layout][class] #vertical-menu-btn:hover { background: rgba(255, 255, 255, .34) !important; }
+#vertical-menu-btn i { color: #ffffff !important; }
+
+/* right zone chips */
+html body[data-layout][class] .navbar-header > div:last-child { gap: 12px !important; }
+html body[data-layout][class] .header-chip-btn {
+    height: 40px !important; padding: 0 16px !important; gap: 8px;
+    background: rgba(255, 255, 255, .20) !important; color: #ffffff !important;
+    border: 1px solid rgba(255, 255, 255, .38) !important; border-radius: 999px !important;
+    font-size: .85rem !important; font-weight: 600 !important; box-shadow: none !important;
+}
+html body[data-layout][class] .header-chip-btn i { color: #ffffff !important; margin: 0 !important; font-size: 18px !important; }
+html body[data-layout][class] .header-chip-btn span { margin: 0 !important; color: #ffffff !important; }
+html body[data-layout][class] .header-chip-btn i.mdi-chevron-down { font-size: 16px !important; opacity: .85; }
+html body[data-layout][class] .header-chip-btn:hover,
+html body[data-layout][class] .header-chip-btn:focus,
+html body[data-layout][class] .show > .header-chip-btn {
+    background: rgba(255, 255, 255, .34) !important; border-color: #ffffff !important; color: #ffffff !important;
+}
+
+/* user dropdown */
+.navbar-header .dropdown-menu {
+    margin-top: 10px !important; min-width: 170px; padding: 6px !important;
+    border: 1px solid var(--f-border) !important; border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(20, 48, 45, .18) !important;
+}
+.navbar-header .dropdown-menu .dropdown-item { border-radius: 8px; padding: 9px 12px !important; }
+.navbar-header .dropdown-menu .dropdown-item:hover { background: #fdeceb !important; }
+
+@media (max-width: 991.98px) {
+    html body[data-layout][class] .navbar-header > div:first-child { border-right: none !important; padding-left: 14px !important; }
+    html body[data-layout][class] .header-chip-btn { padding: 0 12px !important; }
+}
+
+/* 15. TOGGLE = hide sidebar completely, page goes full width (desktop) ----- */
+@media (min-width: 992px) {
+    html body[data-layout][class].vertical-collpsed .vertical-menu {
+        display: none !important;
+        flex: 0 0 0 !important; width: 0 !important; min-width: 0 !important; max-width: 0 !important;
+    }
+    html body[data-layout][class].vertical-collpsed .right-panel,
+    html body[data-layout="detached"][class].vertical-collpsed .right-panel {
+        width: 100% !important; max-width: 100% !important;
+    }
+    html body[data-layout][class].vertical-collpsed .footer { left: 0 !important; }
+    /* topbar keeps brand + toggle, just without the sidebar-width zone */
+    html body[data-layout][class].vertical-collpsed .navbar-header > div:first-child {
+        flex: 0 0 auto !important; width: auto !important;
+        padding: 0 16px 0 24px !important; justify-content: flex-start !important; gap: 18px;
+        border-right: none !important;
+    }
+    html body[data-layout][class].vertical-collpsed .finac-brand,
+    html body[data-layout][class].vertical-collpsed .finac-brand-text { display: inline-flex !important; }
+}
+
+/* 16. NO HOVER COLOUR on header / sidebar ---------------------------------- */
+html body[data-layout][class] #vertical-menu-btn:hover,
+html body[data-layout][class] #vertical-menu-btn:focus {
+    background: rgba(255, 255, 255, .20) !important; border-color: rgba(255, 255, 255, .38) !important; color: #fff !important;
+}
+html body[data-layout][class] .header-chip-btn:hover,
+html body[data-layout][class] .header-chip-btn:focus,
+html body[data-layout][class] .show > .header-chip-btn {
+    background: rgba(255, 255, 255, .20) !important; border-color: rgba(255, 255, 255, .38) !important; color: #fff !important;
+}
+html body[data-layout][class] #sidebar-menu ul li a:hover,
+html body[data-layout][class] #sidebar-menu ul li ul.sub-menu li > a:first-child:hover {
+    background: transparent !important; color: #ffffff !important;
+}
+html body[data-layout][class] #sidebar-menu ul li a:hover i { color: #ffffff !important; }
+html body[data-layout][class] #sidebar-menu ul li ul.sub-menu li > a:first-child:hover:before { background: rgba(255, 255, 255, .6) !important; }
+html body[data-layout][class].vertical-collpsed #sidebar-menu > ul > li:hover > a { background-color: transparent !important; }
+/* keep the open/active item marked (that is state, not hover) */
+html body[data-layout][class] #sidebar-menu ul li.mm-active > a,
+html body[data-layout][class] #sidebar-menu ul li a.active { background: rgba(0, 0, 0, .16) !important; }
+
+/* 17. FOOTER ----------------------------------------------------------------
+   In normal flow (no absolute overlap), sits under the page, follows sidebar state. */
+html body[data-layout][class] .footer {
+    position: static !important; left: auto !important; right: auto !important; bottom: auto !important;
+    height: auto !important; margin: 28px 0 0 0 !important; padding: 0 !important;
+    background: transparent !important; border-top: 1px solid var(--f-border) !important;
+    color: var(--f-muted) !important; font-family: inherit !important;
+}
+html body[data-layout][class] .right-panel { padding-bottom: 0 !important; }
+.finac-footer-inner {
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px 20px;
+    padding: 16px 2px 18px 2px; font-size: .8rem; color: var(--f-muted);
+}
+.finac-footer-right { align-items: center; gap: 12px; }
+.finac-footer-right strong { color: var(--f-text); font-weight: 650; }
+.finac-footer-sep { width: 1px; height: 14px; background: var(--f-border-strong); display: inline-block; }
+.finac-footer a { color: var(--f-brand) !important; font-weight: 600; text-decoration: none; }
+.finac-footer a:hover, .footer a:hover { color: var(--f-brand-600) !important; text-decoration: underline; }
+.footer a i { font-size: 1rem; vertical-align: middle; }
+@media (max-width: 575.98px) { .finac-footer-inner { justify-content: center; text-align: center; } }
+
+/* 18. HEADER GRADIENT — #0b3866 = 25%, #b57bee = 75% ----------------------- */
+    :root { --f-head-grad: linear-gradient(135deg, #0b3866 0%, #b57bee 100%); }
+html body[data-layout][class] #page-topbar {
+    background: #0b3866 var(--f-head-grad) !important;
+    background-image: var(--f-head-grad) !important;
+}
+html body[data-layout][class] .vertical-menu,
+html body[data-layout][class] > #layout-wrapper > .vertical-menu {
+    background: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+    background-image: linear-gradient(180deg, #0b3866 0%, #b57bee 100%) !important;
+}

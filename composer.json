@@ -1,0 +1,19 @@
+{
+  "require": {
+    "cadicvnn/shopify-php": "dev-master",
+    "haxx-se/curl": "1.0.0"
+  },
+  "repositories": [
+    {
+      "type": "package",
+      "package": {
+        "name": "haxx-se/curl",
+        "version": "1.0.0",
+        "dist": {
+          "url": "https://curl.haxx.se/ca/cacert.pem",
+          "type": "file"
+        }
+      }
+    }
+  ]
+}
