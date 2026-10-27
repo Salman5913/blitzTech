@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Restaurant Integration Guide</title>
+<style>
+  /* Layout: a single reading column with a sticky table of contents on wide screens.
+     Palette: navy (brand primary) with gold accents, on a warm paper background. */
+  :root {
+    --bg: #faf8f4;
+    --panel: #ffffff;
+    --ink: #1f2430;
+    --muted: #5b6270;
+    --line: #e3e0d8;
+    --navy: #0b3866;
+    --gold: #c9951f;
+    --chip: #eef2f7;
+    --before: #8a4b08;
+    --after: #1d6b3a;
+    color-scheme: light;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 16px/1.6 "Segoe UI", system-ui, -apple-system, Roboto, Arial, sans-serif;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 16px; }
+  .layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 40px; padding-block: 32px 64px; }
+  @media (max-width: 860px) { .layout { grid-template-columns: 1fr; gap: 16px; } .toc { position: static; } }
+  .toc { position: sticky; top: 24px; align-self: start; font-size: 14px; }
+  .toc h4 { margin: 0 0 8px; font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .toc a { display: block; color: var(--navy); text-decoration: none; padding: 4px 0; }
+  .toc a:hover { text-decoration: underline; }
+
+  header.hero { background: var(--navy); color: #fff; padding: 40px 0 32px; }
+  header.hero h1 { margin: 0 0 8px; font-size: 34px; line-height: 1.2; letter-spacing: -.01em; }
+  header.hero p { margin: 0; color: #d7e1ee; max-width: 70ch; }
+  .tag { display: inline-block; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; background: rgba(255,255,255,.14); padding: 3px 10px; border-radius: 999px; margin-bottom: 12px; color: #f5d98c; }
+
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 24px 26px; margin-bottom: 22px; }
+  section h2 { margin: 0 0 10px; font-size: 22px; color: var(--navy); }
+  section h3 { margin: 22px 0 8px; font-size: 17px; color: var(--ink); }
+  p { margin: 0 0 12px; }
+  ul, ol { margin: 0 0 12px; padding-left: 22px; }
+  li { margin-bottom: 6px; }
+  code, .mono { font-family: Consolas, "Courier New", monospace; font-size: 13.5px; background: var(--chip); padding: 1px 6px; border-radius: 6px; }
+  pre { background: #1f2430; color: #f1f3f7; padding: 14px 16px; border-radius: 10px; overflow-x: auto; font-size: 13px; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: inherit; }
+
+  .note { border-left: 4px solid var(--gold); background: #fdf8ec; padding: 12px 14px; border-radius: 8px; margin: 14px 0; }
+  .note b { color: #7a5a0c; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14.5px; margin: 8px 0 4px; }
+  th, td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { background: #f4f6fa; font-weight: 600; color: var(--navy); }
+  .table-scroll { overflow-x: auto; }
+
+  .flow { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 10px; margin: 14px 0 6px; }
+  .flow div { background: var(--chip); border-radius: 10px; padding: 12px; font-size: 14px; }
+  .flow b { display: block; color: var(--navy); margin-bottom: 4px; }
+
+  .compare { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 14px 0; }
+  @media (max-width: 720px) { .compare { grid-template-columns: 1fr; } }
+  .shot { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: #fff; }
+  .shot .label { font-size: 13px; font-weight: 600; padding: 8px 12px; }
+  .shot.before .label { background: #fbeedd; color: var(--before); }
+  .shot.after .label { background: #e3f3ea; color: var(--after); }
+  .shot img { display: block; width: 100%; height: auto; }
+  .caption { font-size: 13px; color: var(--muted); margin-top: 6px; }
+
+  .badge { display: inline-block; font-size: 12px; padding: 2px 8px; border-radius: 999px; background: var(--chip); color: var(--navy); margin-right: 4px; }
+  .small { font-size: 13.5px; color: var(--muted); }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">Integration guide</span>
+    <h1>Restaurant website and ERP integration</h1>
+    <p>What was changed to connect the RestNext website to the ERP (demos3): the hero slider, category bar, deals, menu, orders and delivery areas. Each section lists the files that changed, before and after.</p>
+  </div>
+</header>
+
+<div class="wrap layout">
+  <nav class="toc">
+    <h4>Contents</h4>
+    <a href="#overview">1. Overview</a>
+    <a href="#architecture">2. How it fits together</a>
+    <a href="#before-after">3. Before and after</a>
+    <a href="#hero">4. Hero slider</a>
+    <a href="#categories">5. Category bar</a>
+    <a href="#deals">6. Deals</a>
+    <a href="#menu">7. Menu, sizes and modifiers</a>
+    <a href="#orders">8. Orders and delivery areas</a>
+    <a href="#files">9. Files changed</a>
+    <a href="#running">10. Running and checking</a>
+    <a href="#open">11. Open items</a>
+  </nav>
+
+  <main>
+
+    <section id="overview">
+      <h2>1. Overview</h2>
+      <p>The website used to show sample data: a fixed hero, fixed deals, fixed categories and a fake order tracker. After the integration:</p>
+      <ul>
+        <li>The menu, categories, popular items, deals and hero come from the ERP (the <span class="mono">restaurant/api</span> service reads the ERP database).</li>
+        <li>Orders placed on the website appear in the ERP's Web Orders screen. Completing an order posts a Sales Invoice.</li>
+        <li>Delivery charges depend on the area the customer picks, and each area's charge is set in the ERP.</li>
+        <li>If the ERP API is down, the website falls back to its sample content, so the site still loads.</li>
+      </ul>
+    </section>
+
+    <section id="architecture">
+      <h2>2. How it fits together</h2>
+      <div class="flow">
+        <div><b>ERP (demos3)</b>Stock items, attributes, prices, deals, delivery areas, Web Orders screens. PHP on XAMPP.</div>
+        <div><b>Restaurant API</b><span class="mono">htdocs/restaurant/api/index.php</span>. Reads and writes the <span class="mono">rs_</span> tables in <span class="mono">demofinac</span>.</div>
+        <div><b>RestNext website</b>Next.js. Calls the API on the server (menu, deals, areas) and through a same-origin proxy in the browser.</div>
+      </div>
+      <p class="small">Routes the website uses: <span class="mono">/menu</span>, <span class="mono">/deals</span>, <span class="mono">/areas</span>, <span class="mono">/orders</span>, <span class="mono">/health</span>. The proxy allows only these, so nothing else is exposed.</p>
+    </section>
+
+    <section id="before-after">
+      <h2>3. Before and after</h2>
+      <p>Home page, full length. The "before" image is the sample content the site showed before the ERP was connected. The "after" image is the same page with live ERP data.</p>
+      <div class="compare">
+        <figure class="shot before" style="margin:0">
+          <div class="label">Before: sample data</div>
+          <img src="before-home.png" alt="Home page before integration, showing sample hero, deals and categories">
+        </figure>
+        <figure class="shot after" style="margin:0">
+          <div class="label">After: live ERP data</div>
+          <img src="after-home.png" alt="Home page after integration, with the ERP hero, category bar, deals and menu">
+        </figure>
+      </div>
+      <p class="caption">Screenshots taken with Microsoft Edge (headless) at 1280px wide. The page is shown at full length.</p>
+    </section>
+
+    <section id="hero">
+      <h2>4. Hero slider</h2>
+      <p>The hero slider now shows only the dishes marked in the ERP. Nothing else appears there.</p>
+      <h3>In the ERP</h3>
+      <ul>
+        <li><b>Stock → Item Report → item form → Restaurant Website:</b> new switch <span class="mono">Show on hero slider (homepage banner)</span>. It needs the dish to be on the website menu too.</li>
+        <li>Saved by <span class="mono">saveHeroFromStockForm()</span> in <span class="mono">cls_RestaurantMenu.php</span>, which sets <span class="mono">rs_menu_items.show_in_hero</span>.</li>
+      </ul>
+      <h3>On the API and the website</h3>
+      <ul>
+        <li><span class="mono">GET /menu</span> sends <span class="mono">hero: true/false</span> on each dish.</li>
+        <li>RestNext builds <span class="mono">heroSlides</span> from dishes with <span class="mono">hero</span> set and <span class="mono">available</span> true. Each slide uses the dish name, description and image. Button text: "Order Now".</li>
+        <li>No flagged dish means no hero section. The sample hero is used only when the API is down.</li>
+      </ul>
+      <div class="note"><b>Result:</b> Zinger Burger was flagged, so the hero shows only Zinger Burger. Clearing the flag hides the hero section.</div>
+    </section>
+
+    <section id="categories">
+      <h2>5. Category bar</h2>
+      <p>The categories come from the ERP dish categories. Each category becomes a button in a horizontal bar, and clicking it scrolls to that category's section.</p>
+      <div class="compare">
+        <div>
+          <h3>Before</h3>
+          <ul>
+            <li>Square photo cards with a title under each.</li>
+            <li>The row scrolled horizontally with no visible scrollbar and no arrows, so the last categories could be missed.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>After</h3>
+          <ul>
+            <li>A full-width <span class="badge">bg-primary</span> bar with text links. Names are shown capitalised ("Beef Burger").</li>
+            <li>Links are white by default. On hover, the background turns white and the text turns navy.</li>
+            <li>Left and right arrows on desktop move the bar. On phones, swiping works.</li>
+          </ul>
+        </div>
+      </div>
+      <p class="small">Files: <span class="mono">restnext/components/CategorySlider.tsx</span>, <span class="mono">restnext/lib/data.ts</span> (categories are grouped from <span class="mono">/menu</span> by the dish's category name).</p>
+    </section>
+
+    <section id="deals">
+      <h2>6. Deals</h2>
+      <p>A deal is a fixed price for two or more items from the ERP stock. The website shows the deal and sells it as its items, so stock is still taken per item.</p>
+
+      <h3>In the ERP</h3>
+      <ul>
+        <li><b>Restaurant → Deals tab:</b> create or edit a deal. Enter the name, description, deal price and "Show on website". Pick the items in the Items table by typing the stock item name (autocomplete). Each item needs one attribute at most.</li>
+        <li>The save checks that there are at least 2 different items, and that each item is on the website menu.</li>
+        <li><b>Deals Report:</b> one row per deal with its orders, units sold and revenue. The <span class="badge">eye</span> icon opens the deal view with its items and recent orders.</li>
+        <li>Deal lines on the kitchen screen (Web Orders) show a "Deal" badge.</li>
+      </ul>
+
+      <h3>Tables</h3>
+      <table>
+        <tr><th>Table</th><th>Columns</th><th>Purpose</th></tr>
+        <tr><td><span class="mono">rs_deals</span></td><td>id, name, description, price, show_on_website, is_active</td><td>The deal and its price.</td></tr>
+        <tr><td><span class="mono">rs_deal_items</span></td><td>id, deal_id, stock_id, attribute_id</td><td>The items of each deal. One row per stock item.</td></tr>
+        <tr><td><span class="mono">rs_order_items</span></td><td>+ deal_id</td><td>Marks an order line as part of a deal.</td></tr>
+      </table>
+
+      <h3>On the API</h3>
+      <ul>
+        <li><span class="mono">GET /deals</span> returns active deals with <span class="mono">show_on_website</span>. A deal appears only if every item has a website dish that can be sold now. It also returns the normal price and the saving.</li>
+        <li><span class="mono">POST /orders</span> accepts <span class="mono">{ deal_id, qty }</span>. The deal is expanded into one line per item. The deal price is split across the lines in proportion to each item's normal price, and the last line takes any rounding cent, so the lines add up to the deal price exactly.</li>
+      </ul>
+
+      <h3>On the website</h3>
+      <ul>
+        <li>The Hot Deals section lists the deals from <span class="mono">/deals</span>. Each card shows the items and the saving.</li>
+        <li>Deals get their own cart ID range, so a deal never clashes with a dish in the cart.</li>
+        <li>The checkout sends a deal as <span class="mono">deal_id</span>. The server computes the price.</li>
+      </ul>
+
+      <div class="note"><b>Example that was tested:</b> a deal of Zinger Burger (390) and White Chicken Biryani Medium (350) for 900. The website shows a normal price of 740 and a deal price of 900. The lines came out as 474.32 + 425.68 = 900.00.</div>
+    </section>
+
+    <section id="menu">
+      <h2>7. Menu, sizes and modifiers</h2>
+      <h3>Dishes and images</h3>
+      <ul>
+        <li>Every dish in the ERP website menu is shown, grouped by its category. Hidden or sold-out dishes are not sold.</li>
+        <li>Image paths saved in the ERP (for example <span class="mono">/demos3/assets/images/...</span>) are sent to the website as full URLs, so the website can load them.</li>
+      </ul>
+      <h3>Sizes from stock attributes</h3>
+      <ul>
+        <li>One stock item can have attributes (for example Single, Medium and Full). The website shows one card for the stock item, with the lowest price as "From".</li>
+        <li>The product modal lists each attribute with its own price. The chosen attribute is the dish that is ordered, so stock follows the attribute.</li>
+      </ul>
+      <h3>Modifiers</h3>
+      <ul>
+        <li>Modifier groups and options (for example Extras: Cheese +50) are stored in <span class="mono">rs_modifier_groups</span> and <span class="mono">rs_modifier_options</span>.</li>
+        <li>A group marked as a size replaces the dish price. The other groups add to it. The server checks the required groups and computes the price.</li>
+      </ul>
+      <div class="note"><b>Note:</b> the ERP has no modifier editor screen yet. Modifier groups are currently added in the database.</div>
+    </section>
+
+    <section id="orders">
+      <h2>8. Orders and delivery areas</h2>
+      <h3>Web Orders screen</h3>
+      <ul>
+        <li>Filter chips show counts for Active, Received, Preparing, On the way, Completed, Cancelled and All. A second row filters by Delivery or Pickup.</li>
+        <li>A search box filters by order code, customer name, phone or area. Auto-refresh stops while searching.</li>
+        <li>Every order that is not invoiced can be cancelled. An invoiced order shows "Invoiced" instead, because it has to be reversed with a Sales Return in the ERP.</li>
+        <li>Each card shows the customer and address with the delivery area, the items with modifiers and deal badges, the total, and the invoice status.</li>
+      </ul>
+      <h3>Delivery areas</h3>
+      <ul>
+        <li><b>Restaurant → Delivery Areas:</b> add an area with its delivery charge and an optional "free over" amount. Leave "free over" empty if that area is never free.</li>
+        <li>On the website, delivery orders need an area. The area dropdown shows each area's charge. The server applies the charge, so the browser's figure is never trusted.</li>
+        <li>The old global charge (150, free over 3000) is no longer used.</li>
+      </ul>
+      <table>
+        <tr><th>Test</th><th>Result</th></tr>
+        <tr><td>Gulberg (150, free over 3000), Zinger 390</td><td>Delivery 150, total 540</td></tr>
+        <tr><td>DHA (250, never free), Medium 350</td><td>Delivery 250, total 600</td></tr>
+        <tr><td>Gulberg, Wagyu 4800</td><td>Free delivery, total 4800</td></tr>
+        <tr><td>Delivery without an area</td><td>Refused: "Please choose your delivery area"</td></tr>
+      </table>
+    </section>
+
+    <section id="files">
+      <h2>9. Files changed</h2>
+      <h3>Restaurant API (<span class="mono">htdocs/restaurant</span>)</h3>
+      <table>
+        <tr><th>File</th><th>What changed</th></tr>
+        <tr><td><span class="mono">database/schema.sql</span></td><td>Tables for modifiers, deals and delivery areas; new columns <span class="mono">show_in_hero</span>, <span class="mono">deal_id</span>, <span class="mono">delivery_area</span>, <span class="mono">replaces_price</span>.</td></tr>
+        <tr><td><span class="mono">api/index.php</span></td><td>Routes <span class="mono">/menu</span> (hero, stock grouping, modifiers, image URLs), <span class="mono">/deals</span>, <span class="mono">/areas</span>; <span class="mono">POST /orders</span> handles modifiers, deals and areas.</td></tr>
+        <tr><td><span class="mono">api/config.php</span></td><td><span class="mono">public_url</span> for ERP image paths.</td></tr>
+      </table>
+
+      <h3>ERP (<span class="mono">demos3</span>)</h3>
+      <table>
+        <tr><th>File</th><th>What changed</th></tr>
+        <tr><td><span class="mono">stock/stock_management.php</span>, <span class="mono">stock/op_save_stock.php</span></td><td>"Show on hero slider" switch, saved with the item.</td></tr>
+        <tr><td><span class="mono">includes/restaurant/cls_RestaurantMenu.php</span></td><td>Hero flag save.</td></tr>
+        <tr><td><span class="mono">includes/restaurant/cls_RestaurantDeal.php</span> (new)</td><td>Deal save with validation, deal lists, the deal view and the report data.</td></tr>
+        <tr><td><span class="mono">includes/restaurant/cls_RestaurantDeliveryArea.php</span> (new)</td><td>Delivery area save and list.</td></tr>
+        <tr><td><span class="mono">includes/restaurant/cls_RestaurantOrder.php</span></td><td>Order filters with type, status counts, cancel and modifier display.</td></tr>
+        <tr><td><span class="mono">restaurant/deals.php</span>, <span class="mono">op_save_deal.php</span> (new)</td><td>Deals tab: form, items table and deal list.</td></tr>
+        <tr><td><span class="mono">restaurant/deals_report.php</span>, <span class="mono">deal_view.php</span> (new)</td><td>Deals Report with the eye icon, and the deal detail page.</td></tr>
+        <tr><td><span class="mono">restaurant/delivery_areas.php</span>, <span class="mono">op_save_delivery_area.php</span> (new)</td><td>Delivery Areas tab.</td></tr>
+        <tr><td><span class="mono">restaurant/manage_web_orders.php</span></td><td>New filters, search, order card design and the cancel button.</td></tr>
+        <tr><td><span class="mono">restaurant/_tabs.php</span>, <span class="mono">manage_menu.php</span></td><td>Tab bar: Web Orders, Website Menu, Deals, Deals Report, Delivery Areas.</td></tr>
+        <tr><td><span class="mono">includes/inc_header.php</span></td><td>Sidebar links: Deals, Deals Report, Delivery Areas.</td></tr>
+      </table>
+
+      <h3>Website (<span class="mono">htdocs/restnext</span>)</h3>
+      <table>
+        <tr><th>File</th><th>What changed</th></tr>
+        <tr><td><span class="mono">lib/data.ts</span></td><td>Builds the page from <span class="mono">/menu</span> and <span class="mono">/deals</span>: hero, categories, popular, deals, variants. Falls back to sample data.</td></tr>
+        <tr><td><span class="mono">lib/fetcher.ts</span></td><td>Server call to the API with the key, and the browser call through the proxy.</td></tr>
+        <tr><td><span class="mono">lib/library.ts</span>, <span class="mono">lib/types.ts</span></td><td>Cart, checkout with area and deal lines, order tracking with real statuses.</td></tr>
+        <tr><td><span class="mono">app/api/[...path]/route.ts</span> (new)</td><td>Proxy that allows only <span class="mono">menu, deals, areas, orders, health</span>.</td></tr>
+        <tr><td><span class="mono">components/CategorySlider.tsx</span></td><td>Category bar redesigned.</td></tr>
+        <tr><td><span class="mono">components/ProductCard.tsx</span>, <span class="mono">ProductModal.tsx</span></td><td>"From" price, size picker, sold-out state.</td></tr>
+        <tr><td><span class="mono">components/CheckoutForm.tsx</span>, <span class="mono">OrderTracker.tsx</span>, <span class="mono">CartDrawer.tsx</span></td><td>Area dropdown and charge, pickup or delivery, live tracking, larger close button.</td></tr>
+        <tr><td><span class="mono">.env.local</span> (new), <span class="mono">next.config.mjs</span></td><td>API address and key (server only); image host for ERP photos.</td></tr>
+      </table>
+    </section>
+
+    <section id="running">
+      <h2>10. Running and checking</h2>
+      <h3>Start the services</h3>
+      <ol>
+        <li>Start Apache and MySQL in XAMPP.</li>
+        <li>Check the API: <span class="mono">http://localhost/restaurant/api/index.php?route=/health</span></li>
+        <li>In <span class="mono">htdocs/restnext</span>, run <span class="mono">npm run build</span> and then <span class="mono">npm start</span>, or <span class="mono">npm run dev</span> while developing.</li>
+        <li>Open <span class="mono">http://localhost:3000</span>.</li>
+      </ol>
+      <h3>What was checked</h3>
+      <ul>
+        <li>API: menu with hero, stock grouping and modifiers; deals with split prices; delivery fees for each area case; refusal of wrong input.</li>
+        <li>Website: TypeScript check and production build pass; hero, categories and deals render from the ERP data (screenshots above).</li>
+        <li>ERP: PHP syntax checks on every changed file; model tests for save, validation and reports.</li>
+      </ul>
+      <div class="note"><b>Not yet checked in a browser:</b> ERP screens that need a login (Deals form, Delivery Areas, the Web Orders filters and cancel). Please test those once with your login.</div>
+    </section>
+
+    <section id="open">
+      <h2>11. Open items</h2>
+      <ul>
+        <li>An ERP screen for modifier groups (currently added in the database).</li>
+        <li>Cancelling an invoiced order through a Sales Return (currently refused, with a note).</li>
+        <li>The Single size for the stock item is a separate attribute in the ERP. It needs stock if stock is tracked for that item.</li>
+        <li>The old deal "Burger Sand" uses stock ids that are not stock items (they were menu ids). It is inactive, but it can be deleted.</li>
+        <li>Site-wide: keep the production key (<span class="mono">RESTAURANT_API_KEY</span>) out of the browser. It is set only in <span class="mono">.env.local</span>.</li>
+      </ul>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
