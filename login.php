@@ -15,8 +15,8 @@ $oYear = new Year();
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/blitztech2.png">
 
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- App font: Plus Jakarta Sans -->
+    <link href="assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
 
     <!-- Bootstrap Css -->
     <link href="assets/css/bootstrap.css" id="bootstrap-style" rel="stylesheet" type="text/css" />
@@ -27,7 +27,7 @@ $oYear = new Year();
 
     <style>
         * {
-            font-family: 'Outfit', sans-serif !important;
+            font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
             box-sizing: border-box;
         }
 

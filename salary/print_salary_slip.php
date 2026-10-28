@@ -19,6 +19,7 @@ $EmpLoans = $oLoan->getAllEmpLoans($SalaryId, false, '', DateEncode($RowSalary['
 	<script src="../js_live/jquery.min.js"></script>
 	<link rel="stylesheet" href="<?=ProjectHelper::SiteURL()?>css/print.css" type="text/css">
 	<link rel="stylesheet" href="<?=ProjectHelper::SiteURL()?>css/bootstrap.min.css" type="text/css">
+    <link href="<?=ProjectHelper::SiteURL()?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
 </head>
 <body id="salary_slip">
 <?

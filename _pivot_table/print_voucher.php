@@ -38,6 +38,7 @@ $SiteURL = ProjectHelper::SiteURL();
     <script src="<?=$SiteURL?>assets/js/jquery.table2excel.min.js"></script>
     <script src="<?=$SiteURL?>assets/libs/apexcharts/apexcharts.min.js"></script>
     <link rel="stylesheet" href="<?=$SiteURL?>assets/libs/apexcharts/apexcharts.css" type="text/css">
+    <link href="<?=$SiteURL?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
 </head>
 <body class="report customized-report container-fluid">
     <div class="row">

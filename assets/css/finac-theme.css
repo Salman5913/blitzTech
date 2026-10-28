@@ -49,7 +49,7 @@
 
 /* 2. BASE ------------------------------------------------------------------ */
 html, body {
-    font-family: 'Inter', 'Segoe UI', system-ui, Arial, sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Segoe UI', system-ui, Arial, sans-serif;
 }
 body {
     background: var(--f-bg) !important;

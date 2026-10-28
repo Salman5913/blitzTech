@@ -6,6 +6,17 @@ $oBranch = new Branch();
 
 if ($oPurchase->isValidFormSubmission())
 {
+    /* ******* Stock already used in other vouchers, only rate can be changed ******* */
+    $UsedStockErrors = $oPurchase->validateUsedStockBeforeSave();
+    if (!empty($UsedStockErrors))
+    {
+        foreach ($UsedStockErrors as $Error)
+            ErrorHandler::setError($Error);
+
+        Utils::redirect(VoucherType::getLink($_POST['voucher_type_id'], $_POST['voucher_id']));
+    }
+    /* ******* Stock already used in other vouchers, only rate can be changed ******* */
+
     $oPurchase->initForSave();
 
     $DateTime = DateEncode($_POST['voucher_date']);

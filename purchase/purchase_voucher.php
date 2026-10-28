@@ -50,6 +50,10 @@ $SupplierAccountId = isset($_GET['supplier_id']) ? $_GET['supplier_id'] : $RowDe
 
 $oChartOfAccount = new ChartOfAccount();
 
+/* ******* Rows whose stock is already used in other vouchers, only rate can be changed ******* */
+$UsedStockRows = ($isEdit && !$oPurchase->isCopy()) ? $oPurchase->getUsedStockRows($oPurchase->getVoucherId()) : [];
+$hasUsedStock = !empty($UsedStockRows);
+
 include_once("../includes/inc_header.php");
 ?>
 <script type="text/javascript" src="../js_live/purchase/purchase.min.js"></script>
@@ -139,6 +143,16 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
 ?>
 <form method="post" action="op_save_purchase.php" <? Utils::formValidate(); ?>>
     <? $oPurchase->showVoucherDeleteNotification() ?>
+    <? if ($hasUsedStock) { ?>
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="card ">
+                    <h3 class=" text-warning"><i class="mdi mdi-lock-outline"></i> Stock Already Used</h3>
+                    <p class="mb-0 text-warning">Some items of this voucher are already used in other vouchers (sales, returns, transfers etc.). For highlighted items only <b>Rate / Disc. %</b> can be changed. Qty, Item, Warehouse are locked and voucher can't be deleted.</p>
+                </div>
+            </div>
+        </div>
+    <? } ?>
     <div class="row">
         <div class="col-lg-9">
             <div class="card <?=$VoucherTypeId == VoucherType::OPS ? 'hidden' : ''?>">
@@ -206,7 +220,7 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
                         <? if ($isPurchaseVoucher or $isOpeningVoucher or $isReturnVoucher) { ?>
                             <div class="form-group">
                                 <label for="branch_id">Warehouse</label>
-                                <input type="text" name="branch_id" id="branch_id" data-js="branch_id" <? Autocomplete::Search(Autocomplete::TYPE_BRANCH, $RowDetails['branch_id']); ?> <? Utils::isRequired() ?>>
+                                <input type="text" name="branch_id" id="branch_id" data-js="branch_id" <? Autocomplete::Search(Autocomplete::TYPE_BRANCH, $RowDetails['branch_id']); ?> <? Utils::isRequired() ?> <?=$hasUsedStock ? 'readonly class="used-stock-locked" title="Stock already used, warehouse is locked"' : ''?>>
                             </div>
                             <div class="form-group">
                                 <label for="invoice_type">Invoice Type</label>
@@ -232,6 +246,7 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
                     </div>
                 </div>
 
+                <div class="purchase-items-wrap">
                 <table class="table color dynamic stock table-bordered">
                     <thead>
                     <tr>
@@ -258,12 +273,15 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
                     </tr>
                     </tfoot>
                     <tbody>
-                    <? $i=0; while ($RowData = DBQM::fetch_assoc($SelectData) or $i < $DataRows) { ?>
-                        <tr>
-                            <td><label><input type="text" name="stock_id[]" data-label="Stock" <? Autocomplete::ACSearchStockRow($RowData['stock_id'], $RowData['attribute_id'], '[name="branch_id"]', '[data-js="qty-available"]', '[data-js="stock_qty_return"]', '', $isReturnVoucher); ?> /></label></td>
+                    <? $i=0; while ($RowData = DBQM::fetch_assoc($SelectData) or $i < $DataRows) {
+                        $isUsedRow = !empty($RowData['id']) && isset($UsedStockRows[$RowData['id']]);
+                        $LockedAttr = $isUsedRow ? ' readonly data-used-locked="Y" ' : '';
+                    ?>
+                        <tr <?=$isUsedRow ? 'data-used-locked-row="Y" data-used-qty="'.round($UsedStockRows[$RowData['id']]['used_qty'], 4).'"' : ''?>>
+                            <td><label><input type="text" name="stock_id[]" data-label="Stock" <?=$LockedAttr?> <? Autocomplete::ACSearchStockRow($RowData['stock_id'], $RowData['attribute_id'], '[name="branch_id"]', '[data-js="qty-available"]', '[data-js="stock_qty_return"]', '', $isReturnVoucher); ?> /></label></td>
                             <td><label><textarea id="item_detail" name="item_detail[]" data-js="item_detail"><?=$RowData['item_description']?></textarea></label></td>
                             <td data-js="qty-available" class="text text-center"> </td>
-                            <td class="text-center <?=$isReturnVoucher ? 'hidden' : '' ?>"><label><input type="text" name="qty[]" size="4" data-js="stock_qty" data-type="float" value="<?=$RowData['qty']?>" /></label></td>
+                            <td class="text-center <?=$isReturnVoucher ? 'hidden' : '' ?>"><label><input type="text" name="qty[]" size="4" data-js="stock_qty" data-type="float" value="<?=$RowData['qty']?>" <?=$LockedAttr?> /></label></td>
                             <td class="text-center <?=!$isReturnVoucher || $VoucherTypeId == VoucherType::OPS ? 'hidden' : '' ?>"><label><input type="text" name="qty_return[]" size="4" data-js="stock_qty_return" data-type="float" value="<?=$RowData['qty_return']?>" /></label></td>
                             <td class="text-right"><label><input type="text" name="rate[]" size="6" data-js="stock_rate" data-type="float" value="<?=$RowData['rate']?>" /></label></td>
                             <td class="text-right"><label><input type="text" name="discount_percentage[]" data-js="stock_disc_percent" size="6" data-type="float" value="<?=$RowData['item_dis']?>" /></label></td>
@@ -272,6 +290,7 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
                         <? $i++; } ?>
                     </tbody>
                 </table>
+                </div>
             </div>
         </div>
     </div>
@@ -381,4 +400,74 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
     <input type="hidden" id="calc_gst" name="calc_gst" value="">
     <? $oPurchase->showVoucherButtons() ?>
 </form>
+<style>
+    /* ************ Mobile responsive ************ */
+    .purchase-items-wrap { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    @media (max-width: 991.98px) {
+        .purchase-items-wrap > table.dynamic { min-width: 900px; }
+        .purchase-items-wrap > table.dynamic textarea { min-width: 150px; }
+    }
+    @media (max-width: 575.98px) {
+        .voucher-buttons > div { flex: 0 0 100%; max-width: 100%; margin-left: 0 !important; margin-right: 0 !important; }
+        .voucher-buttons #btn_delete { width: 100%; margin: 0 0 10px 0; }
+        .voucher-buttons .btn-group { display: flex; width: 100%; }
+        .voucher-buttons .btn-group > .btn:first-child { flex: 1 1 auto; }
+        .card-title { font-size: 1rem; }
+    }
+
+    /* ************ Stock already used, locked fields ************ */
+    tr[data-used-locked-row="Y"] { background: rgba(255, 193, 7, .12); }
+    tr[data-used-locked-row="Y"] .dt-del { display: none !important; }
+    input.used-stock-locked, input[data-used-locked="Y"] { background-color: #eef0f3 !important; cursor: not-allowed; }
+    .used-qty-note { display: block; font-size: 11px; white-space: nowrap; }
+</style>
+<? if ($hasUsedStock) { ?>
+<script>
+    $(function () {
+        var _stock_table = $("table.dynamic.stock");
+
+        function applyUsedStockLock()
+        {
+            // new rows are cloned from first row, remove lock from them
+            _stock_table.find('tbody tr:not([data-used-locked-row="Y"])').find('[data-used-locked="Y"]').prop("readonly", false).removeAttr("data-used-locked readonly");
+            _stock_table.find('tbody tr:not([data-used-locked-row="Y"]) .used-qty-note').remove();
+
+            _stock_table.find('tbody tr[data-used-locked-row="Y"]').each(function () {
+                var _tr = $(this);
+                var _stock = _tr.find('[data-type="search_stock_row"]');
+
+                _tr.find('[data-used-locked="Y"]').prop("readonly", true).attr("title", "Stock already used in other vouchers, only rate can be changed");
+
+                if (_stock.data("ui-autocomplete"))
+                    _stock.autocomplete("disable");
+
+                if (!_tr.find(".used-qty-note").length)
+                    _tr.find('[data-js="stock_qty"]').after('<small class="used-qty-note text-danger"><i class="mdi mdi-lock-outline"></i> Used: ' + _tr.attr("data-used-qty") + '</small>');
+            });
+        }
+
+        function disableBranchAutocomplete()
+        {
+            $('input[name="branch_id"].used-stock-locked').each(function () {
+                if ($(this).data("ui-autocomplete"))
+                    $(this).autocomplete("disable");
+            });
+        }
+
+        applyUsedStockLock();
+        disableBranchAutocomplete();
+        _stock_table.on("rowUpdated", applyUsedStockLock);
+
+        // autocomplete plugins may initialize after this script
+        $(window).on("load", function () {
+            applyUsedStockLock();
+            disableBranchAutocomplete();
+        });
+
+        // voucher can't be deleted / drafted when stock is used
+        $("#btn_delete").remove();
+        $('button[name="btn_draft"]').remove();
+    });
+</script>
+<? } ?>
 <? include_once("../includes/inc_footer.php"); ?>

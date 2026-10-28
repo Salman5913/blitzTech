@@ -38,7 +38,7 @@ $oHeaderBranch = new Branch();
     .vertical-menu,
     #side-menu,
     .navbar-brand-box {
-        font-family: 'Inter', 'Segoe UI', Arial, sans-serif !important;
+        font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif !important;
     }
 
     body[data-layout="detached"] #layout-wrapper::before {
@@ -581,7 +581,6 @@ $oHeaderBranch = new Branch();
 
     <!-- App favicon -->
     <link rel="shortcut icon" type="image/png" href="<?=$SiteURL?>assets/images/blitztech2.png">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <!-- jquery.vectormap css -->
     <link href="<?=$SiteURL?>assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css" rel="stylesheet" type="text/css" />
 
@@ -598,6 +597,8 @@ $oHeaderBranch = new Branch();
     <link href="<?=$SiteURL?>assets/css/custom.css?v=4" rel="stylesheet" type="text/css" />
     <!-- FINAC redesign (loads last) -->
     <link href="<?=$SiteURL?>assets/css/finac-theme.css?v=12" rel="stylesheet" type="text/css" />
+    <!-- Global app font: Plus Jakarta Sans (loads last) -->
+    <link href="<?=$SiteURL?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
     <link href="<?=$SiteURL?>assets/css/header-v2.css?v=1" rel="stylesheet" type="text/css" />
     <!-- Sweet Alert -->
     <link href="<?=$SiteURL?>assets/libs/sweetalert2/src/sweetalert2.scss" rel="stylesheet" type="text/css" />

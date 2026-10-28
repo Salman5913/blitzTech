@@ -109,20 +109,7 @@ include_once("../includes/inc_header.php");
                             <small class="form-text text-muted">The dish must also be on the website menu.</small>
                         </div>
                     </div>
-                    <div class="col-12">
-                        <div class="form-group">
-                            <label for="website_category">Website Category</label>
-                            <input type="text" name="website_category" id="website_category" list="website_categories" value="<?=htmlspecialchars($RowWebsite['category'] ?? '')?>" placeholder="Burgers, Drinks... (empty = stock category)">
-                            <datalist id="website_categories">
-                                <? foreach (RestaurantMenu::getWebsiteCategories() as $WebsiteCategory) { ?>
-                                    <option value="<?=htmlspecialchars($WebsiteCategory)?>">
-                                <? } ?>
-                            </datalist>
-                            <? if ($RowWebsite) { ?>
-                                <small><a href="../restaurant/manage_menu.php?id=<?=$RowWebsite['id']?>">Photo, description &amp; more on Website Menu</a></small>
-                            <? } ?>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>

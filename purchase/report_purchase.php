@@ -222,7 +222,7 @@ $mean = $num_rows > 0 ? $Total / $num_rows : 0;
     </div>
     <!-- Premium Dynamic Purchase Analytics Dashboard -->
     <?php if ($num_rows > 0): ?>
-    <div class="row mb-4" style="font-family: 'Outfit', sans-serif;">
+    <div class="row mb-4" style="font-family: 'Plus Jakarta Sans', sans-serif;">
         <!-- Card 1: Net Purchase -->
         <div class="col-md-4">
             <div class="card sales-metric-card">

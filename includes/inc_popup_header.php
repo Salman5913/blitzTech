@@ -18,5 +18,6 @@ $SiteURL = ProjectHelper::SiteURL();
     <link rel="stylesheet" href="<?=$SiteURL?>assets/css/print.css" type="text/css">
     <script src="<?=$SiteURL?>assets/libs/jquery/jquery.min.js"></script>
     <link rel="stylesheet" href="<?=$SiteURL?>assets/css/icons.css">
+    <link href="<?=$SiteURL?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
 </head>
 <body class="popup_window report container">

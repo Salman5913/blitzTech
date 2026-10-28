@@ -88,7 +88,7 @@ function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'
                             <input type="text" name="image" id="image" value="<?=h($RowDetails['image'] ?? '')?>" placeholder="https://... (optional)">
                         </div>
                     </div>
-                    <div class="col-xl-3">
+                    <div class="col-xl-3 hidden">
                         <div class="form-group">
                             <label for="emoji">Emoji</label>
                             <input type="text" name="emoji" id="emoji" value="<?=h($RowDetails['emoji'] ?? '')?>" placeholder="🍔">
@@ -200,7 +200,7 @@ function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'
                     <thead>
                         <tr>
                             <th>Dish</th>
-                            <th>Stock Item</th>
+                            <th class="hidden">Stock Item</th>
                             <th class="text-right">Price</th>
                             <th class="text-right">Stock (<?=h(Branch::getName(RestaurantMenu::getWebsiteBranchId()))?>)</th>
                             <th>Status</th>
@@ -218,7 +218,7 @@ function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'
                             $ShownCount = count(array_filter($CategoryItems, fn($Item) => $Item['is_visible']));
                         ?>
                             <tr class="bg-light">
-                                <td colspan="5" class="font-weight-bold">
+                                <td colspan="4" class="font-weight-bold">
                                     <?=h($Category)?>
                                     <small class="text-muted ml-2"><?=$ShownCount?> of <?=count($CategoryItems)?> shown</small>
                                     <? if (!$ShownCount) { ?><span class="badge badge-soft-secondary ml-1">Category hidden</span><? } ?>
@@ -245,7 +245,7 @@ function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'
                             <tr <?=$Row['is_visible'] ? '' : 'class="text-muted"'?>>
                                 <td><?=h($Row['emoji'])?> <?=h($Row['name'])?> <? if ($Row['tag']) { ?><span class="badge badge-soft-primary"><?=h($Row['tag'])?></span><? } ?></td>
 
-                                <td>
+                                <td class="hidden">
                                     <? if (!$isLinked) { ?>
                                         <span class="text-muted">—</span>
                                     <? } elseif (!$Row['stock_exists']) { ?>

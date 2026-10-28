@@ -232,6 +232,112 @@ class Purchase extends BasicVoucher
             $oSMSTemplates->UserPurchaseRecorded($RowDetails['supplier_account_id'], $RowDetails['voucher_number'], $ItemCount, ($TotalPaymentToSupplier + $RowDetails['gst_calc_value']), $this->isEdit());
     }
 
+    /**
+     * Purchase rows whose stock batch has already been consumed by other vouchers (sales, returns, transfers etc.).
+     * For such rows only rate / discount can be changed, qty / item / warehouse are locked.
+     *
+     * @param $PurchaseId
+     * @return array pr_purchase_data.id => row (stock_id, attribute_id, qty, used_qty)
+     */
+    function getUsedStockRows($PurchaseId)
+    {
+        if (empty($PurchaseId))
+            return [];
+
+        $Select = DBQM::query("
+            SELECT
+                pd.id,
+                pd.stock_id,
+                pd.attribute_id,
+                pd.qty,
+                SUM(IF(l.qty < 0, -l.qty, 0)) AS used_qty
+            FROM
+                pr_purchase p,
+                pr_purchase_data pd,
+                st_stock_ledger l
+            WHERE
+                pd.purchase_id = p.id AND
+                l.batch_id = pd.batch_id AND
+                l.distinct_id <> p.distinct_id AND
+                pd.batch_id > 0 AND
+                p.id = ".escape($PurchaseId, 'int')."
+            GROUP BY
+                pd.id
+        ");
+
+        $Rows = [];
+        while ($Row = DBQM::fetch_assoc($Select))
+            $Rows[$Row['id']] = $Row;
+
+        return $Rows;
+    }
+
+    private static function getStockKey($StockId, $AttributeId)
+    {
+        return (int) $StockId."::".(int) $AttributeId;
+    }
+
+    /**
+     * Must be called before initForSave(), as initForSave() removes stock ledger entries of the voucher.
+     * Returns list of errors, empty if voucher can be saved.
+     *
+     * @return array
+     */
+    function validateUsedStockBeforeSave()
+    {
+        $PurchaseId = $_POST['voucher_id'];
+        $UsedRows = $this->getUsedStockRows($PurchaseId);
+
+        if (empty($UsedRows))
+            return [];
+
+        if (isset($_POST['btn_delete']))
+            return ["This voucher can't be deleted, its stock is already used in other vouchers."];
+
+        if (isset($_POST['btn_draft']))
+            return ["This voucher can't be saved as draft, its stock is already used in other vouchers."];
+
+        $Errors = [];
+
+        $RowDetails = DBQM::fetch_assoc(DBQM::query("SELECT branch_id FROM pr_purchase WHERE id = ".escape($PurchaseId, 'int')));
+        if ((int) $_POST['branch_id'] != (int) $RowDetails['branch_id'])
+            $Errors[] = "Warehouse can't be changed, stock of this voucher is already used in other vouchers.";
+
+        /* ************ Qty must remain same for used items ************ */
+        $OldQty = $NewQty = [];
+
+        $Select = DBQM::query("SELECT stock_id, attribute_id, SUM(qty) AS qty FROM pr_purchase_data WHERE purchase_id = ".escape($PurchaseId, 'int')." GROUP BY stock_id, attribute_id");
+        while ($Row = DBQM::fetch_assoc($Select))
+            $OldQty[self::getStockKey($Row['stock_id'], $Row['attribute_id'])] = (float) $Row['qty'];
+
+        $CountDataRows = count((array) $_POST['stock_id']);
+        for ($i=0; $i<$CountDataRows; $i++)
+        {
+            if (empty($_POST['stock_id'][$i]))
+                continue;
+
+            list($StockId, $AttributeId) = Stock::splitStockIdAttributeId($_POST['stock_id'][$i]);
+            $Key = self::getStockKey($StockId, $AttributeId);
+            $NewQty[$Key] = ($NewQty[$Key] ?? 0) + (float) $_POST['qty'][$i];
+        }
+
+        $Checked = [];
+        foreach ($UsedRows as $Row)
+        {
+            $Key = self::getStockKey($Row['stock_id'], $Row['attribute_id']);
+
+            if (isset($Checked[$Key]))
+                continue;
+            $Checked[$Key] = true;
+
+            if (round($OldQty[$Key] ?? 0, 4) != round($NewQty[$Key] ?? 0, 4))
+                $Errors[] = "Qty of ".Stock::getName($Row['stock_id'], $Row['attribute_id'])." can't be changed or removed (".round($Row['used_qty'], 4)." already used in other vouchers). Only rate can be changed.";
+        }
+        /* ************ Qty must remain same for used items ************ */
+
+        return $Errors;
+    }
+
     function updateDiscountedRate($PurchaseDataId, $DiscountedRate)
     {
         DBQM::query("UPDATE pr_purchase_data SET discounted_rate = ".escape($DiscountedRate, 'double')." WHERE id = ".escape($PurchaseDataId));

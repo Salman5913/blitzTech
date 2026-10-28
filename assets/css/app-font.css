@@ -1,0 +1,68 @@
+/* ==========================================================================
+   Plus Jakarta Sans - global software font (self hosted, variable weight 200-800)
+   Source: @fontsource-variable/plus-jakarta-sans 5.2.8 (SIL Open Font License, see fonts/plus-jakarta-sans/LICENSE)
+   Load this file LAST so it overrides theme fonts.
+   ========================================================================== */
+
+/* latin-ext */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 200 800;
+    src: url(../fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext-wght-normal.woff2) format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 200 800;
+    src: url(../fonts/plus-jakarta-sans/plus-jakarta-sans-latin-wght-normal.woff2) format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+/* latin-ext italic */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-style: italic;
+    font-display: swap;
+    font-weight: 200 800;
+    src: url(../fonts/plus-jakarta-sans/plus-jakarta-sans-latin-ext-wght-italic.woff2) format('woff2-variations');
+    unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin italic */
+@font-face {
+    font-family: 'Plus Jakarta Sans';
+    font-style: italic;
+    font-display: swap;
+    font-weight: 200 800;
+    src: url(../fonts/plus-jakarta-sans/plus-jakarta-sans-latin-wght-italic.woff2) format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+:root {
+    --app-font-family: 'Plus Jakarta Sans', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Base + elements that don't inherit font by default (form controls) */
+html, body,
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6,
+p, a, span, label, b, strong, small, li, td, th, table, legend,
+input, select, textarea, button, optgroup, .btn, .form-control, .input-group-text,
+.tooltip, .popover, .dropdown-menu, .dropdown-item, .modal, .card, .card-title, .badge,
+#page-topbar, .vertical-menu, #side-menu, .navbar-brand-box,
+.ui-widget, .ui-widget input, .ui-widget select, .ui-widget textarea, .ui-widget button, .ui-menu-item, .ui-autocomplete,
+.select2-container, .select2-results__option, .select2-selection__rendered,
+.swal2-popup, .swal2-title, .swal2-content, .swal2-html-container, .swal2-confirm, .swal2-cancel,
+.dataTables_wrapper, .mab__text, .error-list, .status-list,
+.apex-charts text, .apexcharts-tooltip-title, .apexcharts-tooltip-text, .apexcharts-legend-text,
+.apexcharts-yaxis text, .apexcharts-xaxis text, .apexcharts-text, .apexcharts-datalabel,
+.jqsfield, .jvectormap-label {
+    font-family: var(--app-font-family) !important;
+}
+
+/* Keep icon fonts intact (they are set on the element itself, so restore after above rule) */
+.fa, .fas, .far, span.fa, span.fas, span.far, button.fa, a.fa { font-family: 'Font Awesome 5 Free' !important; }
+.fab, span.fab, a.fab { font-family: 'Font Awesome 5 Brands' !important; }
+.bx, span.bx, a.bx { font-family: 'boxicons' !important; }
