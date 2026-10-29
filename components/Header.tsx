@@ -47,6 +47,8 @@ export default function Header() {
               >
                 📋 My Orders
               </Link>
+
+              {/* Cart button */}
               <button
                 onClick={() => setDrawerOpen(true)}
                 className="relative flex items-center gap-1.5 sm:gap-2 whitespace-nowrap bg-primary text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-primary-dark transition"
@@ -58,37 +60,48 @@ export default function Header() {
                   </span>
                 )}
               </button>
+
+              {/* Branch selector — white + elevated shadow, at the end */}
+              <button
+                onClick={() => setPickerOpen(true)}
+                title="Change branch"
+                className="group flex max-w-[140px] sm:max-w-[200px] items-center gap-1.5 sm:gap-2 rounded-full border border-gray-100 bg-white px-2.5 sm:px-3 py-1.5 text-ink shadow-md shadow-black/10 transition hover:border-gray-200 hover:shadow-lg"
+              >
+                <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-xs">
+                  📍
+                </span>
+                <span className="flex min-w-0 flex-col items-start leading-tight">
+                  <span className="text-[10px] text-gray-400">Branch</span>
+                  <span className="w-full truncate text-xs sm:text-sm font-bold">
+                    {branch ? branch.name : "Choose"}
+                  </span>
+                </span>
+                <span className="flex-shrink-0 text-[10px] text-gray-400 group-hover:text-primary">
+                  ▾
+                </span>
+              </button>
             </div>
           </div>
         </header>
 
-        {/* tabs hanging below the header: the branch, and "view cart" once the cart has items */}
+        {/* tabs hanging below the header: "view cart" once the cart has items */}
         <div className="-mt-px flex justify-center gap-2">
-          <button
-            onClick={() => setPickerOpen(true)}
-            title="Change branch"
-            className="group flex min-w-0 max-w-[45%] sm:max-w-[260px] items-center gap-2 rounded-b-2xl border border-t-0 border-gray-100 bg-white px-3 sm:px-4 py-2.5 text-ink shadow-lg shadow-black/10 transition hover:border-primary"
-          >
-            <span className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-sm">📍</span>
-            <span className="flex min-w-0 flex-col items-start leading-tight">
-              <span className="text-[11px] text-gray-400">Branch</span>
-              <span className="w-full truncate text-sm font-bold">{branch ? branch.name : "Choose"}</span>
-            </span>
-            <span className="flex-shrink-0 text-xs text-gray-400 group-hover:text-primary">▾</span>
-          </button>
-
           {count > 0 && (
             <button
               onClick={() => setDrawerOpen(true)}
               className="group flex min-w-0 items-center justify-between gap-3 rounded-b-2xl bg-ink px-3 sm:px-4 py-2.5 text-white shadow-lg shadow-black/10 transition hover:bg-primary sm:w-[20%] sm:min-w-[240px]"
             >
               <span className="flex items-center gap-2">
-                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-sm">🛒</span>
+                <span className="flex h-7 w-7 items-center justify-center rounded-full bg-white/15 text-sm">
+                  🛒
+                </span>
                 <span className="flex flex-col items-start leading-tight">
                   <span className="text-[11px] text-white/70">
                     {count} {count === 1 ? "item" : "items"}
                   </span>
-                  <span className="text-sm font-bold whitespace-nowrap">{formatPrice(total)}</span>
+                  <span className="text-sm font-bold whitespace-nowrap">
+                    {formatPrice(total)}
+                  </span>
                 </span>
               </span>
               <span className="flex items-center gap-1 text-xs font-semibold whitespace-nowrap">

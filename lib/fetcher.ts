@@ -21,7 +21,6 @@ export async function backendRequest<T>(route: string, init: RequestInit = {}): 
   const headers: Record<string, string> = { Accept: "application/json" };
   if (init.body) headers["Content-Type"] = "application/json";
   if (BACKEND_KEY) headers["X-API-Key"] = BACKEND_KEY;
-  console.log('BACKEND_URL',BACKEND_URL,route)
 
   const res = await fetch(`${BACKEND_URL}?route=${encodeURIComponent(route)}`, {
     ...init,
