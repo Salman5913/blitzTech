@@ -11,6 +11,8 @@ if (isset($_GET['search']))
 {
     $Select = $oPurchase->getAvgPriceNQty($_GET['date_from'], $_GET['date_till'], $_GET['stock_id'], $_GET['brand'], $_GET['category_id']);
     $PrintDescription = "Avg Purchase Report : ".DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y');
+    if (!empty($_GET['cost_center_id']))
+        $PrintDescription .= " | Cost Center: ".CostCenter::getName($_GET['cost_center_id']);
 }
 ?>
 <form action="" method="get" <?Utils::formValidate()?>>
@@ -46,6 +48,7 @@ if (isset($_GET['search']))
                             <input type="text" id="brand" name="brand"  <? Autocomplete::Search(Autocomplete::TYPE_STOCK_BRAND, $_GET['brand']); ?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-4 col-md-6'); ?>
                     <div class="col-xl-12 text-right">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="fa fa-search"></i> Search</button>
                     </div>

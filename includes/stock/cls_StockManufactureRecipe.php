@@ -71,6 +71,7 @@ class StockManufactureRecipe extends BasicVoucher implements DefaultVoucherForm,
                   sr.attribute_id <=> ms.attribute_id AND  
                   srd.material_stock_id = mrs.id AND
                   srd.material_attribute_id <=> mrs.attribute_id
+                  ".CostCenter::getFilterSql("d.cost_center_id", true)."
               GROUP BY 
                   sr.id
               ORDER BY 

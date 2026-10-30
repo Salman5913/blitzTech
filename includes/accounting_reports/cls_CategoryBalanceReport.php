@@ -21,6 +21,7 @@ class CategoryBalanceReport extends AccountingReport
 
         $Where .= UtilsQueryMaker::date("l.date_time", '', $this->DateTill);
         $Where .= UtilsQueryMaker::inOrEqual("a.coa_id", $ChildIds);
+        $Where .= self::costCenterSql('l');
 
         $Query = "
                     SELECT

@@ -69,7 +69,7 @@ $SelectAccounts = $oLedgerReport->getAllAccountsByCOAId($_GET['coa_id'], $_GET['
                                 <td colspan="15"><div class="space-30"></td>
                             </tr>
                             <tr>
-                                <td colspan="15" class="text-center"><div class="text-account"><?=ChartOfAccount::getName($RowAccounts['id'])?></div></td>
+                                <td colspan="15" class="text-center"><div class="text-account"><?=ChartOfAccount::getName($RowAccounts['id']).AccountingReport::costCenterHeading()?></div></td>
                             </tr>
                             <tr>
                                 <td colspan="15"><div class="space-30"></td>

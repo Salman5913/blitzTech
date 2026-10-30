@@ -88,6 +88,7 @@ include_once("../includes/inc_header.php");
                         <label for="voucher_date">Date</label>
                         <input type="text" data-type="date" name="voucher_date" id="voucher_date" value="<?=DateDecode($RowSalary['voucher_date'])?>">
                     </div>
+                    <? CostCenter::designVoucherField($RowSalary['cost_center_id'] ?? '', $oSalary->isEdit(), 'col-md-12'); ?>
                 </div>
             </div>
         </div>

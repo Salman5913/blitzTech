@@ -41,6 +41,7 @@ include_once("../includes/inc_header.php");
                         <label for="date">Date</label>
                         <input type="text" data-type="date" name="voucher_date" id="date" value="<?=DateDecode($RowLoanDetails['voucher_date'])?>" <? Utils::isRequired() ?>>
                     </div>
+                    <? CostCenter::designVoucherField($RowLoanDetails['cost_center_id'] ?? '', $oLoan->isEdit(), 'col-md-6'); ?>
                     <div class="col-md-6">
                         <label for="amount">Loan/Advance Amount</label>
                         <input type="text" data-type="int" name="amount" id="amount" value="<?=$RowLoanDetails['amount']?>" <? Utils::isRequired() ?>>

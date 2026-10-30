@@ -52,6 +52,7 @@ $TotalCost = 0;
                             <input type="text" id="brand" name="brand"  <? Autocomplete::Search(Autocomplete::TYPE_STOCK_BRAND, $_GET['brand']); ?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-4 col-md-6'); ?>
                     <div class="col-xl-12 text-right">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>
@@ -97,7 +98,7 @@ $TotalCost = 0;
                             $TotalCost += $Row['cost'];
                             ?>
                             <tr>
-                                <td><a href="javascript:void(0)" <? Utils::AjaxLoadedPopup('Profit Breakup Report Of '.$Row['customer_name'], ProjectHelper::SiteURL()."stock_report/ajax_get_customer_wise_sales_report.php?customer_id=".$Row['customer_account_id']."&date_from=".$_GET['date_from']."&date_till=".$_GET['date_till']."&stock_id=".$_GET['stock_id']."&category_id=".$_GET['category_id']."&brand=".$_GET['brand']) ?>> <?=$Row['customer_name']?></a></td>
+                                <td><a href="javascript:void(0)" <? Utils::AjaxLoadedPopup('Profit Breakup Report Of '.$Row['customer_name'], ProjectHelper::SiteURL()."stock_report/ajax_get_customer_wise_sales_report.php?customer_id=".$Row['customer_account_id']."&date_from=".$_GET['date_from']."&date_till=".$_GET['date_till']."&stock_id=".$_GET['stock_id']."&category_id=".$_GET['category_id']."&brand=".$_GET['brand']."&cost_center_id=".urlencode($_GET['cost_center_id'] ?? '')) ?>> <?=$Row['customer_name']?></a></td>
                                 <td class="text-right"><?=Utils::format($Row['sales'], 2)?></td>
                                 <td class="text-right"><?=Utils::format($Row['cost'], 2)?></td>
                                 <td class="text-right <? Utils::highlightText($Profit); ?>"><?=Utils::format($Profit, 2)?></td>

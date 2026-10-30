@@ -23,6 +23,7 @@ class ExpendedReport extends AccountingReport
 		if (!empty($ChildIds))
 		{
 			$Where = UtilsQueryMaker::date("l.date_time", $this->EncodedDateFrom, $this->EncodedDateTill);
+			$Where .= self::costCenterSql('l');
 
 			return DBQM::query("
 									SELECT 
@@ -57,6 +58,7 @@ class ExpendedReport extends AccountingReport
 	function getAllAccounts()
 	{
 		$Where = UtilsQueryMaker::date("l.date_time", $this->EncodedDateFrom, $this->EncodedDateTill);
+		$Where .= self::costCenterSql('l');
 
 		return DBQM::query("
 									SELECT 
@@ -88,7 +90,7 @@ class ExpendedReport extends AccountingReport
 
 		$Breadcrumb = [];
 		while ($Row = DBQM::fetch_assoc($Select))
-			$Breadcrumb[] = '<a href="expanded_report.php?date_from='.$this->DateFrom.'&date_till='.$this->DateTill.'&coa_id='.$Row['id'].'">'.$Row['name'].'</a>';
+			$Breadcrumb[] = '<a href="expanded_report.php?date_from='.$this->DateFrom.'&date_till='.$this->DateTill.'&coa_id='.$Row['id'].self::costCenterUrlParam().'">'.$Row['name'].'</a>';
 
 		$Breadcrumb = array_reverse($Breadcrumb);
 

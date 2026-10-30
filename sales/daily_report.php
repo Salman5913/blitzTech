@@ -9,6 +9,8 @@ if (isset($_GET['search']))
 {
     $Select = $oSales->getDateWiseReport($_GET['date_from'], $_GET['date_till'], $_GET['customer_id'], $_GET['stock_id'], $_GET['branch_id'], $_GET['category_id'], $_GET['brand'], $_GET['voucher_type_id'], $_GET['description'], $_GET['salesman_id'], $_GET['invoice_type']);
     $PrintDescription = "Datewise Daily Report : ".DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y');
+    if (!empty($_GET['cost_center_id']))
+        $PrintDescription .= " | Cost Center: ".CostCenter::getName($_GET['cost_center_id']);
 }
 ?>
 <form action="" method="get" <?Utils::formValidate()?>>
@@ -62,6 +64,7 @@ if (isset($_GET['search']))
                             <input type="text" name="salesman_id" id="salesman_id" <? Autocomplete::ACSearchAccountByCOAId([getConstantCategory()->getSalesMan()], $_GET['salesman_id']); ?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-md-3'); ?>
                     <div class="col-md-6">
                         <div class="form-group">
                             <label for="voucher_type_id">Voucher Type</label>

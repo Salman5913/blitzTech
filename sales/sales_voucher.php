@@ -122,6 +122,7 @@ if (in_array($VoucherTypeId, VoucherType::getSalesVoucherTypes(false)) and !$oSa
                             <input type="text" name="voucher_date" id="voucher_date" data-type="date" value="<?=DateDecode($RowDetails['voucher_date'])?>" <? Utils::isRequired() ?>>
                         </div>
                     </div>
+                    <? CostCenter::designVoucherField($RowDetails['cost_center_id'] ?? '', $isEdit, 'col-lg-3'); ?>
                     <div class="col-lg-2 hidden">
                         <div class="form-group">
                             <label for="due_date">Due Date</label>

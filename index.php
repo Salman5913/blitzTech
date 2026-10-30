@@ -19,7 +19,7 @@ for ($i=0; $i<=6; $i++)
 /*$SelectZeroStockLedger = $oStockReport->getZeroStockLedger();*/
 /*$SelectZeroAmountSave = $oStockReport->getZeroAmountSaveVoucher();*/
 
-list($RowIconsData, $DateFromMain, $DateTillMain, $DateFromCompare, $DateTillCompare) = $oDashBoard->getIconsData();
+list($RowIconsData, $DateFromMain, $DateTillMain, $DateFromCompare, $DateTillCompare) = $oDashBoard->getIndicatorsData($_GET['date_from'] ?? '', $_GET['date_till'] ?? '');
 list($Label, $Revenue, $Expense, $Income) = $oDashBoard->getIncomeByChartValues2();
 list($Top5CustomersName, $Top5CustomersAmount) = $oDashBoard->getTopCustomersBySalesValue();
 list($Top5ItemsName, $Top5ItemsAmount) = $oDashBoard->getTopItemsByProfitValue();
@@ -27,37 +27,62 @@ list($Top5ItemsName, $Top5ItemsAmount) = $oDashBoard->getTopItemsByProfitValue()
 $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from='.date('m/d/Y', strtotime("-3 month")).'&date_till='.date("m/d/Y").'&account_id=[AccountId]&search=';
 ?>
 <? if (/*!SecurityShell::isAccess("Others", "Hide Dashboard")*/ true) { ?>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="bg-soft-success p-3 mb-4 d-flex align-items-center" style="border-radius: 10px;">
-                <i class="mdi mdi-calendar-clock mr-2" style="font-size: 1.3rem; "></i>
-                <div style="font-size: 0.88rem; ">
-                    Showing indicators from <?=date('M d, Y', $DateFromMain) ?></strong> to <strong "><?=date('M d, Y', $DateTillMain) ?></strong>, compared with <strong ><?=date('M d, Y', $DateFromCompare) ?></strong> to <strong ><?=date('M d, Y', $DateTillCompare) ?></strong>
+    <style>
+        .gradient-kpi-card { border: 0 !important; border-radius: 16px; color: #fff; overflow: hidden; position: relative; margin-bottom: 1.5rem; }
+        .gradient-kpi-body { padding: 1.3rem 1.4rem 1.1rem; position: relative; }
+        .gradient-kpi-glow { position: absolute; width: 140px; height: 140px; right: -40px; top: -50px; border-radius: 50%; background: rgba(255, 255, 255, 0.14); }
+        .gradient-kpi-text { min-width: 0; }
+        .gradient-kpi-name { display: block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.9; margin-bottom: 0.3rem; }
+        .gradient-kpi-value { color: #fff; font-size: 1.65rem; font-weight: 800; margin: 0; font-variant-numeric: tabular-nums; }
+        .gradient-kpi-note { display: block; font-size: 0.72rem; opacity: 0.85; margin-top: 0.15rem; }
+        .gradient-kpi-icon { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; background: rgba(255, 255, 255, 0.2); }
+        .gradient-kpi-trend { margin-top: 0.9rem; font-size: 0.76rem; opacity: 0.95; }
+        .gradient-kpi-trend span { display: inline-flex; align-items: center; gap: 2px; padding: 0.2rem 0.55rem; border-radius: 30px; font-weight: 700; margin-right: 0.3rem; background: rgba(255, 255, 255, 0.22); }
+        .gradient-kpi-trend span.bad { background: rgba(0, 0, 0, 0.18); }
+    </style>
+    <form method="get" class="card p-3 mb-4" style="border-radius: 12px;">
+        <div class="row align-items-end">
+            <div class="col-md-6 col-lg-5">
+                <div class="form-group mb-md-0">
+                    <label>Date Range</label>
+                    <div class="input-daterange input-group" data-provide="datepicker">
+                        <input type="text" class="form-control" name="date_from" data-type="date" value="<?=date('M d, Y', $DateFromMain)?>" />
+                        <input type="text" class="form-control" name="date_till" data-type="date" value="<?=date('M d, Y', $DateTillMain)?>" />
+                    </div>
                 </div>
             </div>
+            <div class="col-md-auto">
+                <button type="submit" class="btn button color"><i class="mdi mdi-magnify"></i> Search</button>
+                <? if (isset($_GET['date_from'])) { ?>
+                    <a href="index.php" class="btn btn-light ml-1">This Month</a>
+                <? } ?>
+            </div>
+            <div class="col-lg mt-2 mt-lg-0 text-lg-right">
+                <small class="text-muted">
+                    <i class="mdi mdi-calendar-clock"></i> <strong><?=date('M d, Y', $DateFromMain)?></strong> to <strong><?=date('M d, Y', $DateTillMain)?></strong>,
+                    compared with <?=date('M d, Y', $DateFromCompare)?> to <?=date('M d, Y', $DateTillCompare)?>
+                </small>
+            </div>
         </div>
-    </div>
+    </form>
     <div class="row">
-        <div class="col-lg-3 col-6">
-            <? $oDashBoard->designStats("Sales", "primary", "tag-plus-outline", $RowIconsData['current_sales'], $RowIconsData['previous_sales']); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Website Sales", "green", "web", $RowIconsData['current_website_sales'], $RowIconsData['previous_website_sales'], "Sales invoices (SIV)"); ?>
         </div>
-        <div class="col-lg-3 col-6">
-            <? $oDashBoard->designStats("Purchases", "warning", "cart", $RowIconsData['current_purchase'], $RowIconsData['previous_purchase'], true); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Sales", "blue", "point-of-sale", $RowIconsData['current_sales'], $RowIconsData['previous_sales'], "Order invoices (OIV)"); ?>
         </div>
-        <div class="col-lg-3 col-6">
-            <? $oDashBoard->designStats("Receipts", "success", "arrow-up", $RowIconsData['current_receipt'], $RowIconsData['previous_receipt']); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Purchases", "warning", "cart", $RowIconsData['current_purchase'], $RowIconsData['previous_purchase'], "Purchase invoices", true); ?>
         </div>
-        <div class="col-lg-3 col-6">
-            <? $oDashBoard->designStats("Payments", "danger", "arrow-down", $RowIconsData['current_payment'], $RowIconsData['previous_payment'], true); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Receipts", "teal", "arrow-down-bold-circle-outline", $RowIconsData['current_receipt'], $RowIconsData['previous_receipt'], "Cash / bank received"); ?>
         </div>
-        <div class="col-lg-4 col-12">
-            <? $oDashBoard->designStats("Income", "warning", "cash", $RowIconsData['current_income'], $RowIconsData['previous_income']); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Payments", "danger", "arrow-up-bold-circle-outline", $RowIconsData['current_payment'], $RowIconsData['previous_payment'], "Cash / bank paid", true); ?>
         </div>
-        <div class="col-lg-4 col-6">
-            <? $oDashBoard->designStats("Receivable", "success", "arrow-left", $RowIconsData['current_receivable'], $RowIconsData['previous_receivable']); ?>
-        </div>
-        <div class="col-lg-4 col-6">
-            <? $oDashBoard->designStats("Payable", "danger", "arrow-right", $RowIconsData['current_payable'], $RowIconsData['previous_payable'], true); ?>
+        <div class="col-xl-4 col-md-6">
+            <? $oDashBoard->designGradientStat("Profit", "purple", "chart-line", $RowIconsData['current_profit'], $RowIconsData['previous_profit'], "Sale price less cost, after returns"); ?>
         </div>
     </div>
     <div class="row">

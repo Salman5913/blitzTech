@@ -177,6 +177,7 @@ elseif ($VoucherTypeId == VoucherType::PIV and !$oPurchase->isEdit() and !$isVou
                             <input type="text" name="voucher_date" id="voucher_date" data-type="date" value="<?=DateDecode($VoucherTypeId == VoucherType::OPS ?  Settings::getOpeningDateTime() : $RowDetails['voucher_date'])?>" <? Utils::isRequired() ?>>
                         </div>
                     </div>
+                    <? CostCenter::designVoucherField($RowDetails['cost_center_id'] ?? '', $isEdit, 'col-lg-3'); ?>
                     <? if ($isPurchaseVoucher) { ?>
                         <div class="col-lg-3">
                             <div class="form-group">

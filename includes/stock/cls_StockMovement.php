@@ -40,7 +40,7 @@ class StockMovement extends BasicVoucher implements DefaultVoucherForm, DefaultV
         $oFormUtils->addAdditionalColumns(0, 'available_qty', 'double', 'qty');
 
         $oFormUtils->setAutocomplete('from_branch_id', Autocomplete::TYPE_BRANCH);
-        $oFormUtils->setAutocomplete('to_branch_id', Autocomplete::TYPE_BRANCH);
+        $oFormUtils->setAutocomplete('to_branch_id', Autocomplete::TYPE_BRANCH_ALL);   // stock can go to any branch
 
         $oFormUtils->setColumnDisplayType('stock_id', new FormFieldTypeStock(
             $oFormUtils,
@@ -87,6 +87,7 @@ class StockMovement extends BasicVoucher implements DefaultVoucherForm, DefaultV
         if (empty($_GET['voucher_number']))
         {
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::stock("smd.stock_id", "smd.attribute_id", $_GET['stock_id']);
         }
         else

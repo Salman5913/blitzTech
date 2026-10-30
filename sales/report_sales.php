@@ -217,6 +217,7 @@ $mean = $num_rows > 0 ? $Total / $num_rows : 0;
                             <input type="text" class="form-control" id="description" name="description" value="<?=$_GET['description']?>">
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-lg-4 col-md-4'); ?>
                     <div class="col-xl-3 col-lg-12 col-md-12 text-right d-flex align-items-end justify-content-end mb-2">
                         <input type="hidden" name="action_voucher_type_id" value="<?=$_GET['voucher_type_id']?>">
                         <button type="submit" class="btn-search-premium w-100" name="search" id="search" style="max-width: 200px;">

@@ -107,6 +107,7 @@ class StockRequisition extends BasicVoucher implements DefaultVoucherForm, Defau
             $Where .= UtilsQueryMaker::equal("branch_id", $_GET['branch_id']);
             $Where .= UtilsQueryMaker::like("description", $_GET['description']);
             $Where .= UtilsQueryMaker::date("d.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("d.cost_center_id", true);
         }
         else
         {

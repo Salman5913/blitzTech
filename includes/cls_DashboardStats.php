@@ -79,6 +79,96 @@ class DashboardStats
         return [$Row, $DateFromMain, $DateTillMain, $DateFromCompare, $DateTillCompare];
     }
 
+    /**
+     * Dashboard indicators for a date range (default: this month till today), each with the same length period before it:
+     * website sales (SIV), sales (OIV / POS), purchases, receipts, payments and gross profit on sales (sale price - cost, less returns).
+     * @return array [Row with current_* and previous_*, DateFrom timestamp, DateTill timestamp, compare from, compare till]
+     */
+    function getIndicatorsData($DateFrom, $DateTill)
+    {
+        $From = $DateFrom != '' ? strtotime(DateEncode($DateFrom)) : strtotime(date('Y-m-01'));
+        $Till = $DateTill != '' ? strtotime(DateEncode($DateTill)) : strtotime(date('Y-m-d'));
+        if ($Till < $From)
+            list($From, $Till) = [$Till, $From];
+
+        $Days = (int)round(($Till - $From) / 86400) + 1;
+        $CompareTill = strtotime("-1 day", $From);
+        $CompareFrom = strtotime("-" . ($Days - 1) . " days", $CompareTill);
+
+        $CashBank = escape(getConstantCategory()->getBank()) . ", " . escape(getConstantCategory()->getCashInHand());
+
+        $Row = [];
+        foreach (['current' => [$From, $Till], 'previous' => [$CompareFrom, $CompareTill]] as $Key => list($PeriodFrom, $PeriodTill))
+        {
+            $PeriodFrom = date("m/d/Y", $PeriodFrom);
+            $PeriodTill = date("m/d/Y", $PeriodTill);
+            $Ledger = UtilsQueryMaker::date("l.date_time", $PeriodFrom, $PeriodTill);
+            $Voucher = UtilsQueryMaker::date("did.voucher_date", $PeriodFrom, $PeriodTill);
+            $StockLedger = UtilsQueryMaker::date("stl.date_time", $PeriodFrom, $PeriodTill);
+
+            $Values = DBQM::fetch_assoc(DBQM::query("
+                SELECT
+                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::SIV) . " {$Voucher}) AS website_sales,
+                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::OIV) . " {$Voucher}) AS sales,
+                    (SELECT SUM(did.voucher_total) FROM pr_purchase p, distinct_id did WHERE p.distinct_id = did.id AND did.is_deleted <> 'Y' {$Voucher}) AS purchase,
+                    (SELECT SUM(debit - credit) FROM ledger l, ledger_data ld, acc_accounts a WHERE l.id = ld.ledger_id AND ld.account_id = a.id AND voucher_type_id IN (" . escape(VoucherType::CRV) . ", " . escape(VoucherType::BRV) . ") AND a.coa_id IN ({$CashBank}) {$Ledger}) AS receipt,
+                    (SELECT SUM(credit - debit) FROM ledger l, ledger_data ld, acc_accounts a WHERE l.id = ld.ledger_id AND ld.account_id = a.id AND voucher_type_id IN (" . escape(VoucherType::CPV) . ", " . escape(VoucherType::BPV) . ") AND a.coa_id IN ({$CashBank}) {$Ledger}) AS payment,
+                    (SELECT SUM(stl.qty * (stl.sp - stb.cost) * -1) FROM st_stock_batch stb, st_stock_ledger stl WHERE stb.id = stl.batch_id AND stl.voucher_type_id IN (" . VoucherType::getSalesVoucherTypes() . ", " . escape(VoucherType::SRV) . ") {$StockLedger}) AS profit
+            "));
+
+            foreach ($Values as $Name => $Value)
+                $Row[$Key . '_' . $Name] = (float)$Value;
+        }
+
+        return [$Row, $From, $Till, $CompareFrom, $CompareTill];
+    }
+
+    /**
+     * Indicator card filled with a gradient
+     * @param string $Gradient green, blue, warning, teal, danger or purple
+     */
+    function designGradientStat($Name, $Gradient, $Icon, $CurrentStat, $PreviousStat, $Note = '', $isReverse = false)
+    {
+        $Gradients = [
+            'green'   => ['#16a34a', '#22c55e', '#0d9488'],
+            'blue'    => ['#1d4ed8', '#3b82f6', '#0ea5e9'],
+            'warning' => ['#d97706', '#f59e0b', '#f97316'],
+            'teal'    => ['#0f766e', '#14b8a6', '#06b6d4'],
+            'danger'  => ['#be123c', '#e11d48', '#f43f5e'],
+            'purple'  => ['#6d28d9', '#8b5cf6', '#c026d3'],
+        ];
+        list($ColorA, $ColorB, $ColorC) = $Gradients[$Gradient] ?? $Gradients['blue'];
+
+        $PercentageChange = 0;
+        if (!empty($PreviousStat))
+            $PercentageChange = round((($CurrentStat - $PreviousStat) / abs($PreviousStat)) * 100);
+        elseif (!empty($CurrentStat))
+            $PercentageChange = 100;
+
+        $isUp = $PercentageChange >= 0;
+        $isGood = $PercentageChange == 0 || ($isReverse ? !$isUp : $isUp);
+        ?>
+        <?/* not a .card: the theme (finac-theme.css) forces a plain background on every .card */?>
+        <div class="gradient-kpi-card" style="background: linear-gradient(135deg, <?=$ColorA?> 0%, <?=$ColorB?> 55%, <?=$ColorC?> 100%); box-shadow: 0 8px 22px <?=$ColorB?>4d;">
+            <div class="gradient-kpi-glow"></div>
+            <div class="gradient-kpi-body">
+                <div class="d-flex align-items-start justify-content-between">
+                    <div class="gradient-kpi-text">
+                        <span class="gradient-kpi-name"><?=$Name?></span>
+                        <h3 class="gradient-kpi-value"><?=Utils::format($CurrentStat, 0)?></h3>
+                        <? if ($Note) { ?><small class="gradient-kpi-note"><?=$Note?></small><? } ?>
+                    </div>
+                    <div class="gradient-kpi-icon"><i class="mdi mdi-<?=$Icon?>"></i></div>
+                </div>
+                <div class="gradient-kpi-trend" title="Compared with the same number of days before">
+                    <span class="<?=$isGood ? 'good' : 'bad'?>"><i class="mdi mdi-<?=$isUp ? 'arrow-up-bold' : 'arrow-down-bold'?>"></i><?=abs($PercentageChange)?>%</span>
+                    vs <?=Utils::format($PreviousStat, 0)?>
+                </div>
+            </div>
+        </div>
+        <?php
+    }
+
     function designStats($Name, $CSSClass, $Icon, $CurrentStat, $PreviousStat, $isReverse=false)
     {
         $PercentageChange = 0;

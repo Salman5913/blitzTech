@@ -7,7 +7,7 @@ include_once("../includes/inc_header.php");
 $oLoan = new Loan();
 $oBranch = new Branch();
 
-$SelectEmployeeLoans = $oLoan->getAllEmpLoans('', true, $_GET['branch_id'], DateEncode($_GET['date_till']));
+$SelectEmployeeLoans = $oLoan->getAllEmpLoans('', true, $_GET['branch_id'], DateEncode($_GET['date_till']), $_GET['cost_center_id'] ?? '');
 ?>
 <div class="row">
     <div class="col-sm-12">
@@ -23,6 +23,7 @@ $SelectEmployeeLoans = $oLoan->getAllEmpLoans('', true, $_GET['branch_id'], Date
                         <label for="date_till">Date</label>
                         <input type="text" data-type="date" id="date_till" name="date_till" value="<?=DateDecode($_GET['date_till'])?>">
                     </div>
+                    <? CostCenter::designReportFilter('col-md-6'); ?>
                     <div class="col-md-12 mt-3">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="fa fa-search"></i> Search</button>
                     </div>

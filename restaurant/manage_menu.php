@@ -1,37 +1,51 @@
 <?
 include_once("../connection/localhost.php");
 
-$_GET['_page_title'] = 'Website Menu';
-$_GET['_page_title_text'] = 'Dishes shown on the restaurant website';
+// website: dishes on the restaurant website, pos: categories and items on the POS screen
+$MenuView = ($_GET['view'] ?? '') === 'pos' ? 'pos' : 'website';
+
+$_GET['_page_title'] = $MenuView == 'pos' ? 'POS Menu' : 'Website Menu';
+$_GET['_page_title_text'] = $MenuView == 'pos' ? 'Categories and items shown on the POS screen' : 'Dishes shown on the restaurant website';
 
 include_once("../includes/inc_header.php");
 
 $ActiveTab = 'menu';
 include_once(__DIR__ . '/_tabs.php');
 
+function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'); }
+?>
+<ul class="nav nav-tabs mb-3">
+    <li class="nav-item"><a class="nav-link <?=$MenuView == 'website' ? 'active' : ''?>" href="manage_menu.php"><i class="mdi mdi-web"></i> Website</a></li>
+    <li class="nav-item"><a class="nav-link <?=$MenuView == 'pos' ? 'active' : ''?>" href="manage_menu.php?view=pos"><i class="mdi mdi-point-of-sale"></i> POS</a></li>
+</ul>
+<?
+if ($MenuView == 'pos')
+{
+    include_once(__DIR__ . '/_pos_menu.php');
+    include_once("../includes/inc_footer.php");
+    return;
+}
+
 RestaurantMenu::syncFromStock();
 
 $Id = (int)($_GET['id'] ?? 0);
 $RowDetails = $Id ? RestaurantMenu::getDetails($Id) : null;
-// No id, or a dish of another branch: new dish form
-if (!$RowDetails) { $Id = 0; $RowDetails = ['available' => 1, 'is_visible' => 1, 'sort_order' => 0]; }
+// Dishes come from stock (Website Categories / stock form); here they can only be edited. No id, or a dish of another branch: no form
+if (!$RowDetails) $Id = 0;
 $SelectItems = RestaurantMenu::getItems();
 $SelectCategories = RestaurantMenu::getCategories();
-
-function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'); }
 ?>
 <div class="row">
+    <? if ($Id) { ?>
     <div class="col-lg-12">
         <div class="card">
             <div class="row">
                 <div class="col-sm-8">
-                    <h3 class="card-title"><?=$Id ? 'Edit Dish' : 'Add Dish'?></h3>
+                    <h3 class="card-title">Edit Dish</h3>
                 </div>
-                <? if ($Id) { ?>
-                    <div class="col-sm-4 text-right">
-                        <a href="manage_menu.php" class="shadow-sm button btn-sm bg-soft-info font-weight-bold"><i class="mdi mdi-plus"></i> Add New</a>
-                    </div>
-                <? } ?>
+                <div class="col-sm-4 text-right">
+                    <a href="manage_menu.php" class="shadow-sm button btn-sm bg-soft-info font-weight-bold"><i class="mdi mdi-close"></i> Cancel</a>
+                </div>
             </div>
             <form method="post" action="op_save_menu.php">
                 <input type="hidden" name="action" value="save">
@@ -119,12 +133,13 @@ function h($Value) { return htmlspecialchars((string)$Value, ENT_QUOTES, 'UTF-8'
                 </div>
                 <div class="row form-group">
                     <div class="col-auto ml-auto">
-                        <button class="btn button color" type="submit"><i class="mdi mdi-content-save"></i> <?=$Id ? 'Update Dish' : 'Save Dish'?></button>
+                        <button class="btn button color" type="submit"><i class="mdi mdi-content-save"></i> Update Dish</button>
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <? } ?>
 
     <div class="col-lg-5 hidden">
         <div class="card">

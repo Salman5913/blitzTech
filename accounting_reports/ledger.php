@@ -1,7 +1,7 @@
 <?
 include_once("../connection/localhost.php");
 
-$Heading = ChartOfAccount::getName($_GET['account_id'])." - Ledger";
+$Heading = ChartOfAccount::getName($_GET['account_id'])." - Ledger".AccountingReport::costCenterHeading();
 
 $_GET['_page_title'] = $Heading;
 $_GET['_page_title_text'] = $Heading;
@@ -27,7 +27,7 @@ if (isset($_GET['search']))
     $Balance = $PostChequesBalance = 0;
     if (!empty($DateFrom))
     {
-        $Balance = LedgerReport::getAccountBalance($_GET['account_id'], DateEncode($DateFrom), 'from');
+        $Balance = LedgerReport::getAccountBalance($_GET['account_id'], DateEncode($DateFrom), 'from', true);
         $PostChequesBalance = $oLedgerReport->getPostChequesAmount($_GET['account_id']);
     }
 }
@@ -38,7 +38,7 @@ if (isset($_GET['search']))
             <div class="card">
                 <h3 class="card-title">Filter Options</h3>
                 <div class="row">
-                    <div class="col-xl-4 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="form-group mb-0">
                             <label for="date_from">Date Range</label>
                             <div class="input-daterange input-group" data-provide="datepicker">
@@ -47,7 +47,7 @@ if (isset($_GET['search']))
                             </div>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="form-group">
                             <label for="account_id">Account Name</label>
                             <input type="text" id="account_id" name="account_id" <? Autocomplete::ACSearchAccount($_GET['account_id']); ?> required>
@@ -59,6 +59,7 @@ if (isset($_GET['search']))
                             <select id="highlight_reconciled" name="highlight_reconciled"><? Utils::getDropDownOptionsFromArray(['N' => 'No', 'Y' => 'Yes'], $_GET['highlight_reconciled']); ?></select>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-2 col-md-6'); ?>
                     <div class="col-xl-2 col-md-6 text-right">
                         <div class="form-group">
                             <label>&nbsp;</label>
@@ -179,5 +180,5 @@ $(function () {
     });
 })
 </script>
-<? UtilsPrint::init(DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y'), false, false) ?>
+<? UtilsPrint::init(DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y').AccountingReport::costCenterHeading(), false, false) ?>
 <? include_once("../includes/inc_footer.php"); ?>

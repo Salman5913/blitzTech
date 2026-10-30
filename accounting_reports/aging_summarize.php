@@ -15,18 +15,19 @@ if (isset($_GET['search']))
             <div class="card">
                 <h3 class="card-title">Filter Options</h3>
                 <div class="row">
-                    <div class="col-xl-5 col-md-6">
+                    <div class="col-xl-4 col-md-6">
                         <div class="form-group">
                             <label for="coa_id">COA Category</label>
                             <input type="text" id="coa_id" name="coa_id" <? Autocomplete::ACSearchCOA($_GET['coa_id']); ?>>
                         </div>
                     </div>
-                    <div class="col-xl-5 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="form-group">
                             <label for="account_id">Account Name</label>
                             <input type="text" id="account_id" name="account_id" <? Autocomplete::ACSearchAccount($_GET['account_id']); ?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                     <div class="col-xl-2 text-right">
                         <div class="form-group">
                             <label>&nbsp;</label>
@@ -73,7 +74,7 @@ if (isset($_GET['search']))
                                     if (!$oAging->hasAgingData()) continue;
                                     ?>
                                     <tr>
-                                        <td><a href="ledger.php?date_from=&date_till=&account_id=<?=$RowAccounts['id']?>&search=" target="_blank"><?=ChartOfAccount::getName($RowAccounts['id'])?></a></td>
+                                        <td><a href="ledger.php?date_from=&date_till=&account_id=<?=$RowAccounts['id']?><?=AccountingReport::costCenterUrlParam()?>&search=" target="_blank"><?=ChartOfAccount::getName($RowAccounts['id'])?></a></td>
                                         <td><?=$oAging->getAgingValue(0, 7) ?></td>
                                         <td><?=$oAging->getAgingValue(8, 14) ?></td>
                                         <td><?=$oAging->getAgingValue(15, 21)?></td>
@@ -94,5 +95,5 @@ if (isset($_GET['search']))
             </div>
         </div>
     </div>
-<? UtilsPrint::init(DateEncode(DatabaseHelper::NOW(), 'd/m/Y')) ?>
+<? UtilsPrint::init(DateEncode(DatabaseHelper::NOW(), 'd/m/Y').AccountingReport::costCenterHeading()) ?>
 <? include_once("../includes/inc_footer.php"); ?>

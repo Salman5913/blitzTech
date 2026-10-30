@@ -728,13 +728,14 @@ $oHeaderBranch = new Branch();
                 <!-- Left Menu Start -------------------------------------------------------------------------------------------------------------------------------------------------------->
                 <ul class="metismenu list-unstyled" id="side-menu">
                     <li class="menu-title"> Quick Links</li>
-                    <li><a href="<?=$SiteURL?>index.php"><i class="mdi mdi-view-dashboard-outline"></i> Admin Dashboard</a></li>
+                    <li><a href="<?=$SiteURL?>index.php"><i class="mdi mdi-view-dashboard-outline"></i>Dashboard</a></li>
                     <? if (CompanyModule::isModuleActive(CompanyModule::CRM)) { ?>
-                        <li><a href="<?= $SiteURL ?>dashboard/crm.php"><i class="mdi mdi-account-tie-outline"></i>CRM</a></li>
+<!--                        <li><a href="--><?//= $SiteURL ?><!--dashboard/crm.php"><i class="mdi mdi-account-tie-outline"></i>CRM</a></li>-->
                     <? } if (CompanyModule::isModuleActive(CompanyModule::SALES)) { ?>
-                    <li><a href="<?=$SiteURL?>sales/sales_voucher.php?voucher_type_id=2"><i class="mdi mdi-cash-register"></i>Sales Invoice Voucher</a></li>
+<!--                    <li><a href="--><?//=$SiteURL?><!--sales/sales_voucher.php?voucher_type_id=2"><i class="mdi mdi-cash-register"></i>Sales Invoice Voucher</a></li>-->
                     <? } if (CompanyModule::isModuleActive(CompanyModule::PURCHASE)) { ?>
-                    <li><a href="<?=$SiteURL?>purchase/purchase_voucher.php?voucher_type_id=1"><i class="mdi mdi-cart-arrow-down"></i>Purchase Invoice Voucher</a></li>
+<!--                    <li><a href="--><?//=$SiteURL?><!--purchase/purchase_voucher.php?voucher_type_id=1"><i class="mdi mdi-cart-arrow-down"></i>Purchase Invoice Voucher</a></li>-->
+
                     <? } if (CompanyModule::isModuleActive(CompanyModule::PROJECT)) { ?>
 <!--                    <li class="menu-title">Project Management</li>-->
 <!--                    <li>-->
@@ -885,6 +886,18 @@ $oHeaderBranch = new Branch();
 
                     </li>
 
+                    <? if (CompanyModule::isModuleActive(CompanyModule::SALES) and SecurityShell::isVoucherAccess(VoucherType::OIV)) { ?>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-point-of-sale"></i>
+                            <span>POS</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::OIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::OIV, false, "Order Invoice"); ?>
+                        </ul>
+                    </li>
+                    <? } ?>
+
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="mdi mdi-silverware-fork-knife"></i>
@@ -914,11 +927,23 @@ $oHeaderBranch = new Branch();
                         </ul>
                         <? } ?>
 
+
+
                         <? if (CompanyModule::isModuleActive(CompanyModule::CHART_OF_ACCOUNT)) { ?>
                             <ul class="sub-menu" aria-expanded="false">
                                 <? $oHeaderUtils->menuReport('Suppliers', 'chart_of_account/manage_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), 'chart_of_account/report_transaction_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
                             </ul>
                         <? } ?>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-basket"></i>
+                            <span>Stock Use</span>
+                        </a>
+
+                        <ul class="sub-menu" aria-expanded="false">
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::SU, '', false, "Stock Use"); ?>
+                        </ul>
                     </li>
 
                     <? if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
@@ -1110,6 +1135,18 @@ $oHeaderBranch = new Branch();
                                 <? $oHeaderUtils->newCustomizedReport(); ?>
                             </ul>
                         <? } ?>
+                    </li>
+                    <? } ?>
+                    <? if (ProjectHelper::HAS_COST_CENTER && CompanyModule::isModuleActive('Settings') && SecurityShell::isAccess('Settings', 'Cost Center')) { ?>
+                    <li class="menu-title">Settings</li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-cog-outline"></i>
+                            <span>Settings</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <? $oHeaderUtils->menuReport('Cost Centers', 'costcenter/cost_center_manager.php', 'costcenter/report_cost_center.php', false, 'Settings', 'Cost Center'); ?>
+                        </ul>
                     </li>
                     <? } ?>
                     <li class="menu-title">Others</li>

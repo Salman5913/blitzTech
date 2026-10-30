@@ -21,6 +21,7 @@ class StockReportMIS extends Reporting
 
         $Where = UtilsQueryMaker::date("stl.date_time", $this->DateFrom, $this->DateTill);
         $Where .= UtilsQueryMaker::equal("s.id", $StockId);
+        $Where .= CostCenter::getFilterSql("stl.distinct_id");
 
         $WhereOuter = UtilsQueryMaker::equal("s.category_id", $CategoryId);
         $WhereOuter .= UtilsQueryMaker::equal("s.brand", $Brand);

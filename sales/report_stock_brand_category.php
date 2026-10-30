@@ -35,6 +35,7 @@ $TotalValue = [];
                                 </div>
                             </div>
                         </div>
+                        <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                         <div class="col-xl-12 text-right">
                             <button type="submit" class="btn button color" name="search" id="search"><i class="fa fa-search"></i> Search</button>
                         </div>

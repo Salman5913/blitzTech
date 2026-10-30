@@ -32,6 +32,7 @@ include_once("../includes/inc_header.php");
                         <label for="account_id">Account</label>
                         <input type="text" id="account_id" name="account_id" <?Autocomplete::ACSearchAccount($_GET['account_id']) ?>>
                     </div>
+                    <? CostCenter::designReportFilter('col-md-6'); ?>
                     <div class="col-md-12 mt-3">
                         <input type="hidden" name="type" id="type" value="<?=$Type?>">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="fa fa-search"></i> Search</button>

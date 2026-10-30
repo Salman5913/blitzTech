@@ -240,7 +240,7 @@ class BankStatementImport extends BasicVoucher implements DefaultVoucherForm, De
 
     function getSearchQuery(): mysqli_result
     {
-        return DBQM::query("SELECT bsi.*, di.voucher_type_id, di.voucher_date, di.is_deleted, di.voucher_number, a.name, di.is_draft FROM bsi_bank_statement_import bsi, distinct_id di, acc_accounts a WHERE a.id = bsi.bank_account_id AND bsi.distinct_id = di.id");
+        return DBQM::query("SELECT bsi.*, di.voucher_type_id, di.voucher_date, di.is_deleted, di.voucher_number, a.name, di.is_draft FROM bsi_bank_statement_import bsi, distinct_id di, acc_accounts a WHERE a.id = bsi.bank_account_id AND bsi.distinct_id = di.id ".CostCenter::getFilterSql("di.cost_center_id", true));
     }
 
     function getReportTableColumn(): BasicVoucherReportTableColumn

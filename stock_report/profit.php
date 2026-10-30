@@ -38,6 +38,7 @@ if (isset($_GET['search']))
                             <input type="text" name="category_id" id="category_id" <? Autocomplete::Search(Autocomplete::TYPE_STOCK_CATEGORY, $_GET['category_id']);?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-lg-3 col-md-6'); ?>
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>&nbsp;</label>

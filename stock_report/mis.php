@@ -60,6 +60,7 @@ include_once("../includes/inc_header.php");
                             <select name="sort_by" id="sort_by"><? Utils::getDropDownOptionsFromArray($oStockReportMIS->DisplayType, $_GET['sort_by']);?></select>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-lg-3 col-md-6'); ?>
                     <div class="col-sm-12 text-right">
                         <button type="submit" class="btn color" name="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>

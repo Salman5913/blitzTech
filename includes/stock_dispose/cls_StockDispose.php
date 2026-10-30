@@ -86,6 +86,7 @@ class StockDispose extends BasicVoucher implements DefaultVoucherForm, DefaultVo
         if (empty($_GET['voucher_number']))
         {
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::stock("sdd.stock_id", "sdd.attribute_id", $_GET['stock_id']);
         } else {
             $Where .= UtilsQueryMaker::equal("di.voucher_number", $_GET['voucher_number']);

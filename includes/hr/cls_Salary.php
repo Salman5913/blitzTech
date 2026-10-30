@@ -228,6 +228,7 @@ class Salary extends BasicVoucher
 										s.id = sd.salary_id AND
 										s.distinct_id = d.id AND
 										b.id = al.branch_id 
+										".CostCenter::getFilterSql("d.cost_center_id", true)."
 									GROUP BY 
 										s.id 
 									ORDER BY 

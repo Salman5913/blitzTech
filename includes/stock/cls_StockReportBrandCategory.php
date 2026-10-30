@@ -21,6 +21,7 @@ class StockReportBrandCategory
                             WHERE 
                             	s.id = stb.stock_id AND
                                 stb.id = stl.batch_id
+                                ".CostCenter::getFilterSql("stl.distinct_id")."
                             GROUP BY 
                             	s.brand
                             HAVING
@@ -49,6 +50,7 @@ class StockReportBrandCategory
                                 stb.id = stl.batch_id AND
                                 s.category_id = stc.id AND
                             	s.brand = ".escape($BrandName)."
+                            	".CostCenter::getFilterSql("stl.distinct_id")."
                             GROUP BY 
                             	stc.id
                             HAVING
@@ -60,6 +62,7 @@ class StockReportBrandCategory
 	{
 		$Where = '';
 		$Where .= UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill);
+		$Where .= CostCenter::getFilterSql("stl.distinct_id");
 
 		return DBQM::query("
     	                    SELECT

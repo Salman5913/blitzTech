@@ -92,6 +92,7 @@ class ProjectWisePayment extends BasicVoucher implements DefaultVoucherForm, Def
         if (empty($_GET['voucher_number']))
         {
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::equal("account_id", $_GET['account_id']);
             $Where .= UtilsQueryMaker::equal("cash_bank_id", $_GET['cash_bank_id']);
             $Where .= UtilsQueryMaker::equal("project_id", $_GET['project_id']);

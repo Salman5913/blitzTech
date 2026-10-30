@@ -47,6 +47,7 @@ if (isset($_GET['search']))
                         <select name="is_deleted" id="is_deleted" ><option value=""></option><? Utils::getDropDownOptionsFromArray(['Y' => 'Yes', 'N' => 'No'], $_GET['is_deleted']); ?></select>
                     </div>
                 </div>
+                <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                 <div class="form-group row">
                     <div class="col-md-12 text-right">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>

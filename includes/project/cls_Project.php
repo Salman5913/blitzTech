@@ -68,6 +68,7 @@ class Project extends BasicVoucher implements DefaultVoucherForm, DefaultVoucher
         if (empty($_GET['voucher_number']))
         {
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::equal("account_id", $_GET['account_id']);
             $Where .= UtilsQueryMaker::like("name", $_GET['name']);
             $Where .= UtilsQueryMaker::like("site", $_GET['site']);

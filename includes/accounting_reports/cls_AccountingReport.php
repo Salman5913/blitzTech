@@ -43,6 +43,29 @@ class AccountingReport
         $this->EncodedDateTill = DateEncode($DateTill, 'Y-m-d', true);
     }
 
+    /* ************************* Cost Center Filter ************************* */
+    /**
+     * " AND ..." limiting a ledger query to the cost center picked in the report filter (GET cost_center_id),
+     * '' when none is picked. $LedgerAlias is the alias (or table name) whose distinct_id column is filtered.
+     */
+    static function costCenterSql($LedgerAlias = 'l')
+    {
+        return CostCenter::getFilterSql("{$LedgerAlias}.distinct_id");
+    }
+
+    /** "&cost_center_id=N" to carry the cost center filter into drill-down links, '' when none is picked */
+    static function costCenterUrlParam()
+    {
+        return !empty($_GET['cost_center_id']) ? '&cost_center_id='.(int)$_GET['cost_center_id'] : '';
+    }
+
+    /** " - Cost Center: X" for report / print headings, '' when none is picked */
+    static function costCenterHeading()
+    {
+        $Name = !empty($_GET['cost_center_id']) ? CostCenter::getName((int)$_GET['cost_center_id']) : '';
+        return $Name != '' ? ' - Cost Center: '.$Name : '';
+    }
+
     function getLedgerAmountByDuration($AccountId, $DateFrom, $DateTill)
     {
         $Query = "
@@ -56,6 +79,7 @@ class AccountingReport
                         l.year_id = ".escape(Year::getYearId())." AND
                         ld.account_id = ".escape($AccountId);
 
+        $Query .= self::costCenterSql('l');
         $Query .= UtilsQueryMaker::date("l.date_time", $DateFrom, $DateTill);
 
         $Select = DBQM::query($Query);

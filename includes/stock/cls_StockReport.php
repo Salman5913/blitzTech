@@ -41,6 +41,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::date("stl.date_time", $this->DateFrom, $this->DateTill);
         $Where .= UtilsQueryMaker::equal("stb.attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::equal("stl.branch_id", $BranchId);
+        $Where .= CostCenter::getFilterSql("did.cost_center_id", true);
 
         $Query .= $Where;
         $Query .= " ORDER BY DATE(date_time), stl.voucher_type_id ASC";
@@ -77,6 +78,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::equal("sbt.attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::date("did.voucher_date", $DateFrom, $DateTill);
         $Where .= UtilsQueryMaker::equal("did.is_deleted", $isDeleted);
+        $Where .= CostCenter::getFilterSql("did.cost_center_id", true);
 
         $Query .= $Where;
         $Query .= " GROUP BY sbt.distinct_id ORDER BY DATE(voucher_date) ASC";
@@ -160,6 +162,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::equal('sl.branch_id', $BranchId);
         $Where .= UtilsQueryMaker::equal('stc.id', $CategoryId);
         $Where .= UtilsQueryMaker::equal('s.brand', $Brand);
+        $Where .= CostCenter::getFilterSql('sl.distinct_id');
 
         return DBQM::query("
     	                    SELECT
@@ -256,10 +259,11 @@ class StockReport extends Reporting
      * @param string $BranchId
      * @return bool|mixed returns stock balance
      */
-    public static function getStockBalance($StockId, $AttributeId, $Date, $DateType = 'to', $BranchId='')
+    public static function getStockBalance($StockId, $AttributeId, $Date, $DateType = 'to', $BranchId='', $CostCenterId = '')
     {
         $Where = UtilsQueryMaker::equal("sb.attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::equal("sl.branch_id", $BranchId);
+        $Where .= CostCenter::getFilterSql("sl.distinct_id", false, $CostCenterId);
 
         if (!empty($Date))
         {
@@ -345,6 +349,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::equal('s.attribute_id', $AttributeId);
         $Where .= UtilsQueryMaker::like("s.category_id", $CategoryId);
         $Where .= UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill);
+        $Where .= CostCenter::getFilterSql("stl.distinct_id");
 
         return DBQM::query("
             SELECT 
@@ -378,6 +383,7 @@ class StockReport extends Reporting
         $Where = '';
         if (!empty($DateTill))
             $Where .= UtilsQueryMaker::date('stl.date_time', '', DateEncode($DateTill));
+        $Where .= CostCenter::getFilterSql('stl.distinct_id');
 
         $Select = DBQM::query("
 									SELECT 
@@ -413,6 +419,7 @@ class StockReport extends Reporting
         $Where = '';
         $Where .= UtilsQueryMaker::equal("st.id", $StockId);
         $Where .= UtilsQueryMaker::equal("st.attribute_id", $AttributeId);
+        $Where .= CostCenter::getFilterSql("sl.distinct_id");
 
         return DBQM::query("
                             SELECT
@@ -464,6 +471,7 @@ class StockReport extends Reporting
                 did.voucher_type_id = vt.id AND
                 did.updated_by = shl.id AND
                 did.year_id = ".escape(Year::getYearId())."
+                ".CostCenter::getFilterSql("did.cost_center_id", true)."
             GROUP BY
                 sl.distinct_id 
             ORDER BY 
@@ -529,6 +537,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill);
         $Where .= UtilsQueryMaker::equal("st.category_id", $CategoryId);
         $Where .= UtilsQueryMaker::equal("st.brand", $Brand);
+        $Where .= CostCenter::getFilterSql("d.cost_center_id", true);
 
         return DBQM::query("
                             SELECT
@@ -568,6 +577,7 @@ class StockReport extends Reporting
         $Where .= UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill);
         $Where .= UtilsQueryMaker::equal("st.category_id", $CategoryId);
         $Where .= UtilsQueryMaker::equal("st.brand", $Brand);
+        $Where .= CostCenter::getFilterSql("stl.distinct_id");
 
         return DBQM::query("
                             SELECT
@@ -616,6 +626,7 @@ class StockReport extends Reporting
             $Where .= UtilsQueryMaker::date('sl.date_time', '', $DateTill);
         
         $Where .= UtilsQueryMaker::equal('sl.branch_id', $BranchId);
+        $Where .= CostCenter::getFilterSql('sl.distinct_id');
 
         return DBQM::query("
             SELECT

@@ -109,9 +109,10 @@ class LedgerReport extends AccountingReport
      * @param $AccountId
      * @param string $Date format Y-m-d H:i:s
      * @param string $DateType full => date is passed with time, no need to add time <br> to => add 23:59:59 to date <br> from => add 00:00:00 to date
+     * @param bool $FilterCostCenter true => only vouchers of the cost center picked in the report filter (reports)
      * @return bool|mixed returns balance in customer currency
      */
-    public static function getAccountBalance($AccountId, $Date, $DateType = 'to')
+    public static function getAccountBalance($AccountId, $Date, $DateType = 'to', $FilterCostCenter = false)
     {
         if ($DateType == 'to')
             $Date .= " 23:59:59";
@@ -129,6 +130,7 @@ class LedgerReport extends AccountingReport
                                   l.year_id = " . escape(Year::getYearId()) . " AND
                                   l.date_time < " . escape($Date) . " AND
                                   d.account_id = " . escape($AccountId) . "
+                                  " . ($FilterCostCenter ? self::costCenterSql('l') : '') . "
         ");
 
         return DBQM::result($Select, 0);
@@ -153,6 +155,7 @@ class LedgerReport extends AccountingReport
 
         $Where .= UtilsQueryMaker::date("l.date_time", $this->DateFrom, $this->DateTill);
         $Where .= UtilsQueryMaker::equal("a.id", $AccountId);
+        $Where .= self::costCenterSql('l');
 
         if ($ShowReconciled)
         {
@@ -235,6 +238,7 @@ class LedgerReport extends AccountingReport
 
 	    $Where .= UtilsQueryMaker::date("l.date_time", date('Y-m-d', strtotime(DateDecode($this->DateTill)." +1 day")), '');
 	    $Where .= UtilsQueryMaker::equal("a.id", $AccountId);
+	    $Where .= self::costCenterSql('l');
 
     	$Select = DBQM::query("
 										SELECT 
@@ -279,6 +283,7 @@ class LedgerReport extends AccountingReport
 					l.year_id = ".escape(Year::getYearId())." AND
 					l.date_time <= ".escape($Months[$Key]['end'])." 
 					".UtilsQueryMaker::equal("a.name", $AccountName)."
+					".self::costCenterSql('l')."
 			";
 		}
 
@@ -314,7 +319,7 @@ class LedgerReport extends AccountingReport
 
     static function getLedgerLink($AccountId)
     {
-        return ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from='.date('m/d/Y', strtotime("-3 month")).'&date_till='.date("m/d/Y").'&account_id='.$AccountId.'&search=';
+        return ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from='.date('m/d/Y', strtotime("-3 month")).'&date_till='.date("m/d/Y").'&account_id='.$AccountId.self::costCenterUrlParam().'&search=';
     }
 
     function getLedgerDetailsByDistinctId($DistinctId)

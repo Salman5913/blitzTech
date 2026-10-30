@@ -42,6 +42,7 @@ while ($RowAttributes = DBQM::fetch_assoc($SelectAttribute))
                             <input type="text" name="date_till" id="date_till" data-type="date" value="<?=$_GET['date_till']?>" data-empty="true">
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-lg-3 col-md-6'); ?>
                     <div class="col-lg-2">
                         <div class="form-group">
                             <label>&nbsp;</label>

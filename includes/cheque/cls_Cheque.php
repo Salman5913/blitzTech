@@ -136,6 +136,7 @@ class Cheque extends BasicVoucher implements DefaultVoucherForm, DefaultVoucherP
         if (empty($_GET['voucher_number']) and empty($_GET['cheque_number']))
         {
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::equal("a.id", $_GET['account_id']);
             $Where .= UtilsQueryMaker::equal("ra.id", $_GET['reissue_account_id']);
             $Where .= UtilsQueryMaker::equal("c.is_return", $_GET['is_return']);

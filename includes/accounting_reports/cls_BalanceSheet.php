@@ -45,6 +45,7 @@ class BalanceSheet extends AccountingReport
                         a.coa_id = ".escape($COAId)." AND
                         l.date_time <= ".escape($this->EncodedDateTill." 23:59:59")." AND
                         l.year_id = ".escape(Year::getYearId())."
+                        ".self::costCenterSql('l')."
                     GROUP BY
                         a.coa_id
         ";
@@ -74,6 +75,7 @@ class BalanceSheet extends AccountingReport
                         coa.id IN (".implode(", ", array_map("escape", $ChildIds)).") AND
                         l.date_time <= ".escape($this->EncodedDateTill." 23:59:59")." AND
                         l.year_id = ".escape(Year::getYearId())."
+                        ".self::costCenterSql('l')."
         ");
 
         return ((DBQM::result($Select, 0) * -1) - ($this->COGS));
@@ -110,7 +112,7 @@ class BalanceSheet extends AccountingReport
 
             ?>
             <tr>
-                <td><?=str_repeat(" &nbsp;", $Count*3)?><i class="mdi mdi-dots-horizontal"></i> <a href="expanded_report.php?date_from=<?=date("Y-m-d H:i:s", strtotime(Year::getOpeningDate()." -1 sec"))?>&date_till=<?=$this->DateTill?>&coa_id=<?=$Key?>"><?=$Name?></a></td>
+                <td><?=str_repeat(" &nbsp;", $Count*3)?><i class="mdi mdi-dots-horizontal"></i> <a href="expanded_report.php?date_from=<?=date("Y-m-d H:i:s", strtotime(Year::getOpeningDate()." -1 sec"))?>&date_till=<?=$this->DateTill?>&coa_id=<?=$Key?><?=self::costCenterUrlParam()?>"><?=$Name?></a></td>
                 <td width="10%" class="text-right"><?=Utils::format($Amount)?></td>
             </tr>
             <?

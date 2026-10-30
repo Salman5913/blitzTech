@@ -311,6 +311,67 @@ class RestaurantMenu
         DBQM::query("UPDATE rs_menu_items SET show_in_hero = " . ($Hero ? 1 : 0) . " WHERE branch_id = " . self::branchSql() . " AND erp_stock_id = " . escape($StockId, 'int'));
     }
 
+    /* ************************* POS menu ************************* */
+    /*
+     * Categories and items on the POS screen (pos/pos_voucher.php) of a branch, kept apart from the website:
+     * everything is shown and available on POS unless listed in rs_pos_hidden_categories / rs_pos_items.
+     */
+
+    /**
+     * POS settings of a branch
+     * @return array ['categories' => [stock_category_id => true], 'hidden' => ["stock_id::attribute_id" => true], 'unavailable' => [same]]
+     */
+    static function getPOSSettings($BranchId)
+    {
+        $Settings = ['categories' => [], 'hidden' => [], 'unavailable' => []];
+        if (empty($BranchId) or DatabaseHelper::isRecordSetEmpty(DBQM::query("SHOW TABLES LIKE 'rs_pos_items'")))
+            return $Settings;
+
+        $Select = DBQM::query("SELECT stock_category_id FROM rs_pos_hidden_categories WHERE branch_id = " . escape($BranchId, 'int'));
+        while ($Row = DBQM::fetch_assoc($Select))
+            $Settings['categories'][(int)$Row['stock_category_id']] = true;
+
+        $Select = DBQM::query("SELECT stock_id, attribute_id, is_hidden, is_unavailable FROM rs_pos_items WHERE branch_id = " . escape($BranchId, 'int'));
+        while ($Row = DBQM::fetch_assoc($Select))
+        {
+            $Key = Stock::joinStockIdAttributeId($Row['stock_id'], $Row['attribute_id'] ?: '');
+            if ($Row['is_hidden'])
+                $Settings['hidden'][$Key] = true;
+            if ($Row['is_unavailable'])
+                $Settings['unavailable'][$Key] = true;
+        }
+
+        return $Settings;
+    }
+
+    /** "Other" (items without category) is category 0, same as the POS screen */
+    static function setPOSCategoryVisible($CategoryId, bool $Show)
+    {
+        $Where = "branch_id = " . self::branchSql() . " AND stock_category_id = " . escape((int)$CategoryId, 'int');
+        DBQM::query($Show
+            ? "DELETE FROM rs_pos_hidden_categories WHERE $Where"
+            : "INSERT IGNORE INTO rs_pos_hidden_categories (branch_id, stock_category_id) VALUES (" . self::branchSql() . ", " . escape((int)$CategoryId, 'int') . ")");
+    }
+
+    /**
+     * @param string $StockKey "stock_id::attribute_id"
+     * @param string $Column is_hidden or is_unavailable
+     */
+    static function setPOSItemFlag($StockKey, $Column, bool $Value)
+    {
+        if (!in_array($Column, ['is_hidden', 'is_unavailable']))
+            return;
+
+        list($StockId, $AttributeId) = array_pad(Stock::splitStockIdAttributeId($StockKey), 2, '');
+        if (empty($StockId))
+            return;
+
+        $Value = $Value ? 1 : 0;
+        DBQM::query("INSERT INTO rs_pos_items (branch_id, stock_id, attribute_id, $Column)
+                     VALUES (" . self::branchSql() . ", " . escape($StockId, 'int') . ", " . escape((int)$AttributeId, 'int') . ", $Value)
+                     ON DUPLICATE KEY UPDATE $Column = $Value");
+    }
+
     /** Items from a "Show on website" category come back on the next sync, so those are hidden instead */
     static function delete($Id)
     {

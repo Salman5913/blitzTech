@@ -62,6 +62,15 @@ class BasicVoucherReport
                 <?php
             }
         }
+
+        if ($this->hasCostCenterFilter())
+            CostCenter::designReportFilter('col-xl-3 col-md-6');
+    }
+
+    /** Vouchers that carry a cost center (the ones with ledger entries) can be filtered on it */
+    function hasCostCenterFilter()
+    {
+        return ProjectHelper::HAS_COST_CENTER and $this->oBasicVoucher->isLedgerObjectRequired();
     }
 
     function getFilterField($Column, $FilterData)
@@ -133,6 +142,6 @@ class BasicVoucherReport
 
     function hasFilters()
     {
-        return !empty(($this->oBasicVoucherReportFilter->getFilters()));
+        return !empty(($this->oBasicVoucherReportFilter->getFilters())) or $this->hasCostCenterFilter();
     }
 }

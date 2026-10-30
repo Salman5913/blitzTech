@@ -33,6 +33,7 @@ $TotalAmount = 0;
                                 <input type="text" name="branch_id" id="branch_id" <? Autocomplete::Search(Autocomplete::TYPE_BRANCH, $_GET['branch_id']);?>>
                             </div>
                         </div>
+                        <? CostCenter::designReportFilter('col-lg-4 col-md-6'); ?>
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label>&nbsp;</label>

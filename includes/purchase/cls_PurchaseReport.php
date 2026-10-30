@@ -15,6 +15,7 @@ class PurchaseReport
         $Where .= UtilsQueryMaker::equal("p.branch_id", $BranchId);
         $Where .= UtilsQueryMaker::equal("category_id", $CategoryId);
         $Where .= UtilsQueryMaker::equal("s.brand", $Brand);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
 
         if ($InvoiceType == 'I')
             $Where .= " AND pd.stock_id IS NOT NULL";
@@ -83,6 +84,7 @@ class PurchaseReport
         $Where .= UtilsQueryMaker::equal("pd.attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::like("s.brand", $Brand);
         $Where .= UtilsQueryMaker::like("ssc.id", $CategoryId);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
 
         $Query = "
                     SELECT

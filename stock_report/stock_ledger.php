@@ -15,7 +15,7 @@ if (isset($_GET['search']))
     $Select = $oStockReport->getReport($StockId, $AttributeId, $_GET['branch_id']);
 
     if (!empty($_GET['date_from']))
-        $Balance = StockReport::getStockBalance($StockId, $AttributeId, $_GET['date_from'], 'from', $_GET['branch_id']);
+        $Balance = StockReport::getStockBalance($StockId, $AttributeId, $_GET['date_from'], 'from', $_GET['branch_id'], $_GET['cost_center_id'] ?? '');
 }
 ?>
 <form action="" method="get" <? Utils::formValidate(); ?>>
@@ -45,6 +45,7 @@ if (isset($_GET['search']))
                             <input type="text" name="branch_id" id="branch_id" <? Autocomplete::Search(Autocomplete::TYPE_BRANCH, $_GET['branch_id']);?>>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-lg-4 col-md-6'); ?>
                     <div class="col-sm-12 text-right">
                         <button type="submit" class="btn color" name="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>
@@ -59,7 +60,7 @@ if (isset($_GET['search']))
             <div class="row">
                 <div class="col-auto mr-auto">
                     <h3 class="card-title">Detailed Report of <strong><?=Stock::getName($StockId, $AttributeId) ?><?=!empty($_GET['branch_id']) ? (' in '.Branch::getName($_GET['branch_id'])) : '' ?></strong> -
-                        <a href="javascript:void(0)" <? Utils::AjaxLoadedPopup('Bath-Wise Stock Report Of '.Stock::getName($StockId, $AttributeId), ProjectHelper::SiteURL()."stock_report/ajax_get_batch_wise_stock_report.php?stock_id=".$_GET['stock_id']) ?>><i class="mdi mdi-view-list"></i> Batch-Wise Stock Report</a>
+                        <a href="javascript:void(0)" <? Utils::AjaxLoadedPopup('Bath-Wise Stock Report Of '.Stock::getName($StockId, $AttributeId), ProjectHelper::SiteURL()."stock_report/ajax_get_batch_wise_stock_report.php?stock_id=".$_GET['stock_id']."&cost_center_id=".urlencode($_GET['cost_center_id'] ?? '')) ?>><i class="mdi mdi-view-list"></i> Batch-Wise Stock Report</a>
                     </h3>
                 </div>
                 <div class="col-auto ml-auto">

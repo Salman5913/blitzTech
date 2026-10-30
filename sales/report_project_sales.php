@@ -57,6 +57,7 @@ $Select = $oSales->getReport($_GET['date_from'], $_GET['date_till'], $_GET['invo
                             <input type="hidden" id="voucher_type_id" name="voucher_type_id" value="<?=$_GET['voucher_type_id']?>">
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                     <div class="col-md-12 text-right">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>

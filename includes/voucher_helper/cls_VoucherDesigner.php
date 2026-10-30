@@ -49,18 +49,7 @@ class VoucherDesigner
                                             <input type="text" name="voucher_date" id="voucher_date" data-type="date" value="<?=DateDecode($RowDetails['voucher_date']) ?>" <? Utils::isRequired() ?>>
                                         </div>
                                     </div>
-                                    <? if ($this->oBasicVoucher->isLedgerObjectRequired() AND ProjectHelper::HAS_COST_CENTER) { ?>
-                                        <div class="<?=$GroupData['element_class']?> <? if (CostCenter::isSingleCostCenterAssigned()) { ?>d-none<? } ?>"><!--col-xl-3 col-lg-4 col-md-6-->
-                                            <div class="form-group">
-                                                <label for="cost_center_id">Cost Center</label>
-                                                <? if (!CostCenter::isSingleCostCenterAssigned()) { ?>
-                                                    <input type="text" name="cost_center_id" id="cost_center_id" <? Autocomplete::designAutocomplete(Autocomplete::TYPE_COST_CENTER, [], $RowDetails['cost_center_id']); ?> <? Utils::isRequired() ?>>
-                                                <? } else { ?>
-                                                    <input type="hidden" name="cost_center_id" id="cost_center_id" value="<?=$isEdit ? $RowDetails['cost_center_id'] : CostCenter::getSingleCostCenterId()?>">
-                                                <? } ?>
-                                            </div>
-                                        </div>
-                                    <? } ?>
+                                    <? if ($this->oBasicVoucher->isLedgerObjectRequired()) CostCenter::designVoucherField($RowDetails['cost_center_id'], $isEdit, $GroupData['element_class']); ?>
                                     <? if ($this->oBasicVoucher->isProject()) { $ACType = $this->oBasicVoucher->isAllProjectList() ? Autocomplete::TYPE_PROJECT : Autocomplete::TYPE_APPROVED_PROJECT; ?>
                                         <div class="<?=$GroupData['element_class']?>"><!--col-xl-3 col-lg-4 col-md-6-->
                                             <div class="form-group">

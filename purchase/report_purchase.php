@@ -203,12 +203,13 @@ $mean = $num_rows > 0 ? $Total / $num_rows : 0;
                             </select>
                         </div>
                     </div>
-                    <div class="col-xl-7 col-lg-9 col-md-8">
+                    <div class="col-xl-4 col-lg-5 col-md-4">
                         <div class="form-group mb-2">
                             <label for="description">Description</label>
                             <input type="text" class="form-control" id="description" name="description" value="<?=$_GET['description']?>">
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-lg-4 col-md-4'); ?>
                     <div class="col-xl-3 col-lg-12 col-md-12 text-right d-flex align-items-end justify-content-end mb-2">
                         <input type="hidden" name="action_voucher_type_id" value="<?=$_GET['voucher_type_id']?>">
                         <button type="submit" class="btn-search-premium w-100" name="search" id="search" style="max-width: 200px;">

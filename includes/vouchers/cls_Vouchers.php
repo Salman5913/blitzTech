@@ -181,7 +181,7 @@ class Vouchers extends BasicVoucher implements DefaultVoucherForm, DefaultVouche
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
             $Where .= UtilsQueryMaker::like("di.voucher_type_id", $_GET['voucher_type_id']);
             $Where .= UtilsQueryMaker::equal("a.id", $_GET['account_id']);
-            $Where .= UtilsQueryMaker::equal("di.cost_center_id", $_GET['cost_center_id']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
             $Where .= UtilsQueryMaker::like("vd.description", $_GET['description']);
         }
         else

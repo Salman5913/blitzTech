@@ -85,6 +85,7 @@ class Purchase extends BasicVoucher
         }
 
         $Where .= Branch::isAccessYourOwnData('di.created_by');
+        $Where .= CostCenter::getFilterSql('di.cost_center_id', true);
 
         $Query .= $Where;
 

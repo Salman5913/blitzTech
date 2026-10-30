@@ -39,6 +39,7 @@ if (isset($_GET['search']))
                                 <input type="text" class="form-control" name="date_till" data-type="date" value="<?=$_GET['date_till'] =='' ? '' : DateEncode($_GET['date_till'], 'M d, Y')?>" data-empty="true" />
                             </div>
                         </div>
+                        <? CostCenter::designReportFilter('col-xl-5 col-md-6'); ?>
                         <div class="col-xl-2 text-right">
                             <div class="form-group">
                                 <label>&nbsp;</label>
@@ -54,7 +55,7 @@ if (isset($_GET['search']))
     <div class="report_complete">
         <div class="row">
             <div class="col-md-12 text-right mb-3">
-                <a href="print_aging.php?coa_id=<?=$_GET['coa_id']?>&account_id=<?=$_GET['account_id']?>&type=<?=$_GET['type']?>" class="btn color button btn-sm" target="_blank"><i class="mdi mdi-printer"></i> Print</a>
+                <a href="print_aging.php?coa_id=<?=$_GET['coa_id']?>&account_id=<?=$_GET['account_id']?>&type=<?=$_GET['type']?><?=AccountingReport::costCenterUrlParam()?>" class="btn color button btn-sm" target="_blank"><i class="mdi mdi-printer"></i> Print</a>
             </div>
         </div>
         <?
@@ -480,5 +481,5 @@ if (isset($_GET['search']))
             </div>
         <? } ?>
     </div>
-<? UtilsPrint::init(DateEncode(DatabaseHelper::NOW(), 'd/m/Y')) ?>
+<? UtilsPrint::init(DateEncode(DatabaseHelper::NOW(), 'd/m/Y').AccountingReport::costCenterHeading()) ?>
 <? include_once("../includes/inc_footer.php"); ?>

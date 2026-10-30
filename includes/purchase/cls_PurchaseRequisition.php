@@ -61,6 +61,7 @@ class PurchaseRequisition extends BasicVoucher implements DefaultVoucherForm, De
         {
             $Where = UtilsQueryMaker::stock("pr.stock_id", "pr.attribute_id", $_GET['stock_id']);
             $Where .= UtilsQueryMaker::date("di.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("di.cost_center_id", true);
         }
         else
         {

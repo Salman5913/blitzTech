@@ -41,11 +41,19 @@ class Loan extends BasicVoucher
 		return DBQM::query("SELECT * FROM hr_loan WHERE account_id = ".escape($AccountId));
 	}
 
-	function getAllEmpLoans($IgnoreSalaryId='', $ForDashboard=false, $BranchId='', $Date)
+	/**
+	 * @param string $CostCenterId report filter: only employees with a loan / advance voucher of this cost center
+	 * (balances stay complete, as repayments may be booked under other cost centers)
+	 */
+	function getAllEmpLoans($IgnoreSalaryId='', $ForDashboard=false, $BranchId='', $Date='', $CostCenterId='')
 	{
 		$Where = '';
 		$Where .= empty($IgnoreSalaryId) ? '' : (" AND sd.salary_id < ".escape($IgnoreSalaryId));
 		$MainWhere = UtilsQueryMaker::equal("b.id", $BranchId);
+
+		$CostCenterWhere = CostCenter::getFilterSql("cc_l.distinct_id", false, $CostCenterId);
+		if ($CostCenterWhere)
+			$MainWhere .= " AND t.account_id IN (SELECT cc_l.account_id FROM hr_loan cc_l WHERE 1 {$CostCenterWhere}) ";
 
 		$Select = DBQM::query("
 										SELECT
@@ -162,6 +170,7 @@ class Loan extends BasicVoucher
 	function getReport($AccountId)
 	{
 		$Where = UtilsQueryMaker::like("account_id", $AccountId);
+		$Where .= CostCenter::getFilterSql("l.cost_center_id", true);
 
 		return DBQM::query("
                                     SELECT 
@@ -188,6 +197,7 @@ class Loan extends BasicVoucher
 	function getAdvanceReport($AccountId)
 	{
 		$Where = UtilsQueryMaker::like("account_id", $AccountId);
+		$Where .= CostCenter::getFilterSql("l.cost_center_id", true);
 
 		return DBQM::query("
 									SELECT

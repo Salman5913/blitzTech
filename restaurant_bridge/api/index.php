@@ -4,6 +4,7 @@
  *
  * Routes (via ?route=...):
  *   GET   /health
+ *   GET   /status                   - website open or closed (ERP: Restaurant > Website On/Off)
  *   GET   /branches                 - branches the website offers (ERP: Restaurant > Branches)
  *   GET   /branches/{id}/menu       - every branch has its own menu,
  *   GET   /branches/{id}/deals      - deals
@@ -14,6 +15,9 @@
  * Order status and invoicing are handled in the ERP (restaurant/manage_web_orders.php).
  */
 $config = require __DIR__ . '/config.php';
+
+// Opening hours are restaurant time, same as the ERP (connection/localhost.php)
+date_default_timezone_set('Asia/Karachi');
 
 header('Content-Type: application/json; charset=utf-8');
 header('Access-Control-Allow-Origin: ' . $config['cors_origin']);
@@ -93,6 +97,31 @@ const MENU_SYNC_SQL = "INSERT INTO rs_menu_items (branch_id, name, description, 
 const BRANCH_SQL = "SELECT b.id, b.name, b.address, b.phone
                     FROM rs_branches rb JOIN branch b ON b.id = rb.branch_id
                     WHERE rb.show_on_website = 1";
+
+/**
+ * Website open or closed right now (rs_website_settings, ERP: Restaurant > Website On/Off). Same rule as the ERP's
+ * RestaurantWebsite::getStatus(): Off = closed; On = open, only between the opening and closing time when set
+ * (closing before opening = past midnight). No settings table yet = open.
+ */
+function websiteStatus(PDO $pdo): array {
+    try {
+        $s = $pdo->query('SELECT * FROM rs_website_settings WHERE id = 1')->fetch();
+    } catch (PDOException $e) {
+        $s = false;
+    }
+    if (!$s) return ['open' => true, 'message' => '', 'opensAt' => null];
+
+    $now = date('H:i:s');
+    $open = $s['open_time'] ?: '00:00:00';
+    $close = $s['close_time'] ?: '24:00:00';
+    $isOpen = $s['is_open'] && ($open <= $close ? ($now >= $open && $now < $close) : ($now >= $open || $now < $close));
+
+    $opensAt = $s['open_time'] ? date('g:i A', strtotime($s['open_time'])) : null;
+    $message = trim((string)$s['closed_message']) !== '' ? trim($s['closed_message'])
+        : ($opensAt ? "We're closed right now. Kindly visit at $opensAt." : "We're closed right now. Kindly visit again later.");
+
+    return ['open' => (bool)$isOpen, 'message' => $isOpen ? '' : $message, 'opensAt' => $opensAt];
+}
 
 /** A branch the website offers, or a 404 */
 function websiteBranch(PDO $pdo, int $branchId): array {
@@ -195,6 +224,11 @@ try {
         respond(['ok' => true, 'time' => date(DATE_ATOM)]);
     }
 
+    // GET /status  - the website shows a "we're closed" popup while this says closed
+    if ($route === '/status' && $method === 'GET') {
+        respond(websiteStatus($pdo));
+    }
+
     // GET /branches  - the website asks the customer to pick one of these first
     if ($route === '/branches' && $method === 'GET') {
         $rows = $pdo->query(BRANCH_SQL . ' ORDER BY rb.sort_order, b.name')->fetchAll();
@@ -286,6 +320,9 @@ try {
 
         // POST /orders  - website places an order
         if (!$code && $method === 'POST') {
+            $status = websiteStatus($pdo);
+            if (!$status['open']) respond(['error' => $status['message']], 423);
+
             $b = body();
             $c = $b['customer'] ?? [];
             $type = ($b['type'] ?? '') === 'pickup' ? 'pickup' : 'delivery';

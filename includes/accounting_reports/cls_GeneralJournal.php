@@ -35,6 +35,7 @@ class GeneralJournal extends AccountingReport
         ";
 
         $Query .= UtilsQueryMaker::date("date_time", $this->DateFrom, $this->DateTill);
+        $Query .= self::costCenterSql('l');
 
         $Query .= " GROUP BY l.id ORDER BY date_time ASC";
 

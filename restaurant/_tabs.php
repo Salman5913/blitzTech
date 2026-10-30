@@ -1,6 +1,6 @@
 <?php
 /**
- * Tab bar for the restaurant website pages. Set $ActiveTab before including: orders, menu, deals, deals_report, areas or branches.
+ * Tab bar for the restaurant website pages. Set $ActiveTab before including: orders, menu, deals, deals_report, areas, branches or website.
  * The branch dropdown picks the branch these pages work on (RestaurantBranch::getCurrentId()); every branch has its own
  * menu, deals, delivery areas and web orders.
  */
@@ -11,6 +11,7 @@ $RestaurantTabs = [
     'deals_report' => ['Deals Report', 'deals_report.php'],
     'areas' => ['Delivery Areas', 'delivery_areas.php'],
     'branches' => ['Branches', 'branches.php'],
+    'website' => ['Website On/Off', 'website_status.php'],
 ];
 $RestaurantBranchId = RestaurantBranch::getCurrentId();
 ?>
@@ -27,7 +28,7 @@ $RestaurantBranchId = RestaurantBranch::getCurrentId();
             </li>
         <? } ?>
     </ul>
-    <? if (($ActiveTab ?? '') !== 'branches') { ?>
+    <? if (!in_array($ActiveTab ?? '', ['branches', 'website'])) { ?>
         <form method="post" action="op_set_branch.php" class="form-inline mb-2">
             <input type="hidden" name="return" value="<?=htmlspecialchars(basename($_SERVER['PHP_SELF']), ENT_QUOTES, 'UTF-8')?>">
             <label for="restaurant_branch_id" class="mr-2 font-weight-bold"><i class="mdi mdi-store-outline"></i>&nbsp;Branch</label>

@@ -22,6 +22,7 @@ include_once("../includes/inc_header.php");
                             <label for="voucher_date">Date</label>
                             <input type="text" data-type="date" name="voucher_date" id="voucher_date" value="<?=DateDecode($RowLoanDetails['date'])?>" <? Utils::isRequired() ?>>
                         </div>
+                        <? CostCenter::designVoucherField('', false, 'col-md-6'); ?>
                         <div class="col-md-6">
                             <label for="cash_bank_id">Advance Given From</label>
                             <input type="text" name="cash_bank_id" id="cash_bank_id" class="large" <?Autocomplete::ACSearchAccountByCOAId([getConstantCategory()->getCashInHand(), getConstantCategory()->getBank()],$RowLoanDetails['cash_bank_id']); Utils::isRequired(); ?>>

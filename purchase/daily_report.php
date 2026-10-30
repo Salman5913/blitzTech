@@ -9,6 +9,8 @@ if (isset($_GET['search']))
 {
     $Select = $oPurchase->getDateWiseReport($_GET['date_from'], $_GET['date_till'], $_GET['supplier_id'], $_GET['stock_id'], $_GET['branch_id'], $_GET['category_id'], $_GET['brand'],  $_GET['invoice_type']);
     $PrintDescription = "Datewise Daily Report : ".DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y');
+    if (!empty($_GET['cost_center_id']))
+        $PrintDescription .= " | Cost Center: ".CostCenter::getName($_GET['cost_center_id']);
 }
 ?>
 <form action="" method="get" <? Utils::formValidate() ?>>
@@ -62,6 +64,7 @@ if (isset($_GET['search']))
                             <select id="invoice_type" name="invoice_type"><? Utils::getDropDownOptionsFromArray(['' => '', 'I' => 'Inventory', 'N' => 'Non Inventory'], $_GET['invoice_type']);?></select>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-4 col-md-6'); ?>
                     <div class="col-xl-12 text-right">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>

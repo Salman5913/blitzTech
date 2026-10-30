@@ -18,7 +18,7 @@ if (isset($_GET['search']))
 
     $Select = $oCategoryBalanceReport->getReport($_GET['coa_id']);
 
-    $Heading = ChartOfAccountCategory::getNameById($_GET['coa_id'])." - Current Balances";
+    $Heading = ChartOfAccountCategory::getNameById($_GET['coa_id'])." - Current Balances".AccountingReport::costCenterHeading();
 
 	$oLedgerReport->setDate('', $DateTill);
 }
@@ -40,13 +40,14 @@ include_once("../includes/inc_header.php");
                             <input type="text" id="coa_id" name="coa_id" <? Autocomplete::ACSearchCOA($_GET['coa_id']); ?> required>
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6">
+                    <div class="col-xl-3 col-md-6">
                         <div class="form-group">
                             <label for="date_till">As at Date</label>
                             <input type="text" class="form-control" name="date_till" id="date_till" data-type="date" value="<?=$_GET['date_till'] == '' ? '' : DateEncode($_GET['date_till'], 'M d, Y')?>" data-empty="true" />
                         </div>
                     </div>
-                    <div class="col-xl-4 col-md-6">
+                    <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
+                    <div class="col-xl-2 col-md-6">
                         <label>&nbsp;</label>
                         <button type="submit" class="btn button color form-control" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>
@@ -104,5 +105,5 @@ include_once("../includes/inc_header.php");
         </div>
     </div>
 </div>
-<? UtilsPrint::init("As on - ".DateEncode($_GET['date_till'], 'M d, Y')) ?>
+<? UtilsPrint::init("As on - ".DateEncode($_GET['date_till'], 'M d, Y').AccountingReport::costCenterHeading()) ?>
 <? include_once("../includes/inc_footer.php"); ?>

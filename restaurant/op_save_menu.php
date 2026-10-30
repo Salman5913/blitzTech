@@ -11,6 +11,13 @@ $Id = (int)($_POST['id'] ?? 0);
 switch ($_POST['action'] ?? '')
 {
     case 'save':
+        // Dishes can only be edited here, not added
+        if (!$Id || !RestaurantMenu::getDetails($Id))
+        {
+            ErrorHandler::setError("Choose a dish from the list to edit.");
+            Utils::redirect("manage_menu.php");
+        }
+
         $Data = $_POST;
 
         // "stock::variation" from the dropdown; linked dishes default to the item's (variation's) name and price
@@ -70,6 +77,24 @@ switch ($_POST['action'] ?? '')
         RestaurantMenu::delete($Id);
         SuccessHandler::setMessage("Dish deleted from the website menu.");
         break;
+
+    /* ************* POS menu (manage_menu.php?view=pos) ************* */
+    case 'pos_hide_item':
+    case 'pos_show_item':
+        RestaurantMenu::setPOSItemFlag($_POST['stock_key'] ?? '', 'is_hidden', $_POST['action'] == 'pos_hide_item');
+        Utils::redirect("manage_menu.php?view=pos");
+
+    case 'pos_sold_out':
+    case 'pos_available':
+        RestaurantMenu::setPOSItemFlag($_POST['stock_key'] ?? '', 'is_unavailable', $_POST['action'] == 'pos_sold_out');
+        Utils::redirect("manage_menu.php?view=pos");
+
+    case 'pos_hide_category':
+    case 'pos_show_category':
+        $Show = $_POST['action'] == 'pos_show_category';
+        RestaurantMenu::setPOSCategoryVisible($_POST['stock_category_id'] ?? 0, $Show);
+        SuccessHandler::setMessage("\"" . ($_POST['category'] ?? '') . "\" is now " . ($Show ? "shown on" : "hidden from") . " the POS.");
+        Utils::redirect("manage_menu.php?view=pos");
 }
 
 Utils::redirect("manage_menu.php");

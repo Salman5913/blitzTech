@@ -252,10 +252,18 @@ class VoucherType
 
     const PIPV = 109;
 
+    /**
+     * Order Invoice Voucher (POS) - same behaviour as SIV, saved through Sales class
+     */
+    const OIV = 110;
+
+
+    const SU = 111;
 
 
 
-    private static $SalesVoucherTypes = [self::SIV];
+
+    private static $SalesVoucherTypes = [self::SIV, self::OIV];
 
 
     private $VoucherType;
@@ -316,6 +324,10 @@ class VoucherType
             case self::SIV:
             case self::SRV:
                 $Link = ProjectHelper::SiteURL()."sales/sales_voucher.php";
+                break;
+
+            case self::OIV:
+                $Link = ProjectHelper::SiteURL()."pos/pos_voucher.php";
                 break;
 
             case self::ADV:

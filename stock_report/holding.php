@@ -51,6 +51,7 @@ $TotalAmount = 0;
                                 <input type="text" name="category_id" id="category_id" <? Autocomplete::Search(Autocomplete::TYPE_STOCK_CATEGORY, $_GET['category_id']);?>>
                             </div>
                         </div>
+                        <? CostCenter::designReportFilter('col-lg-4 col-md-6'); ?>
                         <div class="col-lg-4">
                             <div class="form-group">
                                 <label>&nbsp;</label>

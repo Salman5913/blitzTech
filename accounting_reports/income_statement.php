@@ -36,6 +36,7 @@ if (isset($_GET['search']))
                             </div>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                     <div class="col-xl-2 col-md-3">
                         <div class="form-group">
                             <label>&nbsp;</label>
@@ -61,7 +62,7 @@ if (isset($_GET['search']))
                     <td class="text-right"><?=Utils::format($Sales)?></td>
                 </tr>
                 <tr>
-                    <td><a href="expanded_report.php?date_from=<?=$_GET['date_from']?>&date_till=<?=$_GET['date_till']?>&coa_id=<?=getConstantCategory()->getCostOfGoodSold()?>">Cost of Goods Sold</a></td>
+                    <td><a href="expanded_report.php?date_from=<?=$_GET['date_from']?>&date_till=<?=$_GET['date_till']?>&coa_id=<?=getConstantCategory()->getCostOfGoodSold()?><?=AccountingReport::costCenterUrlParam()?>">Cost of Goods Sold</a></td>
                     <td class="text-right"><?=Utils::format($COGS)?></td>
                 </tr>
                 <tr>
@@ -96,5 +97,5 @@ if (isset($_GET['search']))
         </div>
     </div>
 </div>
-<? UtilsPrint::init(DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y')) ?>
+<? UtilsPrint::init(DateEncode($_GET['date_from'], 'd/m/Y')." - ".DateEncode($_GET['date_till'], 'd/m/Y').AccountingReport::costCenterHeading()) ?>
 <? include_once("../includes/inc_footer.php"); ?>

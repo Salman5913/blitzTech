@@ -15,7 +15,7 @@ class ProjectHelper {
 
     const DEFAULT_CURRENCY = 'PKR';
     const TAX_LABEL = 'GST';
-    const HAS_COST_CENTER = false;
+    const HAS_COST_CENTER = true;
     const HAS_PROJECT = true;
 
     static function SiteURL() {

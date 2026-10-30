@@ -35,6 +35,7 @@ if (isset($_GET['search']))
                             <input type="text" class="form-control" name="date_till" data-type="date" value="<?=$_GET['date_till'] =='' ? '' : DateEncode($_GET['date_till'], 'M d, Y')?>" data-empty="true" />
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-4 col-md-6'); ?>
                     <div class="col-xl-3 col-md-6">
                         <label>&nbsp;</label>
                         <button type="submit" class="btn button color form-control" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
@@ -124,5 +125,5 @@ if (isset($_GET['search']))
         </div>
     </div>
 </div>
-<? UtilsPrint::init("Ending At ".DateEncode($_GET['date_till'], 'd/m/Y')) ?>
+<? UtilsPrint::init("Ending At ".DateEncode($_GET['date_till'], 'd/m/Y').AccountingReport::costCenterHeading()) ?>
 <? include_once("../includes/inc_footer.php"); ?>

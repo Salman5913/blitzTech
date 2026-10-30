@@ -1,6 +1,10 @@
 <?
 include_once("../connection/localhost.php");
 
+// Order Invoice (POS) has its own receipt print
+if ($_GET['voucher_type_id'] == VoucherType::OIV)
+    Utils::redirect(ProjectHelper::SiteURL()."pos/print_voucher.php?".http_build_query($_GET));
+
 $oSales          = new Sales();
 $oCompany        = new Company();
 $oChartOfAccount      = new ChartOfAccount();

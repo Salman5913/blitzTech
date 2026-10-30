@@ -120,6 +120,7 @@ class StockManufacture extends BasicVoucher implements DefaultVoucherPrint, Defa
         if (empty($_GET['voucher_number']))
         {
             $Where .= UtilsQueryMaker::date("did.voucher_date", $_GET['date_from'], $_GET['date_till']);
+            $Where .= CostCenter::getFilterSql("did.cost_center_id", true);
             $Where .= UtilsQueryMaker::stock("m.finish_stock_id", "m.finish_attribute_id", $_GET['finish_stock_id']);
             $Where .= UtilsQueryMaker::like("m.description", $_GET['description']);
         }

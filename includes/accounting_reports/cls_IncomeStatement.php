@@ -19,7 +19,12 @@ class IncomeStatement extends AccountingReport
         $WherePurchases = UtilsQueryMaker::date("l.date_time", $this->DateFrom, $this->DateTill);
         $WhereClosing = UtilsQueryMaker::date("stl.date_time", '', $this->DateTill);
 
-        $SelectOpeningStock = DBQM::query("SELECT SUM(stb.cost * stl.qty) FROM st_stock_ledger stl, st_stock_batch stb WHERE stb.id = stl.batch_id AND stl.date_time < ".escape(DateEncode($this->DateFrom)));
+        // Cost center filter: purchases on the ledger, opening / closing stock on the stock ledger (both carry distinct_id)
+        $WherePurchases .= self::costCenterSql('l');
+        $WhereClosing .= self::costCenterSql('stl');
+        $WhereOpening = self::costCenterSql('stl');
+
+        $SelectOpeningStock = DBQM::query("SELECT SUM(stb.cost * stl.qty) FROM st_stock_ledger stl, st_stock_batch stb WHERE stb.id = stl.batch_id AND stl.date_time < ".escape(DateEncode($this->DateFrom))." {$WhereOpening}");
         $OpeningStock = DBQM::result($SelectOpeningStock, 0);
 
         $SelectPurchases = DBQM::query("SELECT SUM(debit - credit) FROM ledger l, ledger_data ld WHERE l.id = ld.ledger_id AND ld.account_id = ".escape(getConstantAccount()->getPurchaseAccount())." AND l.year_id = ".escape(Year::getYearId())." {$WherePurchases}");
@@ -57,7 +62,7 @@ class IncomeStatement extends AccountingReport
 
             ?>
             <tr>
-                <td><?=str_repeat(" &nbsp;", $Count*3)?>- <a href="expanded_report.php?date_from=<?=$this->DateFrom?>&date_till=<?=$this->DateTill?>&coa_id=<?=$Key?>"><?=$Name?></a></td>
+                <td><?=str_repeat(" &nbsp;", $Count*3)?>- <a href="expanded_report.php?date_from=<?=$this->DateFrom?>&date_till=<?=$this->DateTill?>&coa_id=<?=$Key?><?=self::costCenterUrlParam()?>"><?=$Name?></a></td>
                 <td class="text-right"><?=Utils::format($Amount)?></td>
             </tr>
             <?
@@ -80,6 +85,7 @@ class IncomeStatement extends AccountingReport
                         a.coa_id = ".escape($COAId)." AND
                         l.year_id = ".escape(Year::getYearId())." AND
                         l.date_time BETWEEN ".escape($this->EncodedDateFrom)." AND ".escape($this->EncodedDateTill." 23:59:59")."
+                        ".self::costCenterSql('l')."
                     GROUP BY
                         a.coa_id
         ";

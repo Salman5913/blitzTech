@@ -14,6 +14,16 @@ $Select = $oSalary->getReport();
     <div class="col-sm-12">
         <div class="card">
             <? $oSalary->showVoucherButtonsWithOptions([VoucherType::SM."-New"]); ?>
+            <? if (ProjectHelper::HAS_COST_CENTER) { ?>
+            <form action="" method="get" <? Utils::formValidate() ?>>
+                <div class="row filter hidden">
+                    <? CostCenter::designReportFilter('col-md-6'); ?>
+                    <div class="col-md-12 mt-3">
+                        <button type="submit" class="btn button color" name="search" id="search"><i class="fa fa-search"></i> Search</button>
+                    </div>
+                </div>
+            </form>
+            <? } ?>
             <div class="table-responsive">
                 <table class="table data-table-report color table-striped">
                     <thead>

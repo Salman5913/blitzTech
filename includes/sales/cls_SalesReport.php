@@ -53,6 +53,7 @@ class SalesReport extends Sales
         }
 
         $Where .= UtilsQueryMaker::equal("sl.invoice_type", $InvoiceType);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
         $Where .= Branch::isAccessYourOwnData('did.created_by');
 
         $Where .= UtilsQueryMaker::equal("did.voucher_type_id", $VoucherTypeId);
@@ -78,6 +79,7 @@ class SalesReport extends Sales
         $Where .= UtilsQueryMaker::equal("s.brand", $Brand);
         $Where .= UtilsQueryMaker::equal("did.voucher_type_id", $VoucherTypeId);
         $Where .= UtilsQueryMaker::equal("sl.sales_man_id", $SalesmanId);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
         $Where .= UtilsQueryMaker::like("sl.description", $Description);
 
         if ($InvoiceType == 'I')
@@ -144,6 +146,7 @@ class SalesReport extends Sales
         $Where .= UtilsQueryMaker::equal("sld.attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::like("s.brand", $Brand);
         $Where .= UtilsQueryMaker::like("s.category_id", $CategoryId);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
 
         $Query = "
                 SELECT

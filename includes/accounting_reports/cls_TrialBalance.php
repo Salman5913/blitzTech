@@ -59,6 +59,7 @@ class TrialBalance extends AccountingReport
                             a.coa_id = ".escape($COAId)." AND
                             l.year_id = ".escape(Year::getYearId())." AND
                             l.date_time BETWEEN ".escape($this->EncodedDateFrom." 00:00:00")." AND ".escape($this->EncodedDateTill." 23:59:59")."
+                            ".self::costCenterSql('l')."
                         GROUP BY
                             a.id
 
@@ -83,6 +84,7 @@ class TrialBalance extends AccountingReport
                             a.coa_id = ".escape($COAId)." AND
                             l.year_id = ".escape(Year::getYearId())." AND
                             l.date_time < ".escape($this->EncodedDateFrom." 00:00:00")."
+                            ".self::costCenterSql('l')."
                         GROUP BY
                             a.id
                     ) AS accounts_table
@@ -220,7 +222,7 @@ class TrialBalance extends AccountingReport
             }
             ?>
             <tr class="<?=(!$isGroupWise) ? 'bg-success text-white' : '' ?>">
-                <td><?=str_repeat(" &nbsp;", $Count*3)?><i class="mdi mdi-file-tree"></i> <a class="<?=(!$isGroupWise) ? 'text-white' : '' ?>" href="expanded_report.php?date_from=<?=empty($this->DateFrom) ? Settings::getOpeningDateTime() : $this->DateFrom?>&date_till=<?=$this->DateTill?>&coa_id=<?=$COAId?>"><?=$Name?></a></td>
+                <td><?=str_repeat(" &nbsp;", $Count*3)?><i class="mdi mdi-file-tree"></i> <a class="<?=(!$isGroupWise) ? 'text-white' : '' ?>" href="expanded_report.php?date_from=<?=empty($this->DateFrom) ? Settings::getOpeningDateTime() : $this->DateFrom?>&date_till=<?=$this->DateTill?>&coa_id=<?=$COAId?><?=self::costCenterUrlParam()?>"><?=$Name?></a></td>
                 <td class="text-right"><?=Utils::format($TotalOpening)?></td>
                 <td class="text-right"><?=Utils::format($TotalDebit)?></td>
                 <td class="text-right"><?=Utils::format($TotalCredit)?></td>
@@ -249,7 +251,7 @@ class TrialBalance extends AccountingReport
             {
                 ?>
                 <tr>
-                    <td><?=str_repeat(" &nbsp;", ($Count+1)*3)?><i class="mdi mdi-dots-horizontal"></i> <a href="ledger.php?date_from=<?=$this->DateFrom?>&date_till=<?=$this->DateTill?>&account_id=<?=$RowAccounts['id']?>&search="><?=$RowAccounts['name']?></a></td>
+                    <td><?=str_repeat(" &nbsp;", ($Count+1)*3)?><i class="mdi mdi-dots-horizontal"></i> <a href="ledger.php?date_from=<?=$this->DateFrom?>&date_till=<?=$this->DateTill?>&account_id=<?=$RowAccounts['id']?><?=self::costCenterUrlParam()?>&search="><?=$RowAccounts['name']?></a></td>
                     <td class="text-right" title="Ledger Opening: <?=Utils::format($RowAccounts['opening_raw'])?>"><?=Utils::format($RowAccounts['opening'])?></td>
                     <td class="text-right" title="Ledger Debit: <?=Utils::format($RowAccounts['total_debit_raw'])?>"><?=Utils::format($RowAccounts['total_debit'])?></td>
                     <td class="text-right" title="Ledger Credit: <?=Utils::format($RowAccounts['total_credit_raw'])?>"><?=Utils::format($RowAccounts['total_credit'])?></td>

@@ -32,6 +32,7 @@ if (isset($_GET['search']))
                             </div>
                         </div>
                     </div>
+                    <? CostCenter::designReportFilter('col-xl-3 col-md-6'); ?>
                     <div class="col-md-12">
                         <button type="submit" class="btn button color" name="search" id="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
                     </div>

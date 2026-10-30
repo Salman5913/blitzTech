@@ -18,6 +18,24 @@ while ($RowCategory = DBQM::fetch_assoc($SelectCategories))
 $Total = [];
 ?>
 <form action="" method="get">
+    <? if (ProjectHelper::HAS_COST_CENTER) { ?>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="card">
+                <h3 class="card-title">Filter Options</h3>
+                <div class="row">
+                    <? CostCenter::designReportFilter('col-lg-4 col-md-6'); ?>
+                    <div class="col-lg-2">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <button type="submit" class="btn color d-block" name="search"><i class="mdi mdi-file-document-box-search"></i> Search</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <? } ?>
     <div class="row">
         <div class="col-sm-12">
             <div class="card">

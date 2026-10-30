@@ -20,9 +20,13 @@ class Aging
     private $Multiplier = 1;
     private static $TotalBalance = 0;
 
+    /** " AND l.distinct_id IN (...)" of the cost center picked in the report filter, '' when none */
+    private $CostCenterSql = '';
+
     public function __construct($AccountId, $Type)
     {
         $this->AccountId = $AccountId;
+        $this->CostCenterSql = AccountingReport::costCenterSql('l');
 
         if ($Type == 'customer')
         {
@@ -175,6 +179,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', $DayFrom, $DayTill, $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                             GROUP BY
                                     did.id
                             ORDER BY
@@ -213,6 +218,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "0", "7", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -236,6 +242,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "8", "14", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -260,6 +267,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "15", "21", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -284,6 +292,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "22", "28", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -308,6 +317,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "29", "45", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -332,6 +342,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "46", "60", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -356,6 +367,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "61", "90", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                                     
@@ -380,6 +392,7 @@ class Aging
                                     did.id IN (".implode(", ",array_map("escape", $this->UnclearedBillDistinctIds)).")
                                     {$this->getDates('did.voucher_date', "91", "8000", $DateTill)}
                                     {$Where}
+                                    {$this->CostCenterSql}
                                 GROUP BY
                                     did.id
                             
@@ -415,6 +428,7 @@ class Aging
                                         l.id = ld.ledger_id AND 
                                         ld.account_id = ".escape($AccountId)." 
                                         {$Where}
+                                        {$this->CostCenterSql}
                                     GROUP BY
                                         distinct_id 
                                 
@@ -431,6 +445,7 @@ class Aging
                                         l.id = ld.ledger_id AND 
                                         ld.account_id = ".escape($AccountId)." AND 
                                         l.voucher_type_id = ".escape(VoucherType::JV)."
+                                        {$this->CostCenterSql}
                                     GROUP BY
                                         distinct_id 
                                 ) as tmp

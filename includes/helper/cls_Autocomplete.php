@@ -11,7 +11,10 @@ class Autocomplete
      * Categories required as array
      */
     const TYPE_ACCOUNT_BY_COA = 'account_by_coa';
+    /** Restricted to the logged in user's branch when one is assigned (User Management), else every branch */
     const TYPE_BRANCH = 'branch';
+    /** Every branch, whatever the user's branch (e.g. assigning a branch to a user, stock movement destination) */
+    const TYPE_BRANCH_ALL = 'branch_all';
     const TYPE_STOCK_CATEGORY = 'stock_category';
     const TYPE_STOCK_BRAND = 'stock_brand';
     const TYPE_STOCK_UNIT = 'stock_unit';
@@ -66,6 +69,7 @@ class Autocomplete
                 break;
 
             case self::TYPE_BRANCH:
+            case self::TYPE_BRANCH_ALL:
                 $TableName = 'branch';
                 $ColumnName = 'name';
                 break;
@@ -323,17 +327,34 @@ class Autocomplete
         }
     }
 
+    /**
+     * Branch assigned to the logged in user in User Management (sh_login.branch_id), or 0 when none
+     * (a branch that no longer exists counts as none)
+     */
+    static function getUserBranchId()
+    {
+        static $BranchId = null;
+
+        if ($BranchId === null)
+        {
+            $BranchId = (int)Branch::getBranchIdByUserId(SecurityShell::getLoggedInUserId());
+            if ($BranchId && DatabaseHelper::isRecordSetEmpty(DBQM::query("SELECT id FROM branch WHERE id = ".escape($BranchId, 'int'))))
+                $BranchId = 0;
+        }
+
+        return $BranchId;
+    }
+
     function searchData($Term='')
     {
         $Where = $this->Where;
 
-        if ($this->Type == self::TYPE_COST_CENTER)
-        {
-            $SelectCostCenter = DBQM::query("SELECT GROUP_CONCAT(cost_center_id) FROM sh_user_cost_center WHERE user_id = ".escape(SecurityShell::getLoggedInUserId()));
+        if ($this->Type == self::TYPE_BRANCH and self::getUserBranchId())
+            $Where[] = " id = ".escape(self::getUserBranchId(), 'int')." ";
 
-            if (DBQM::result($SelectCostCenter, 0) != '')
-                $Where[] = " id IN (".DBQM::result($SelectCostCenter, 0).") ";
-        }
+        // a user with assigned cost centers (Security Shell > Users) only gets those, else all
+        if ($this->Type == self::TYPE_COST_CENTER and $UserCostCenterIds = CostCenter::getUserCostCenterIds(SecurityShell::getLoggedInUserId()))
+            $Where[] = " id IN (".implode(', ', $UserCostCenterIds).") ";
 
         if (!empty($Where))
         {
@@ -364,7 +385,11 @@ class Autocomplete
 
     function getIdByData($Data)
     {
-        $Select = DBQM::query("SELECT id FROM `{$this->Table}` WHERE `{$this->Column}` = ".escape($Data));
+        $Where = ($this->Type == self::TYPE_BRANCH and self::getUserBranchId()) ? " AND id = ".escape(self::getUserBranchId(), 'int') : "";
+        // a user with assigned cost centers can only pick those (same as searchData)
+        if ($this->Type == self::TYPE_COST_CENTER and $UserCostCenterIds = CostCenter::getUserCostCenterIds(SecurityShell::getLoggedInUserId()))
+            $Where .= " AND id IN (".implode(', ', $UserCostCenterIds).")";
+        $Select = DBQM::query("SELECT id FROM `{$this->Table}` WHERE `{$this->Column}` = ".escape($Data).$Where);
         return DBQM::result($Select, 0);
     }
 
@@ -396,6 +421,10 @@ class Autocomplete
     {
         $oAutocomplete = new Autocomplete($Type);
         $Output = '';
+
+        // A user with an assigned branch gets it selected on new forms
+        if ($Type == self::TYPE_BRANCH and empty($EditValueId))
+            $EditValueId = self::getUserBranchId() ?: '';
 
         if ($oAutocomplete->isAutocompleteRequired())
         {

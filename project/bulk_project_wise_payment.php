@@ -56,6 +56,7 @@ include_once("../includes/inc_header.php");
                             <input type="text" data-type="date" name="voucher_date" id="voucher_date" value="" >
                             <input type="hidden" name="voucher_type_id" value="<?=$_GET['voucher_type_id']?>">
                         </div>
+                        <? CostCenter::designVoucherField('', false, 'col-md-4'); ?>
                         <div class="col-md-4">
                             <label for="cash_bank_id">Cash / Bank</label>
                             <input type="text" name="cash_bank_id" id="cash_bank_id" <?Autocomplete::ACSearchAccountByCOAId([getConstantCategory()->getCashInHand(), getConstantCategory()->getBank()], ''); Utils::isRequired(); ?>>

@@ -29,6 +29,9 @@ if ($oSecurityShellUser->isValidFormSubmission())
     }
 
 
+    // Cost centers of the user (none = every cost center); removed with the user
+    CostCenter::saveUserCostCenters($oSecurityShellUser->getVoucherId(), $oSecurityShellUser->isDelete() ? [] : ($_POST['cost_center_ids'] ?? []));
+
     if ($oSecurityShellUser->isDelete())
         $oSecurityShellUser->deleteFormData();
 		
