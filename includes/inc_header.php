@@ -727,7 +727,7 @@ $oHeaderBranch = new Branch();
             <div id="sidebar-menu" class="pt-4 pb-5">
                 <!-- Left Menu Start -------------------------------------------------------------------------------------------------------------------------------------------------------->
                 <ul class="metismenu list-unstyled" id="side-menu">
-                    <li class="menu-title"> Quick Links</li>
+                    <li class="menu-title">Quick Access</li>
                     <li><a href="<?=$SiteURL?>index.php"><i class="mdi mdi-view-dashboard-outline"></i>Dashboard</a></li>
                     <? if (CompanyModule::isModuleActive(CompanyModule::CRM)) { ?>
 <!--                        <li><a href="--><?//= $SiteURL ?><!--dashboard/crm.php"><i class="mdi mdi-account-tie-outline"></i>CRM</a></li>-->
@@ -830,37 +830,16 @@ $oHeaderBranch = new Branch();
 <!--                    </li>-->
                     <? } ?>
 
-                    <li class="menu-title">Components</li>
+                    <li class="menu-title">POS Section</li>
                     <? if (CompanyModule::isModuleActive(CompanyModule::CHART_OF_ACCOUNT)) { ?>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
                                 <i class="mdi mdi-sitemap"></i>
-                                <span>Chart of Account</span>
+                                <span>Accounts</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <? $oHeaderUtils->menuReport("Categories", "chart_of_account/manage_coa_categories.php", "", false, CompanyModule::CHART_OF_ACCOUNT, "Categories Management"); ?>
-                                <? $oHeaderUtils->menuReport('Transaction Account', 'chart_of_account/manage_accounts.php?is_employee=N','chart_of_account/report_transaction_accounts.php?is_employee=N', false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
-                            </ul>
-                        </li>
-                    <? } ?>
-                    <? if (CompanyModule::isModuleActive(CompanyModule::STOCK)) { ?>
-                        <li>
-                            <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="mdi mdi-warehouse"></i>
-                                <span>Inventory</span>
-                            </a>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <? $oHeaderUtils->menuReport('Products', 'stock/stock_management.php', 'stock/report_stock.php', false, CompanyModule::STOCK, 'Item Profile'); ?>
-                                <? $oHeaderUtils->menuReport('Category', 'stock_category/manage_stock_category.php', '', false, CompanyModule::STOCK, 'Category'); ?>
-                                <? $oHeaderUtils->menuReport('Attribute', 'stock_attribute/stock_attr_manager.php', '', false, CompanyModule::STOCK, 'Attribute'); ?>
-                                <? $oHeaderUtils->menuReport('Branches', 'branch/branch_manager.php', 'branch/report_branch.php', false, CompanyModule::STOCK, 'Branch'); ?>
-                            </ul>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <? $oHeaderUtils->menuReport('Stock Manufacturing', 'manufacturing/pre_manufacture.php', VoucherType::getDefaultReportLink(VoucherType::BMV), false, ); ?>
-                                <? $oHeaderUtils->menuVoucherType(VoucherType::UPV, '', false, "Stock Unpacking"); ?>
-                                <? $oHeaderUtils->menuVoucherType(VoucherType::MFSR, '', false, "Stock Recipes"); ?>
-                                <? $oHeaderUtils->menuVoucherType(VoucherType::STDV, '', false, "Stock Dispose"); ?>
-                                <? $oHeaderUtils->menuVoucherType(VoucherType::SMV, '', false, "Stock Movement"); ?>
+                                <? $oHeaderUtils->menuReport("Add Category", "chart_of_account/manage_coa_categories.php", "", false, CompanyModule::CHART_OF_ACCOUNT, "Categories Management"); ?>
+                                <? $oHeaderUtils->menuReport('Add Account', 'chart_of_account/manage_accounts.php?is_employee=N','chart_of_account/report_transaction_accounts.php?is_employee=N', false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
                             </ul>
                         </li>
                     <? } ?>
@@ -912,39 +891,8 @@ $oHeaderBranch = new Branch();
                         </ul>
                     </li>
 
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-basket-outline"></i>
-                            <span>Purchase</span>
-                        </a>
-                        <? if (CompanyModule::isModuleActive(CompanyModule::PURCHASE)) { ?>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::PIV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::PIV, false,"Invoices"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::PRV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::PRV, false, "Return"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::POV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::POV, false, "Orders"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::PR, '', false, "Requisitions"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::OPS, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::OPS, false, "Opening Stock"); ?>
-                        </ul>
-                        <? } ?>
 
 
-
-                        <? if (CompanyModule::isModuleActive(CompanyModule::CHART_OF_ACCOUNT)) { ?>
-                            <ul class="sub-menu" aria-expanded="false">
-                                <? $oHeaderUtils->menuReport('Suppliers', 'chart_of_account/manage_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), 'chart_of_account/report_transaction_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
-                            </ul>
-                        <? } ?>
-                    </li>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-basket"></i>
-                            <span>Stock Use</span>
-                        </a>
-
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::SU, '', false, "Stock Use"); ?>
-                        </ul>
-                    </li>
 
                     <? if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
                     <li>
@@ -974,22 +922,22 @@ $oHeaderBranch = new Branch();
                     </li>
                     <? } ?>
 
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-file-document-edit-outline"></i>
-                            <span>Other Vouchers</span>
-                        </a>
-                        <? if (CompanyModule::isModuleActive(CompanyModule::OTHER_VOUCHERS)) { ?>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::JV, '', false, "Journal Vouchers"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::OPA, '', false, "Accounts Opening"); ?>
-                        </ul>
-                        <? } if (CompanyModule::isModuleActive(CompanyModule::BANK_STATEMENT)) { ?>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::BSIV, '', false, "Bank Statements"); ?>
-                        </ul>
-                        <? } ?>
-                    </li>
+<!--                    <li>-->
+<!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+<!--                            <i class="mdi mdi-file-document-edit-outline"></i>-->
+<!--                            <span>Other Vouchers</span>-->
+<!--                        </a>-->
+<!--                        --><?// if (CompanyModule::isModuleActive(CompanyModule::OTHER_VOUCHERS)) { ?>
+<!--                        <ul class="sub-menu" aria-expanded="false">-->
+<!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::JV, '', false, "Journal Vouchers"); ?>
+<!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::OPA, '', false, "Accounts Opening"); ?>
+<!--                        </ul>-->
+<!--                        --><?// } if (CompanyModule::isModuleActive(CompanyModule::BANK_STATEMENT)) { ?>
+<!--                        <ul class="sub-menu" aria-expanded="false">-->
+<!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::BSIV, '', false, "Bank Statements"); ?>
+<!--                        </ul>-->
+<!--                        --><?// } ?>
+<!--                    </li>-->
 
                     <? if (CompanyModule::isModuleActive(CompanyModule::HR)) { ?>
 <!--                    <li class="menu-title">HR Management</li>-->
@@ -1033,6 +981,153 @@ $oHeaderBranch = new Branch();
 <!--                            --><?// $oHeaderUtils->menuReport("Create New", "salary/salary_log_selection.php?voucher_type_id=".VoucherType::SM, "salary/report_salary.php", false,CompanyModule::HR,'Salary Sheet'); ?>
 <!--                        </ul>-->
 <!--                    </li>-->
+                    <? } ?>
+                    <li class="menu-title">Inventory Section</li>
+
+                    <? if (CompanyModule::isModuleActive(CompanyModule::STOCK)) { ?>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-warehouse"></i>
+                                <span>Inventory</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuReport('Products', 'stock/stock_management.php', 'stock/report_stock.php', false, CompanyModule::STOCK, 'Item Profile'); ?>
+                                <? $oHeaderUtils->menuReport('Category', 'stock_category/manage_stock_category.php', '', false, CompanyModule::STOCK, 'Category'); ?>
+                                <? $oHeaderUtils->menuReport('Attribute', 'stock_attribute/stock_attr_manager.php', '', false, CompanyModule::STOCK, 'Attribute'); ?>
+                                <? $oHeaderUtils->menuReport('Branches', 'branch/branch_manager.php', 'branch/report_branch.php', false, CompanyModule::STOCK, 'Branch'); ?>
+                            </ul>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <!--                                --><?// $oHeaderUtils->menuReport('Stock Manufacturing', 'manufacturing/pre_manufacture.php', VoucherType::getDefaultReportLink(VoucherType::BMV), false, ); ?>
+                                <!--                                --><?// $oHeaderUtils->menuVoucherType(VoucherType::UPV, '', false, "Stock Unpacking"); ?>
+                                <!--                                --><?// $oHeaderUtils->menuVoucherType(VoucherType::MFSR, '', false, "Stock Recipes"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::STDV, '', false, "Stock Dispose"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::SMV, '', false, "Stock Movement"); ?>
+                            </ul>
+                        </li>
+                    <? } ?>
+
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-basket-outline"></i>
+                            <span>Purchase</span>
+                        </a>
+                        <? if (CompanyModule::isModuleActive(CompanyModule::PURCHASE)) { ?>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::PIV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::PIV, false,"Invoices"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::PRV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::PRV, false, "Return"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::POV, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::POV, false, "Orders"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::PR, '', false, "Requisitions"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::OPS, 'purchase/report_purchase.php?voucher_type_id='.VoucherType::OPS, false, "Opening Stock"); ?>
+                            </ul>
+                        <? } ?>
+
+
+
+                        <? if (CompanyModule::isModuleActive(CompanyModule::CHART_OF_ACCOUNT)) { ?>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuReport('Suppliers', 'chart_of_account/manage_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), 'chart_of_account/report_transaction_accounts.php?is_employee=N&coa_id='.getConstantCategory()->getSupplier(), false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
+                            </ul>
+                        <? } ?>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow waves-effect">
+                            <i class="mdi mdi-basket"></i>
+                            <span>Stock Use</span>
+                        </a>
+
+                        <ul class="sub-menu" aria-expanded="false">
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::SU, '', false, "Stock Use"); ?>
+                        </ul>
+                    </li>
+
+                    <? if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-swap-horizontal"></i>
+                                <span>Payment/Receipts</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::CPV, '', false, "Cash Payment"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::BPV, '', false, "Bank Payment"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::CRV, '', false,"Cash Receipts"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::BRV, '', false, "Bank Receipts"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::CQV, '', false, "Cheque Receipts"); ?>
+                            </ul>
+                        </li>
+                    <? } if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-cash-minus"></i>
+                                <span>Expenses</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::CPV, '', false, "Cash Expenses"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::BPV, '', false, "Bank Expenses"); ?>
+
+                            </ul>
+                        </li>
+                    <? } ?>
+
+                    <!--                    <li>-->
+                    <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+                    <!--                            <i class="mdi mdi-file-document-edit-outline"></i>-->
+                    <!--                            <span>Other Vouchers</span>-->
+                    <!--                        </a>-->
+                    <!--                        --><?// if (CompanyModule::isModuleActive(CompanyModule::OTHER_VOUCHERS)) { ?>
+                    <!--                        <ul class="sub-menu" aria-expanded="false">-->
+                    <!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::JV, '', false, "Journal Vouchers"); ?>
+                    <!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::OPA, '', false, "Accounts Opening"); ?>
+                    <!--                        </ul>-->
+                    <!--                        --><?// } if (CompanyModule::isModuleActive(CompanyModule::BANK_STATEMENT)) { ?>
+                    <!--                        <ul class="sub-menu" aria-expanded="false">-->
+                    <!--                            --><?// $oHeaderUtils->menuVoucherType(VoucherType::BSIV, '', false, "Bank Statements"); ?>
+                    <!--                        </ul>-->
+                    <!--                        --><?// } ?>
+                    <!--                    </li>-->
+
+                    <? if (CompanyModule::isModuleActive(CompanyModule::HR)) { ?>
+                        <!--                    <li class="menu-title">HR Management</li>-->
+                        <!--                    <li>-->
+                        <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+                        <!--                            <i class="mdi mdi-account-group-outline"></i>-->
+                        <!--                            <span>Employee</span>-->
+                        <!--                        </a>-->
+                        <!--                        <ul class="sub-menu" aria-expanded="false">-->
+                        <!--                            --><?// $oHeaderUtils->menuReport('Create/Update','chart_of_account/manage_accounts.php?is_employee=Y&coa_id='.getConstantCategory()->getEmployee(),'chart_of_account/report_transaction_accounts.php?is_employee=Y&coa_id='.getConstantCategory()->getEmployee(),false, CompanyModule::CHART_OF_ACCOUNT, 'Transaction Account'); ?>
+                        <!--                            --><?// $oHeaderUtils->menuReport('Bulk Employee Update','chart_of_account/manage_employees.php', false, CompanyModule::HR, 'Can Change Employee Data'); ?>
+                        <!--                            --><?// $oHeaderUtils->menuReport('Salary History','chart_of_account/report_salary_history.php',false, CompanyModule::HR, 'Salary History'); ?>
+                        <!--                        </ul>-->
+                        <!--                    </li>-->
+                        <!--                    <li>-->
+                        <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+                        <!--                            <i class="mdi mdi-calendar-check-outline"></i>-->
+                        <!--                            <span>Attendance Sheet</span>-->
+                        <!--                        </a>-->
+                        <!--                        <ul class="sub-menu" aria-expanded="false">-->
+                        <!--                            --><?// $oHeaderUtils->menuReport('Month Logs', 'attendance_sheet/manage_logs.php','attendance_sheet/report_logs.php',false, CompanyModule::HR, 'Attendance Sheet'); ?>
+                        <!--                        </ul>-->
+                        <!--                    </li>-->
+                        <!--                    <li>-->
+                        <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+                        <!--                            <i class="mdi mdi-hand-holding-usd"></i>-->
+                        <!--                            <span>Loan / Advances</span>-->
+                        <!--                        </a>-->
+                        <!--                        <ul class="sub-menu">-->
+                        <!--                            --><?// $oHeaderUtils->menuReport('Loan','loan/manage_loan.php?type=L&voucher_type_id='.VoucherType::LV,'loan/report_loan.php?type=L',false, CompanyModule::HR, 'Loan'); ?>
+                        <!--                            --><?// $oHeaderUtils->menuReport('Advances','loan/manage_loan.php?type=A&voucher_type_id='.VoucherType::LV,'loan/report_loan.php?type=A',false, CompanyModule::HR, 'Advances'); ?>
+                        <!--                            --><?// $oHeaderUtils->menuReport('Employee Wise Loan','loan/report_all_employee_loan.php',false, CompanyModule::HR, 'Employee Wise Loan Report');?>
+                        <!--                        </ul>-->
+                        <!--                    </li>-->
+                        <!--                    <li>-->
+                        <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
+                        <!--                            <i class="mdi mdi-cash-register"></i>-->
+                        <!--                            <span>Salary Sheet</span>-->
+                        <!--                        </a>-->
+                        <!--                        <ul class="sub-menu">-->
+                        <!--                            --><?// $oHeaderUtils->menuReport("Create New", "salary/salary_log_selection.php?voucher_type_id=".VoucherType::SM, "salary/report_salary.php", false,CompanyModule::HR,'Salary Sheet'); ?>
+                        <!--                        </ul>-->
+                        <!--                    </li>-->
                     <? } ?>
                     <li class="menu-title">Reports</li>
                     <? if (CompanyModule::isModuleActive(CompanyModule::SALES)) { ?>
@@ -1141,7 +1236,7 @@ $oHeaderBranch = new Branch();
                     <li class="menu-title">Settings</li>
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-cog-outline"></i>
+                            <i class="mdi mdi-account-settings"></i>
                             <span>Settings</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
