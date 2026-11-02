@@ -35,6 +35,24 @@ while ($RowData = DBQM::fetch_assoc($SelectInvoiceData))
     $TotalQty += $Qty;
 }
 
+// Website dishes not linked to stock are saved as non inventory lines
+$SelectNonInventory = $oSales->getData(Sales::IND_NON_INVENTORY);
+while ($RowData = DBQM::fetch_assoc($SelectNonInventory))
+{
+    $Qty = $RowData['qty'] - $RowData['qty_return'];
+    $Amount = $Qty * $RowData['selling_price'];
+
+    $Items[] = [
+        'name' => $RowData['item_description'],
+        'qty' => $Qty,
+        'rate' => $RowData['selling_price'],
+        'amount' => $Amount,
+    ];
+
+    $GrossAmount += $Amount;
+    $TotalQty += $Qty;
+}
+
 $Discount = (float) $RowDetails['invoice_discount_calc_value'];
 $Tax = (float) $RowDetails['gst_calc_value'];
 $NetAmount = $GrossAmount - $Discount + $Tax + (float) $RowDetails['transport_amount'];

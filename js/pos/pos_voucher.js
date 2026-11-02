@@ -1,6 +1,6 @@
 /**
  * POS - Order Invoice Voucher screen (pos/pos_voucher.php)
- * Server data comes from window.POS_CONFIG: catalog, cart, isView, posUrl
+ * Server data comes from window.POS_CONFIG: catalog, cart, isView, deliveryFee (Website Invoice), posUrl
  */
 $(function () {
     var CONFIG = window.POS_CONFIG || {};
@@ -162,7 +162,8 @@ $(function () {
         $("#pos_cart_sub").text(CART.length ? CART.length + (CART.length > 1 ? " items" : " item") : "No items");
         $("#pos_fab_count").text(CART.length);
         $("#pos_cart_qty").text(qty);
-        $("#pos_cart_subtotal, #pos_cart_total, #pos_fab_total").text(money(total));
+        $("#pos_cart_subtotal").text(money(total));
+        $("#pos_cart_total, #pos_fab_total").text(money(total + (parseFloat(CONFIG.deliveryFee) || 0)));
         $("#pos_save").prop("disabled", !CART.length);
         refreshCardActions();
     }

@@ -325,12 +325,12 @@ class VoucherType
 
             case self::SOV:
             case self::SIV:
-            case self::WIV:
             case self::SRV:
                 $Link = ProjectHelper::SiteURL()."sales/sales_voucher.php";
                 break;
 
             case self::OIV:
+            case self::WIV:
                 $Link = ProjectHelper::SiteURL()."pos/pos_voucher.php";
                 break;
 
