@@ -227,6 +227,8 @@ class StockReport extends Reporting
     {
         $Where = UtilsQueryMaker::equal("attribute_id", $AttributeId);
         $Where .= UtilsQueryMaker::like("b.name", $SearchTerm);
+        // a user with an assigned branch only gets that branch (same as the branch autocomplete)
+        $Where .= UtilsQueryMaker::equal("stl.branch_id", Autocomplete::getUserBranchId() ?: '');
 
         return DBQM::query("
                                     SELECT 
@@ -248,6 +250,8 @@ class StockReport extends Reporting
                                         branch_id
                                     HAVING
                                         available_qty > 0
+                                    ORDER BY
+                                        available_qty DESC
         ");
     }
 

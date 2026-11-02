@@ -158,8 +158,9 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
 
                     <? if ($isInvoiced) { ?>
                         <div class="text-success small">
-                            <i class="mdi mdi-check-circle-outline"></i> Sales Invoice
-                            <a href="../sales/print_voucher.php?id=<?=(int)$Order['erp_sales_id']?>&voucher_type_id=<?=VoucherType::SIV?>" target="_blank"># <?=(int)$Order['erp_voucher_number']?></a>
+                            <? $InvoiceVoucherTypeId = RestaurantOrder::getInvoiceVoucherTypeId($Order['erp_sales_id']); ?>
+                            <i class="mdi mdi-check-circle-outline"></i> <?=$InvoiceVoucherTypeId == VoucherType::WIV ? 'Website Invoice' : 'Sales Invoice'?>
+                            <a href="../sales/print_voucher.php?id=<?=(int)$Order['erp_sales_id']?>&voucher_type_id=<?=$InvoiceVoucherTypeId?>" target="_blank"><?=VoucherType::getCode($InvoiceVoucherTypeId)?>-<?=(int)$Order['erp_voucher_number']?></a>
                         </div>
                     <? } elseif ($Order['erp_error']) { ?>
                         <div class="alert alert-danger py-1 px-2 small mb-0 mt-1"><i class="mdi mdi-alert-outline"></i> Invoice not created: <?=h($Order['erp_error'])?></div>

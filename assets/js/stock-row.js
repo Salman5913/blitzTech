@@ -139,6 +139,24 @@ function stockRowDesigner(_this)
 
     branch_id = branch_element.attr("data-ac-id");
 
+    // No branch on the row yet: pick the branch holding most of this stock, so available qty shows right away
+    if (!branch_id && FormHelper.isAttr(_this.attr("data-ac-id")) && branch_element.closest("tr").is(_this.closest("tr")))
+    {
+        _this.closest("tr").find(_this.attr("data-stock-available-qty")).html(0);
+
+        if (_this.attr("data-stock-allow-available-qty") === 'Y')
+        {
+            $.getJSON(SiteURL + "stock/ac_search_stock_branches.php", {term: '', stock_id: _this.attr("data-ac-id"), distinct_id: distinct_id}, function (branches) {
+                if (branches.length && branches[0].id && !branch_element.attr("data-ac-id"))
+                {
+                    branch_element.val(branches[0].value).attr("data-ac-id", branches[0].id).removeClass("not-allowed").trigger("branchSelected");
+                    stockRowDesigner(_this);
+                }
+            });
+        }
+        return;
+    }
+
     if (branch_id !== undefined)
     {
         $.getJSON(SiteURL+"stock/ajax_get_stock_details.php", {

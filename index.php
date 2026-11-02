@@ -67,7 +67,7 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
     </form>
     <div class="row">
         <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Website Sales", "green", "web", $RowIconsData['current_website_sales'], $RowIconsData['previous_website_sales'], "Sales invoices (SIV)"); ?>
+            <? $oDashBoard->designGradientStat("Website Sales", "green", "web", $RowIconsData['current_website_sales'], $RowIconsData['previous_website_sales'], "Website invoices (WIV)"); ?>
         </div>
         <div class="col-xl-4 col-md-6">
             <? $oDashBoard->designGradientStat("Sales", "blue", "point-of-sale", $RowIconsData['current_sales'], $RowIconsData['previous_sales'], "Order invoices (OIV)"); ?>

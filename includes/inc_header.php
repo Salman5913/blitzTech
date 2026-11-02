@@ -624,7 +624,7 @@ $oHeaderBranch = new Branch();
 
     <? Autocomplete::getJS(); ?>
 
-    <script src="<?=$SiteURL?>assets/js/stock-row.js"></script>
+    <script src="<?=$SiteURL?>assets/js/stock-row.js?v=2"></script>
     <script src="<?= $SiteURL ?>assets/js/finac-app.js?v=2"></script>
     <script src="<?= $SiteURL ?>assets/js/table.dynamic.js?v=1"></script>
     <script src="<?= $SiteURL ?>assets/js/jquery.table2excel.min.js"></script>
@@ -884,6 +884,7 @@ $oHeaderBranch = new Branch();
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <? $oHeaderUtils->menuReport('Web Orders', 'restaurant/manage_web_orders.php'); ?>
+                            <? if (SecurityShell::isVoucherAccess(VoucherType::WIV)) $oHeaderUtils->menuReport('Website Invoices', 'sales/report_sales.php?voucher_type_id='.VoucherType::WIV); ?>
                             <? $oHeaderUtils->menuReport('Website Menu', 'restaurant/manage_menu.php'); ?>
                             <? $oHeaderUtils->menuReport('Deals', 'restaurant/deals.php'); ?>
                             <? $oHeaderUtils->menuReport('Deals Report', 'restaurant/deals_report.php'); ?>

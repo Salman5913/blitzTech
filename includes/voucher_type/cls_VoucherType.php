@@ -260,10 +260,13 @@ class VoucherType
 
     const SU = 111;
 
+    /**
+     * Website Invoice Voucher - website orders (restaurant/manage_web_orders.php), same behaviour as OIV
+     */
+    const WIV = 112;
 
 
-
-    private static $SalesVoucherTypes = [self::SIV, self::OIV];
+    private static $SalesVoucherTypes = [self::SIV, self::OIV, self::WIV];
 
 
     private $VoucherType;
@@ -322,6 +325,7 @@ class VoucherType
 
             case self::SOV:
             case self::SIV:
+            case self::WIV:
             case self::SRV:
                 $Link = ProjectHelper::SiteURL()."sales/sales_voucher.php";
                 break;

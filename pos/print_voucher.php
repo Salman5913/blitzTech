@@ -1,10 +1,10 @@
 <?
 /**
- * Order Invoice Voucher (POS) - receipt print (80mm thermal)
+ * Order Invoice Voucher (POS) and Website Invoice Voucher - receipt print (80mm thermal)
  */
 include_once("../connection/localhost.php");
 
-$_GET['voucher_type_id'] = VoucherType::OIV;
+$_GET['voucher_type_id'] = ($_GET['voucher_type_id'] ?? '') == VoucherType::WIV ? VoucherType::WIV : VoucherType::OIV;
 
 $oSales = new Sales();
 $oCompany = new Company();
@@ -15,7 +15,7 @@ $RowDetails = $oSales->getDetails();
 $SelectInvoiceData = $oSales->getData(Sales::IND_DATA);
 $RowCompanyDetails = $oCompany->getDetails(Company::getLoggedInCompanyId());
 
-$VoucherName = VoucherType::getCode(VoucherType::OIV)."-".$oSales->getVoucherNumber();
+$VoucherName = VoucherType::getCode($_GET['voucher_type_id'])."-".$oSales->getVoucherNumber();
 
 $Items = [];
 $GrossAmount = $TotalQty = 0;

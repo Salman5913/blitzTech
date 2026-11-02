@@ -2,7 +2,7 @@
 /**
  * Restaurant website orders (rs_orders / rs_order_items), managed from the ERP.
  *
- * A completed order becomes a Sales Invoice (SIV) through postToSales(), called from
+ * A completed order becomes a Website Invoice (WIV, same as the POS Order Invoice) through postToSales(), called from
  * restaurant/manage_web_orders.php (as the logged-in user).
  */
 class RestaurantOrder
@@ -131,7 +131,7 @@ class RestaurantOrder
 
     /* ************************* Status ************************* */
     /**
-     * Invoiced orders can't change; "completed" posts the Sales Invoice (again, if an earlier post failed).
+     * Invoiced orders can't change; "completed" posts the Website Invoice (again, if an earlier post failed).
      *
      * @return array [bool success, string message]
      */
@@ -145,7 +145,7 @@ class RestaurantOrder
             return [false, "Invalid status."];
 
         if ($Order['erp_sales_id'] && $Status != self::STATUS_COMPLETED)
-            return [false, $Order['order_code'] . " is already invoiced (Sales Invoice # " . $Order['erp_voucher_number'] . "). Make a sales return instead."];
+            return [false, $Order['order_code'] . " is already invoiced (" . VoucherType::getCode(self::getInvoiceVoucherTypeId($Order['erp_sales_id'])) . "-" . $Order['erp_voucher_number'] . "). Make a sales return instead."];
 
         DBQM::query("UPDATE rs_orders SET status = " . escape($Status) . " WHERE id = " . escape($OrderId, 'int'));
 
@@ -157,14 +157,14 @@ class RestaurantOrder
         if (isset($Result['salesId']))
         {
             DBQM::query("UPDATE rs_orders SET erp_sales_id = " . escape($Result['salesId'], 'int') . ", erp_voucher_number = " . escape($Result['voucherNumber'], 'int') . ", erp_error = NULL WHERE id = " . escape($OrderId, 'int'));
-            return [true, $Order['order_code'] . " completed. Sales Invoice # " . $Result['voucherNumber'] . " created."];
+            return [true, $Order['order_code'] . " completed. Website Invoice " . VoucherType::getCode(VoucherType::WIV) . "-" . $Result['voucherNumber'] . " created."];
         }
 
         DBQM::query("UPDATE rs_orders SET erp_error = " . escape(mb_substr($Result['error'], 0, 255)) . " WHERE id = " . escape($OrderId, 'int'));
         return [false, $Order['order_code'] . " marked completed but the invoice was not created: " . $Result['error']];
     }
 
-    /* ************************* Sales Invoice ************************* */
+    /* ************************* Website Invoice ************************* */
     static function toSalesData(array $Order)
     {
         $Items = [];
@@ -185,7 +185,7 @@ class RestaurantOrder
     }
 
     /**
-     * Saves the order as a Sales Invoice with the ERP's own Sales class, all or nothing.
+     * Saves the order as a Website Invoice (WIV) with the ERP's own Sales class, all or nothing.
      * Linked dishes (stock_id) are sold from stock; the rest go as non-inventory lines.
      *
      * @param array $Order order_code, name, phone, address, notes, delivery_fee, items[stock_id, attribute_id, name, qty, price],
@@ -199,9 +199,9 @@ class RestaurantOrder
         $BranchId = $Order['branch_id'] ?? $Settings['branch_id'];
         $Description = 'Website order ' . $Order['order_code'];
 
-        /* ************* Already posted? (retry or double click) ************* */
+        /* ************* Already posted? (retry or double click; orders invoiced before WIV are SIV) ************* */
         $Select = DBQM::query("SELECT s.id, d.id AS distinct_id, d.voucher_number FROM sl_sales s, distinct_id d
-                               WHERE s.distinct_id = d.id AND d.is_deleted <> 'Y' AND d.voucher_type_id = " . escape(VoucherType::SIV, 'int') . "
+                               WHERE s.distinct_id = d.id AND d.is_deleted <> 'Y' AND d.voucher_type_id IN (" . escape(VoucherType::WIV, 'int') . ", " . escape(VoucherType::SIV, 'int') . ")
                                AND s.description = " . escape($Description));
         if ($Row = DBQM::fetch_assoc($Select))
             return ['salesId' => (int)$Row['id'], 'distinctId' => (int)$Row['distinct_id'], 'voucherNumber' => (int)$Row['voucher_number'], 'existing' => true];
@@ -212,10 +212,10 @@ class RestaurantOrder
         $OriginalErrors = $_SESSION['__error'] ?? [];
         $_SESSION['__error'] = [];
 
-        $_GET['voucher_type_id'] = VoucherType::SIV;
+        $_GET['voucher_type_id'] = VoucherType::WIV;
         $_POST = [
             'voucher_id' => '',
-            'voucher_type_id' => VoucherType::SIV,
+            'voucher_type_id' => VoucherType::WIV,
             'voucher_date' => date('m/d/Y'),
             'cost_center_id' => '',
             '_project_id' => '',
@@ -288,6 +288,14 @@ class RestaurantOrder
         return ['salesId' => (int)$oSales->getVoucherId(), 'distinctId' => (int)$oSales->getDistinctId(), 'voucherNumber' => (int)$oSales->getVoucherNumber()];
     }
 
+    /** Voucher type of an order's invoice: WIV, or SIV for orders invoiced before WIV */
+    static function getInvoiceVoucherTypeId($SalesId)
+    {
+        $VoucherTypeId = DBQM::result(DBQM::query("SELECT d.voucher_type_id FROM sl_sales s, distinct_id d WHERE s.distinct_id = d.id AND s.id = " . escape($SalesId, 'int')), 0);
+
+        return $VoucherTypeId ?: VoucherType::WIV;
+    }
+
     private static function describeError(array $Errors)
     {
         foreach ($Errors as $Error)
@@ -297,6 +305,6 @@ class RestaurantOrder
                 return "Not enough stock of {$Match[1]} in the order's branch ({$Match[2]} short).";
         }
 
-        return $Errors ? strip_tags(reset($Errors)) : 'Could not save sales invoice.';
+        return $Errors ? strip_tags(reset($Errors)) : 'Could not save website invoice.';
     }
 }

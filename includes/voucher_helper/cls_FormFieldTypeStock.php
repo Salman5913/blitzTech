@@ -91,9 +91,12 @@ class FormFieldTypeStock extends FormFieldType
         $AttributeIdColumn = $AdditionalDetails['attribute_id_column'];
         $BranchIdColumn = $AdditionalDetails['branch_id_column'];
 
+        // A user with an assigned branch gets it selected on new rows, so available qty shows as soon as stock is picked
+        $BranchId = $this->getRowData()[$BranchIdColumn] ?: (empty($Value) ? (Autocomplete::getUserBranchId() ?: '') : '');
+
         $this->oFormFieldDesigner->setForceColumnType($BranchIdColumn, 'string');
-        $this->updateRowColumnAttributes($BranchIdColumn, ' data-ac-id="'.$this->getRowData()[$BranchIdColumn].'" ');
-        $this->updateRowColumnValue($BranchIdColumn, Branch::getName($this->getRowData()[$BranchIdColumn]));
+        $this->updateRowColumnAttributes($BranchIdColumn, ' data-ac-id="'.$BranchId.'" ');
+        $this->updateRowColumnValue($BranchIdColumn, Branch::getName($BranchId));
         ?>
         <input
             type="text"

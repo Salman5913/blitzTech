@@ -81,7 +81,7 @@ class DashboardStats
 
     /**
      * Dashboard indicators for a date range (default: this month till today), each with the same length period before it:
-     * website sales (SIV), sales (OIV / POS), purchases, receipts, payments and gross profit on sales (sale price - cost, less returns).
+     * website sales (WIV, and SIV from before WIV), sales (OIV / POS), purchases, receipts, payments and gross profit on sales (sale price - cost, less returns).
      * @return array [Row with current_* and previous_*, DateFrom timestamp, DateTill timestamp, compare from, compare till]
      */
     function getIndicatorsData($DateFrom, $DateTill)
@@ -108,7 +108,7 @@ class DashboardStats
 
             $Values = DBQM::fetch_assoc(DBQM::query("
                 SELECT
-                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::SIV) . " {$Voucher}) AS website_sales,
+                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id IN (" . escape(VoucherType::WIV) . ", " . escape(VoucherType::SIV) . ") {$Voucher}) AS website_sales,
                     (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::OIV) . " {$Voucher}) AS sales,
                     (SELECT SUM(did.voucher_total) FROM pr_purchase p, distinct_id did WHERE p.distinct_id = did.id AND did.is_deleted <> 'Y' {$Voucher}) AS purchase,
                     (SELECT SUM(debit - credit) FROM ledger l, ledger_data ld, acc_accounts a WHERE l.id = ld.ledger_id AND ld.account_id = a.id AND voucher_type_id IN (" . escape(VoucherType::CRV) . ", " . escape(VoucherType::BRV) . ") AND a.coa_id IN ({$CashBank}) {$Ledger}) AS receipt,
