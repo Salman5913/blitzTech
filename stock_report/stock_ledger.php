@@ -89,7 +89,7 @@ if (isset($_GET['search']))
                     <td>-</td>
                     <td>-</td>
                     <td>-</td>
-                    <td class="text-right"><?=Utils::format($Balance, 0)?></td>
+                    <td class="text-right text-primary font-weight-bold"><?=Utils::format($Balance, 0)?></td>
                     <td>-</td>
                     <td>-</td>
                 </tr>
@@ -101,9 +101,9 @@ if (isset($_GET['search']))
                         <td title="<?=$Row['voucher_name']?>"><?=$Row['voucher_type']?> - <?=$Row['voucher_number']?> <a href="<?=VoucherType::getLink($Row['voucher_type_id'], $Row['voucher_id'])?>" title="Edit Voucher" target="_blank"><i class="mdi mdi-pencil"></i> </a> </td>
                         <td><?=$Row['customer_name']?></td>
                         <td><?=$Row['branch_name']?></td>
-                        <td class="text-right text-success" data-js="qty-in"><? if ($Row['qty'] > 0) { ?><?=Utils::format($Row['qty'], 0)?><? } ?></td>
-                        <td class="text-right text-danger" data-js="qty-out"><? if ($Row['qty'] < 0) { ?><?=Utils::format(abs($Row['qty']), 0)?><? } ?></td>
-                        <td class="text-right"><?=Utils::format($Balance, 0)?></td>
+                        <td class="text-right text-success font-weight-bold" data-js="qty-in"><? if ($Row['qty'] > 0) { ?><?=Utils::format($Row['qty'], 0)?><? } ?></td>
+                        <td class="text-right text-danger font-weight-bold" data-js="qty-out"><? if ($Row['qty'] < 0) { ?><?=Utils::format(abs($Row['qty']), 0)?><? } ?></td>
+                        <td class="text-right text-primary font-weight-bold"><?=Utils::format($Balance, 0)?></td>
                         <td class="text-right text-warning"><?=Utils::format($Row['cost'], 0)?></td>
                         <td class="text-right"><?=Utils::format($Row['sp'], 0)?></td>
                     </tr>

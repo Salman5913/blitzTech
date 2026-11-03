@@ -52,7 +52,7 @@ class App
     setTitle() {
         const pageTitle = $("h4.page-title").text();
         if (pageTitle) {
-            document.title = `${pageTitle} - FINAC`;
+            document.title = `${pageTitle}`;
         }
     }
 
@@ -68,7 +68,8 @@ class App
     // Refreshes session periodically
     startSessionRefresher() {
         setInterval(() => {
-            $.get(`${SiteURL}refresh_session.php`);
+            // background: does not count as user activity for the idle logout
+            $.ajax({url: `${SiteURL}refresh_session.php`, headers: {'X-Background-Request': '1'}});
         }, this.refreshTime);
     }
 
@@ -77,9 +78,10 @@ class App
     }
 
     bindSystemNotificationsClosure() {
-        $('.status-list button').on('click',function(){
-            $(this).closest('.status-list').slideUp()
-        });
+        // save messages slide in from the right; success closes by itself, errors stay until closed
+        const closeStatus = $list => { $list.addClass('is-closing'); setTimeout(() => $list.remove(), 350); };
+        $('.status-list button').on('click', function () { closeStatus($(this).closest('.status-list')); });
+        setTimeout(() => closeStatus($('.status-list.success-list')), 4500);
     }
 
     attachDatePicker() {

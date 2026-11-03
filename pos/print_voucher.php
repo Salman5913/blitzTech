@@ -1,10 +1,10 @@
 <?
 /**
- * Order Invoice Voucher (POS) and Website Invoice Voucher - receipt print (80mm thermal)
+ * Order Invoice (POS), Dine-in Invoice, WhatsApp Invoice and Website Invoice - receipt print (80mm thermal)
  */
 include_once("../connection/localhost.php");
 
-$_GET['voucher_type_id'] = ($_GET['voucher_type_id'] ?? '') == VoucherType::WIV ? VoucherType::WIV : VoucherType::OIV;
+$_GET['voucher_type_id'] = ($_GET['voucher_type_id'] ?? '') == VoucherType::WIV ? VoucherType::WIV : SalesPOS::getVoucherTypeId($_GET['voucher_type_id'] ?? '');
 
 $oSales = new Sales();
 $oCompany = new Company();
@@ -15,6 +15,7 @@ $RowDetails = $oSales->getDetails();
 $SelectInvoiceData = $oSales->getData(Sales::IND_DATA);
 $RowCompanyDetails = $oCompany->getDetails(Company::getLoggedInCompanyId());
 
+$TableNo = $_GET['voucher_type_id'] == VoucherType::DIV ? SalesPOS::getTableNo($oSales->getVoucherId()) : '';
 $VoucherName = VoucherType::getCode($_GET['voucher_type_id'])."-".$oSales->getVoucherNumber();
 
 $Items = [];
@@ -117,6 +118,9 @@ function posMoney($Value)
     <div class="dash"></div>
     <table class="muted">
         <tr><td>Receipt #</td><td class="right"><b><?=$VoucherName?></b></td></tr>
+        <? if ($TableNo != '') { ?>
+            <tr><td>Table No</td><td class="right"><b><?=htmlspecialchars($TableNo)?></b></td></tr>
+        <? } ?>
         <tr><td>Date</td><td class="right"><?=DateDecode($RowDetails['voucher_date'], 'd M Y h:i A')?></td></tr>
         <tr><td>Customer</td><td class="right"><?=htmlspecialchars(ChartOfAccount::getName($RowDetails['customer_account_id']))?></td></tr>
         <? if (!empty($RowDetails['mobile_number'])) { ?>

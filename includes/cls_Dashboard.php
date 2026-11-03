@@ -140,6 +140,54 @@ class Dashboard extends DashboardStats
         return [$Label, $Revenue, $Expense, $Income];
     }
 
+    /**
+     * Total sales of each month (last 12 months) by invoice type: Order (OIV), Website (WIV), Dine-in (DIV) and WhatsApp (WHIV)
+     * @return array [month labels, [voucher type id => [name, amounts by month]]]
+     */
+    function getMonthlySalesByType()
+    {
+        $Months = Year::getMonthsNameOfCurrentYear();
+        $Types = [
+            VoucherType::OIV => 'Order (OIV)',
+            VoucherType::WIV => 'Website (WIV)',
+            VoucherType::DIV => 'Dine-in (DIV)',
+            VoucherType::WHIV => 'WhatsApp (WHIV)',
+        ];
+
+        $Select = DBQM::query("
+            SELECT
+                did.voucher_type_id,
+                DATE_FORMAT(did.voucher_date, '%M %Y') AS month_name,
+                SUM(did.voucher_total) AS total
+            FROM
+                sl_sales s,
+                distinct_id did
+            WHERE
+                s.distinct_id = did.id AND
+                did.is_deleted <> 'Y' AND
+                did.voucher_type_id IN (".implode(", ", array_map("escape", array_keys($Types))).") AND
+                did.voucher_date >= ".escape(date('Y-m-d', strtotime("first day of ".$Months[0])))."
+            GROUP BY
+                did.voucher_type_id, month_name
+        ");
+
+        $QueryData = [];
+        while ($Row = DBQM::fetch_assoc($Select))
+            $QueryData[$Row['voucher_type_id']][$Row['month_name']] = round($Row['total']);
+
+        $Series = [];
+        foreach ($Types as $VoucherTypeId => $Name)
+        {
+            $Amounts = [];
+            foreach ($Months as $MonthName)
+                $Amounts[] = $QueryData[$VoucherTypeId][$MonthName] ?? 0;
+
+            $Series[$VoucherTypeId] = [$Name, $Amounts];
+        }
+
+        return [$Months, $Series];
+    }
+
     function getIncomeByChartValues2()
     {
         $Months = Year::getMonthsNameOfCurrentYear();

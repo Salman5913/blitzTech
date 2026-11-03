@@ -57,7 +57,7 @@ $SelectAccounts = $oLedgerReport->getAllAccountsByCOAId($_GET['coa_id'], $_GET['
                 <div class="aging-print">
                     <div class="row">
                         <div class="col-md-12">
-                            <img src="../assets/images/blitztech.png" class="img-fluid" style="max-width: 160px;">
+                            <img src="../assets/images/blitzztech.png" class="img-fluid" style="max-width: 160px;">
                         </div>
                     </div>
                     <?

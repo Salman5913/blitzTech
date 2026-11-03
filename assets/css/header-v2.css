@@ -56,6 +56,25 @@ html body[data-layout][class] .hdr-right { gap: 10px !important; flex: 0 0 auto;
 .hdr-icon-btn i { font-size: 22px; line-height: 1; color: #fff; }
 .hdr-icon-btn:hover, .hdr-icon-btn:focus { background: rgba(255, 255, 255, .26); outline: none; }
 
+/* New web orders bell ----------------------------------------------------- */
+.hdr-bell { position: relative; text-decoration: none !important; }
+.hdr-bell.has-new i { animation: hdr-bell-ring 1.6s ease-in-out infinite; }
+.hdr-badge {
+    position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px;
+    border-radius: 999px; background: #f04438; color: #fff; border: 2px solid #fff;
+    font-size: 11px; font-weight: 700; line-height: 16px; text-align: center;
+}
+@keyframes hdr-bell-ring { 0%, 60%, 100% { transform: rotate(0); } 10%, 30% { transform: rotate(14deg); } 20%, 40% { transform: rotate(-14deg); } }
+.hdr-order-popup {
+    position: fixed; top: 78px; right: 20px; z-index: 2000; display: none; align-items: center; gap: 12px;
+    background: #12b76a; color: #fff !important; border-radius: 12px; padding: 12px 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .2); text-decoration: none !important; max-width: 340px;
+}
+.hdr-order-popup.show { display: flex; }
+.hdr-order-popup > i { font-size: 26px; line-height: 1; }
+.hdr-order-popup span { display: flex; flex-direction: column; line-height: 1.25; }
+.hdr-order-popup small { opacity: .85; }
+
 /* User button ------------------------------------------------------------- */
 .hdr-user {
     display: inline-flex; align-items: center; gap: 8px; height: 40px;

@@ -8,7 +8,8 @@ $oDashBoard = new Dashboard();
 $oStockReport = new StockReport();
 
 list($ApplicationStatus, $StatusReason) = $oDashBoard->getApplicationStatus();
-$SelectCashBankBalances = $oDashBoard->getCashBankBalances();
+// Cash / Bank Balances is hidden on the dashboard; items at or below reorder level show instead
+$SelectReorder = $oStockReport->getReorderReport('', '');
 $CashFlow = [];
 for ($i=0; $i<=6; $i++)
 {
@@ -19,10 +20,10 @@ for ($i=0; $i<=6; $i++)
 /*$SelectZeroStockLedger = $oStockReport->getZeroStockLedger();*/
 /*$SelectZeroAmountSave = $oStockReport->getZeroAmountSaveVoucher();*/
 
-list($RowIconsData, $DateFromMain, $DateTillMain, $DateFromCompare, $DateTillCompare) = $oDashBoard->getIndicatorsData($_GET['date_from'] ?? '', $_GET['date_till'] ?? '');
-list($Label, $Revenue, $Expense, $Income) = $oDashBoard->getIncomeByChartValues2();
+list($RowIconsData, $DateFromMain, $DateTillMain) = $oDashBoard->getIndicatorsData($_GET['date_from'] ?? '', $_GET['date_till'] ?? '');
 list($Top5CustomersName, $Top5CustomersAmount) = $oDashBoard->getTopCustomersBySalesValue();
 list($Top5ItemsName, $Top5ItemsAmount) = $oDashBoard->getTopItemsByProfitValue();
+list($SalesMonths, $MonthlySales) = $oDashBoard->getMonthlySalesByType();
 
 $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from='.date('m/d/Y', strtotime("-3 month")).'&date_till='.date("m/d/Y").'&account_id=[AccountId]&search=';
 ?>
@@ -36,9 +37,6 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
         .gradient-kpi-value { color: #fff; font-size: 1.65rem; font-weight: 800; margin: 0; font-variant-numeric: tabular-nums; }
         .gradient-kpi-note { display: block; font-size: 0.72rem; opacity: 0.85; margin-top: 0.15rem; }
         .gradient-kpi-icon { flex: 0 0 48px; width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.45rem; background: rgba(255, 255, 255, 0.2); }
-        .gradient-kpi-trend { margin-top: 0.9rem; font-size: 0.76rem; opacity: 0.95; }
-        .gradient-kpi-trend span { display: inline-flex; align-items: center; gap: 2px; padding: 0.2rem 0.55rem; border-radius: 30px; font-weight: 700; margin-right: 0.3rem; background: rgba(255, 255, 255, 0.22); }
-        .gradient-kpi-trend span.bad { background: rgba(0, 0, 0, 0.18); }
     </style>
     <form method="get" class="card p-3 mb-4" style="border-radius: 12px;">
         <div class="row align-items-end">
@@ -54,35 +52,52 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
             <div class="col-md-auto">
                 <button type="submit" class="btn button color"><i class="mdi mdi-magnify"></i> Search</button>
                 <? if (isset($_GET['date_from'])) { ?>
-                    <a href="index.php" class="btn btn-light ml-1">This Month</a>
+                    <a href="index.php" class="btn btn-light ml-1">Today</a>
                 <? } ?>
             </div>
             <div class="col-lg mt-2 mt-lg-0 text-lg-right">
                 <small class="text-muted">
-                    <i class="mdi mdi-calendar-clock"></i> <strong><?=date('M d, Y', $DateFromMain)?></strong> to <strong><?=date('M d, Y', $DateTillMain)?></strong>,
-                    compared with <?=date('M d, Y', $DateFromCompare)?> to <?=date('M d, Y', $DateTillCompare)?>
+                    <i class="mdi mdi-calendar-clock"></i> <strong><?=date('M d, Y', $DateFromMain)?></strong> to <strong><?=date('M d, Y', $DateTillMain)?></strong>
                 </small>
             </div>
         </div>
     </form>
     <div class="row">
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Website Sales", "green", "web", $RowIconsData['current_website_sales'], $RowIconsData['previous_website_sales'], "Website invoices (WIV)"); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Website Sales", "green", "web", $RowIconsData['current_website_sales'], "Website invoices (WIV)"); ?>
         </div>
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Sales", "blue", "point-of-sale", $RowIconsData['current_sales'], $RowIconsData['previous_sales'], "Order invoices (OIV)"); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Sales", "blue", "point-of-sale", $RowIconsData['current_sales'], "Order invoices (OIV)"); ?>
         </div>
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Purchases", "warning", "cart", $RowIconsData['current_purchase'], $RowIconsData['previous_purchase'], "Purchase invoices", true); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Sales Orders", "indigo", "receipt", $RowIconsData['current_sales_orders'], "Number of order invoices (OIV)"); ?>
         </div>
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Receipts", "teal", "arrow-down-bold-circle-outline", $RowIconsData['current_receipt'], $RowIconsData['previous_receipt'], "Cash / bank received"); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Website Orders", "pink", "cellphone-text", $RowIconsData['current_website_orders'], "Orders placed on the website"); ?>
         </div>
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Payments", "danger", "arrow-up-bold-circle-outline", $RowIconsData['current_payment'], $RowIconsData['previous_payment'], "Cash / bank paid", true); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Dine-in Sales", "teal", "silverware-fork-knife", $RowIconsData['current_dine_in_sales'], "Dine-in invoices (DIV)"); ?>
         </div>
-        <div class="col-xl-4 col-md-6">
-            <? $oDashBoard->designGradientStat("Profit", "purple", "chart-line", $RowIconsData['current_profit'], $RowIconsData['previous_profit'], "Sale price less cost, after returns"); ?>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Dine-in Orders", "purple", "table-chair", $RowIconsData['current_dine_in_orders'], "Number of dine-in invoices (DIV)"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("WhatsApp Sales", "green", "whatsapp", $RowIconsData['current_whatsapp_sales'], "WhatsApp invoices (WHIV)"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("WhatsApp Orders", "indigo", "message-text-outline", $RowIconsData['current_whatsapp_orders'], "Number of WhatsApp invoices (WHIV)"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Purchases", "warning", "cart", $RowIconsData['current_purchase'], "Purchase invoices"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Receipts", "teal", "arrow-down-bold-circle-outline", $RowIconsData['current_receipt'], "Cash / bank received"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Payments", "danger", "arrow-up-bold-circle-outline", $RowIconsData['current_payment'], "Cash / bank paid"); ?>
+        </div>
+        <div class="col-xl-3 col-md-6">
+            <? $oDashBoard->designGradientStat("Profit", "purple", "chart-line", $RowIconsData['current_profit'], "Net sales less raw material used (Stock Use)"); ?>
         </div>
     </div>
     <div class="row">
@@ -104,37 +119,36 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
                 <div class="card-body" style="padding: 1.3rem 1.4rem;">
                     <div class="d-flex align-items-center justify-content-between mb-3">
                         <h5 class="mb-0 font-weight-bold" style="color: #000000; font-size: 1.05rem;">
-                            <i class="mdi mdi-bank-outline mr-2" style="font-size: 1.2rem; color: #0b3866; vertical-align: middle;"></i>Cash / Bank Balances
+                            <i class="mdi mdi-package-variant-closed-remove mr-2" style="font-size: 1.2rem; color: #0b3866; vertical-align: middle;"></i>Reorder Stock
                         </h5>
+                        <a href="<?=ProjectHelper::SiteURL()?>stock_report/reorder.php" class="small" style="color: #0b3866; font-weight: 600;">View all <i class="mdi mdi-arrow-right"></i></a>
                     </div>
-                    <div class="table-responsive">
+                    <div class="table-responsive" style="max-height: 360px; overflow-y: auto;">
                         <table class="table table-hover table-centered table-nowrap mb-0" style="font-size: 0.85rem;">
                             <thead style="background: #f2f7f6;">
                                 <tr>
-                                    <th style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">Cash / Bank</th>
-                                    <th class="text-right" style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">Balance</th>
+                                    <th style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">Item</th>
+                                    <th class="text-right" style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">Available</th>
+                                    <th class="text-right" style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">Reorder Level</th>
+                                    <th class="text-right" style="color: #000000; font-weight: 700; font-size: 0.78rem; border-bottom: 2px solid #d4e3e1; padding: 0.75rem 0.85rem;">To Purchase</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <? while ($RowCashBankBalances = DBQM::fetch_assoc($SelectCashBankBalances)) { ?>
+                                <? $ReorderCount = 0; while ($RowReorder = DBQM::fetch_assoc($SelectReorder)) { $ReorderCount++; ?>
                                     <tr>
                                         <td style="padding: 0.7rem 0.85rem; border-bottom: 1px solid #edf4f3;">
-                                            <a href="<?=str_replace("[AccountId]", $RowCashBankBalances['id'], $LedgerLink)?>" target="_blank" style="color: #0b3866; font-weight: 600; text-decoration: none;">
-                                                <?=$RowCashBankBalances['name']?>
-                                             </a>
+                                            <a href="<?=Reporting::getStockLink($RowReorder['id'], $RowReorder['attribute_id'], '', '', '')?>" target="_blank" style="color: #0b3866; font-weight: 600; text-decoration: none;"><?=$RowReorder['ac_stock']?></a>
+                                            <small class="d-block text-muted"><?=$RowReorder['category']?></small>
                                         </td>
-                                        <td class="text-right font-weight-semibold" data-js="cash-bank-balance" style="padding: 0.7rem 0.85rem; border-bottom: 1px solid #edf4f3; color: #000000;">
-                                            <?=Utils::format($RowCashBankBalances['balance'])?>
-                                        </td>
+                                        <td class="text-right" style="padding: 0.7rem 0.85rem; border-bottom: 1px solid #edf4f3; color: #000000;"><?=Utils::format($RowReorder['available_qty'], 0)?></td>
+                                        <td class="text-right" style="padding: 0.7rem 0.85rem; border-bottom: 1px solid #edf4f3; color: #000000;"><?=Utils::format($RowReorder['reorder_level'], 0)?></td>
+                                        <td class="text-right font-weight-bold" style="padding: 0.7rem 0.85rem; border-bottom: 1px solid #edf4f3; color: #b42318;"><?=Utils::format($RowReorder['reorder_level'] - $RowReorder['available_qty'], 0)?></td>
                                     </tr>
                                 <? } ?>
+                                <? if (!$ReorderCount) { ?>
+                                    <tr><td colspan="4" class="text-center text-muted" style="padding: 1.2rem;"><i class="mdi mdi-check-circle-outline text-success"></i> No items below reorder level</td></tr>
+                                <? } ?>
                             </tbody>
-                            <tfoot style="background: #f2f7f6;">
-                                <tr>
-                                    <td class="font-weight-bold" style="padding: 0.85rem; border-top: 2px solid #d4e3e1; color: #000000;">Total Balance</td>
-                                    <td class="text-right font-weight-bold" <? Utils::sumReportColumn('[data-js="cash-bank-balance"]'); ?> style="padding: 0.85rem; border-top: 2px solid #d4e3e1; color: #0b3866; font-size: 0.95rem;"></td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
@@ -200,10 +214,13 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
         <div class="col-lg-6">
             <div class="card">
                 <div class="card-body">
-                    <h5 class="mb-3 font-weight-bold" style="color: #000000; font-size: 1.05rem;">
-                        <i class="mdi mdi-chart-bell-curve mr-2" style="font-size: 1.2rem; color: #0b3866; vertical-align: middle;"></i>Revenue to Expense Ratio
-                    </h5>
-                    <div id="revenue"></div>
+                    <div class="d-flex align-items-center justify-content-between mb-3">
+                        <h5 class="mb-0 font-weight-bold" style="color: #000000; font-size: 1.05rem;">
+                            <i class="mdi mdi-chart-bar-stacked mr-2" style="font-size: 1.2rem; color: #0b3866; vertical-align: middle;"></i>Total Sales of Month
+                        </h5>
+                        <small class="badge badge-soft-secondary">OIV &middot; WIV &middot; DIV &middot; WHIV</small>
+                    </div>
+                    <div id="monthly_sales_chart" class="apex-charts" dir="ltr"></div>
                 </div>
             </div>
             <div class="card">
@@ -222,110 +239,37 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
 <? } ?>
 <script src="assets/libs/apexcharts/apexcharts.min.js"></script>
 <script>
-/* ******************** Income To Expense Ratio *********************** */
-var income_options = {
-    series: [{
-        name: 'Revenue',
-        type: 'column',
-        data: [<? echo implode(", ", $Revenue); ?>]
-    }, {
-        name: 'Expense',
-        type: 'column',
-        data: [<? echo implode(", ", $Expense); ?>]
-    }, {
-        name: 'Profit',
-        type: 'column',
-        data: [<? echo implode(", ", $Income); ?>]
-    }],
-    colors: ['#b57bee', '#0b3866', '#061d38'],
+/* ******************** Total Sales of Month (OIV, WIV, DIV, WHIV) *********************** */
+var monthly_sales_chart = new ApexCharts(document.querySelector("#monthly_sales_chart"), {
+    series: [<? foreach ($MonthlySales as list($Name, $Amounts)) { ?>{ name: <?=json_encode($Name)?>, data: [<?=implode(", ", $Amounts)?>] }, <? } ?>],
+    colors: ['#3b82f6', '#16a34a', '#8b5cf6', '#25d366'],
     chart: {
         height: 350,
         type: 'bar',
-        stacked: false,
-        toolbar: {
-            show: false
-        },
+        stacked: true,
+        toolbar: { show: false },
         fontFamily: 'Inter, sans-serif'
     },
-    plotOptions: {
-        bar: {
-            borderRadius: 6,
-            columnWidth: '52%'
-        }
-    },
-    stroke: {
-        width: [0, 0, 0],
-        curve: 'smooth'
-    },
-    fill: {
-        opacity: [0.95, 0.95, 0.95]
-    },
-    dataLabels: {
-        enabled: false
-    },
-    grid: {
-        borderColor: '#d4e3e1',
-        strokeDashArray: 4,
-        padding: {
-            bottom: 10
-        }
-    },
+    plotOptions: { bar: { borderRadius: 4, columnWidth: '52%' } },
+    dataLabels: { enabled: false },
+    grid: { borderColor: '#d4e3e1', strokeDashArray: 4 },
     xaxis: {
-        categories: [<? echo implode(", ", array_map("escape", $Label)); ?>],
-        labels: {
-            style: {
-                colors: '#000000',
-                fontFamily: 'Inter, sans-serif'
-            }
-        }
+        categories: <?=json_encode(array_map(function ($Month) { return date('M Y', strtotime($Month)); }, $SalesMonths))?>,
+        labels: { style: { colors: '#000000', fontFamily: 'Inter, sans-serif' } }
     },
-    yaxis: [{
-        title: {
-            text: 'Amount (' + '<?=ProjectHelper::DEFAULT_CURRENCY?>' + ')',
-            style: {
-                color: '#000000',
-                fontFamily: 'Inter, sans-serif',
-                fontWeight: 600
-            }
-        },
-        labels: {
-            formatter: function (value) {
-                return value.toLocaleString();
-            },
-            style: {
-                colors: '#000000',
-                fontFamily: 'Inter, sans-serif'
-            }
-        }
-    }],
+    yaxis: {
+        title: { text: 'Amount (<?=ProjectHelper::DEFAULT_CURRENCY?>)', style: { color: '#000000', fontFamily: 'Inter, sans-serif', fontWeight: 600 } },
+        labels: { formatter: function (value) { return Math.round(value).toLocaleString(); }, style: { colors: '#000000', fontFamily: 'Inter, sans-serif' } }
+    },
     tooltip: {
         shared: true,
         intersect: false,
-        y: {
-            formatter: function (y) {
-                if (typeof y !== "undefined") {
-                    return y.toLocaleString() + " <?=ProjectHelper::DEFAULT_CURRENCY?>";
-                }
-                return y;
-            }
-        }
+        y: { formatter: function (y) { return typeof y !== "undefined" ? y.toLocaleString() + " <?=ProjectHelper::DEFAULT_CURRENCY?>" : y; } }
     },
-    legend: {
-        position: 'top',
-        horizontalAlign: 'right',
-        fontSize: '13px',
-        fontFamily: 'Inter, sans-serif',
-        labels: {
-            colors: '#000000'
-        }
-    }
-};
-
-var income_chart = new ApexCharts(document.querySelector("#revenue"), income_options);
-income_chart.render();
-/* ******************** Income To Expense Ratio *********************** */
-
-
+    legend: { position: 'top', horizontalAlign: 'right', fontSize: '13px', fontFamily: 'Inter, sans-serif', labels: { colors: '#000000' } }
+});
+monthly_sales_chart.render();
+/* ******************** Total Sales of Month (OIV, WIV, DIV, WHIV) *********************** */
 
 /* ******************** Top Customers *********************** */
 var options_top_customer = {

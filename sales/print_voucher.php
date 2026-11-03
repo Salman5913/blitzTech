@@ -1,8 +1,8 @@
 <?
 include_once("../connection/localhost.php");
 
-// Order Invoice (POS) and Website Invoice have their own receipt print
-if (in_array($_GET['voucher_type_id'], [VoucherType::OIV, VoucherType::WIV]))
+// Order Invoice (POS), Dine-in, WhatsApp and Website Invoice have their own receipt print
+if (in_array($_GET['voucher_type_id'], [VoucherType::OIV, VoucherType::WIV, VoucherType::DIV, VoucherType::WHIV]))
     Utils::redirect(ProjectHelper::SiteURL()."pos/print_voucher.php?".http_build_query($_GET));
 
 $oSales          = new Sales();

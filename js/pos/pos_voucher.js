@@ -1,12 +1,13 @@
 /**
  * POS - Order Invoice Voucher screen (pos/pos_voucher.php)
- * Server data comes from window.POS_CONFIG: catalog, cart, isView, deliveryFee (Website Invoice), posUrl
+ * Server data comes from window.POS_CONFIG: catalog, cart, isView, deliveryFee (Website Invoice), isDineIn (Table No), posUrl
  */
 $(function () {
     var CONFIG = window.POS_CONFIG || {};
     var CATALOG = CONFIG.catalog || [];
     var CART = CONFIG.cart || [];
     var IS_VIEW = !!CONFIG.isView;
+    var IS_DINE_IN = !!CONFIG.isDineIn;
     var POS_URL = CONFIG.posUrl;
     var COLORS = ['#0b3866', '#7a5af8', '#12b76a', '#f79009', '#ee46bc', '#2e90fa', '#f04438', '#15b79e'];
     var menuStatus = {};   // Restaurant > Website Menu (POS) of selected warehouse: sold out / hidden items
@@ -241,6 +242,7 @@ $(function () {
         var errors = [];
         if (!$("#customer_id").attr("data-ac-id")) errors.push("Please select <b>Customer</b> from list");
         if (!$("#branch_id").attr("data-ac-id")) errors.push("Please select <b>Warehouse</b> from list");
+        if (IS_DINE_IN && !$.trim($("#table_no").val())) errors.push("Please enter <b>Table No</b>");
         if (!CART.length) errors.push("Cart is empty");
 
         if (errors.length) { showError(errors.join("<br>")); return false; }
@@ -253,22 +255,44 @@ $(function () {
         }).join('');
 
         return '<div class="pos-receipt">' +
-            '<div class="mb-2"><b>' + $('<span>').text(res.voucher_name).html() + '</b> &middot; ' + $('<span>').text($("#customer_id").val()).html() + '</div>' +
+            '<div class="mb-2"><b>' + $('<span>').text(res.voucher_name).html() + '</b> &middot; ' + $('<span>').text($("#customer_id").val()).html() +
+            (IS_DINE_IN ? ' &middot; Table ' + $('<span>').text($("#table_no").val()).html() : '') + '</div>' +
             '<table>' + rows + '<tr class="tot"><td>Total</td><td class="text-right">' + money(res.total) + '</td></tr></table></div>';
     }
 
-    function afterReceipt(res) {
-        if (res.is_edit) {
-            window.location.href = POS_URL;
-            return;
-        }
+    var SAVED_KEY = 'pos_saved_notification';
+    var isLeaving = false;   // saved and opening a new voucher: keep Save disabled
 
-        CART = [];
-        $("#mobile_number").val('');
-        $("#__voucher_submit_token").val(res.next_token);
-        renderCart();
-        closeCart();
-        loadMenuStatus(currentBranchId());
+    // notification slides in from the right, with the receipt summary and a print button
+    function showSavedNotification(saved) {
+        Swal.fire({
+            toast: true,
+            position: "top-end",
+            icon: "success",
+            title: $('<span>').text(saved.title).html(),
+            html: saved.html,
+            showConfirmButton: true,
+            confirmButtonText: '<i class="mdi mdi-printer"></i> Print Receipt',
+            showCloseButton: true,
+            timer: 8000,
+            timerProgressBar: true,
+            customClass: {popup: 'pos-toast', confirmButton: 'color'}
+        }).then(function (result) {
+            if (result.isConfirmed || result.value)
+                window.open(saved.print_url + "&autoprint=Y", "pos_receipt", "width=420,height=640");
+        });
+    }
+
+    // saved: open a fresh new voucher (new number, empty cart) and show the notification there
+    function afterReceipt(res) {
+        var saved = {title: (res.is_edit ? "Updated " : "Saved ") + res.voucher_name, html: receiptHtml(res), print_url: res.print_url};
+        try {
+            sessionStorage.setItem(SAVED_KEY, JSON.stringify(saved));
+        } catch (e) {
+            showSavedNotification(saved);   // no storage: show it here, page still reloads below
+        }
+        isLeaving = true;
+        window.location.href = POS_URL;
     }
 
     function saveOrder() {
@@ -283,25 +307,10 @@ $(function () {
                     return;
                 }
 
-                Swal.fire({
-                    icon: "success",
-                    title: "Order Saved",
-                    html: receiptHtml(res),
-                    showCancelButton: true,
-                    confirmButtonText: '<i class="mdi mdi-printer"></i> Print Receipt',
-                    cancelButtonText: "Cancel",
-                    reverseButtons: true,
-                    allowOutsideClick: false,
-                    customClass: {confirmButton: 'color'}
-                }).then(function (result) {
-                    if (result.isConfirmed || result.value)
-                        window.open(res.print_url + "&autoprint=Y", "pos_receipt", "width=420,height=640");
-
-                    afterReceipt(res);
-                });
+                afterReceipt(res);
             })
             .fail(function () { showError("Server error, order not saved. Please try again."); })
-            .always(function () { $btn.prop("disabled", !CART.length); });
+            .always(function () { $btn.prop("disabled", isLeaving || !CART.length); });
     }
 
     function deleteOrder() {
@@ -393,4 +402,13 @@ $(function () {
 
     setMenuStatus(CONFIG.menuStatus);   // POS menu of the page's warehouse, sent with the page
     renderCart();
+
+    // notification of the order saved just before this page opened
+    try {
+        var saved = sessionStorage.getItem(SAVED_KEY);
+        if (saved) {
+            sessionStorage.removeItem(SAVED_KEY);
+            showSavedNotification(JSON.parse(saved));
+        }
+    } catch (e) {}
 });

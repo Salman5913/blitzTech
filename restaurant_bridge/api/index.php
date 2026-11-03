@@ -82,7 +82,7 @@ const MENU_SQL = "SELECT m.id, m.name, m.description,
                   LEFT JOIN cp_stock_attribute csa ON csa.id = m.erp_attribute_id";
 
 // Stock items in the branch's categories marked "Show on website" (rs_menu_categories) join that branch's menu
-// automatically, one dish per active variation. Same query as RestaurantMenu::syncFromStock() in demos3. ? = branch id (twice).
+// automatically, one dish per active variation. Same query as RestaurantMenu::syncFromStock() in blitzztech. ? = branch id (twice).
 const MENU_SYNC_SQL = "INSERT INTO rs_menu_items (branch_id, name, description, price, category, emoji, available, sort_order, erp_stock_id, erp_attribute_id)
                        SELECT mc.branch_id, CONCAT(s.name, IFNULL(CONCAT(' - ', csa.name), '')), '', COALESCE(NULLIF(sa.selling_price, 0), s.sp),
                               COALESCE(NULLIF(mc.website_name, ''), c.name), '', 1, 1000 + s.id, s.id, sa.attribute_id

@@ -1,13 +1,14 @@
 <?
 /**
- * Order Invoice Voucher (POS)
+ * Order Invoice (OIV), Dine-in Invoice (DIV, with Table No) and WhatsApp Invoice (WHIV) - POS screen
  * Same behaviour as SIV, saved through Sales class (sl_sales / sl_sales_data).
  * Website Invoices (WIV) open here too, view only: they are made from website orders (restaurant/manage_web_orders.php).
  */
 include_once("../connection/localhost.php");
 
-$VoucherTypeId = ($_GET['voucher_type_id'] ?? '') == VoucherType::WIV ? VoucherType::WIV : VoucherType::OIV;
+$VoucherTypeId = ($_GET['voucher_type_id'] ?? '') == VoucherType::WIV ? VoucherType::WIV : SalesPOS::getVoucherTypeId($_GET['voucher_type_id'] ?? '');
 $isWebsiteInvoice = $VoucherTypeId == VoucherType::WIV;
+$isDineIn = $VoucherTypeId == VoucherType::DIV;
 $_GET['voucher_type_id'] = $VoucherTypeId;
 
 $oSales = new Sales();
@@ -22,6 +23,9 @@ if ($isWebsiteInvoice && !$isEdit)
     Utils::redirect(ProjectHelper::SiteURL()."sales/report_sales.php?voucher_type_id=".VoucherType::WIV);
 
 $RowDetails = $isLoadData ? $oSales->getDetails() : [];
+
+// POS has its own new order flow: no previous / next / new buttons in the page heading, only print for a saved invoice
+$_GET['_page_title_text'] = $isEdit ? '<a href="'.ProjectHelper::SiteURL().'pos/print_voucher.php?id='.$oSales->getVoucherId().'&voucher_type_id='.$VoucherTypeId.'" target="_blank" class="btn btn-sm btn-white" title="Print receipt"><i class="mdi mdi-printer"></i></a>' : '';
 
 /* ************* Existing cart (edit / copy) ************* */
 $Cart = [];
@@ -58,6 +62,7 @@ if ($isLoadData)
 $CustomerAccountId = $isLoadData ? $RowDetails['customer_account_id'] : getConstantAccount()->getCashCustomer();
 $BranchId = $isLoadData ? $RowDetails['branch_id'] : $_SESSION['__branch_id'];
 $VoucherDate = $isEdit ? date('m/d/Y', strtotime($RowDetails['voucher_date'])) : '';
+$TableNo = $isDineIn && $isLoadData ? SalesPOS::getTableNo($oSales->getVoucherId()) : '';
 
 $Catalog = SalesPOS::getCatalog();
 
@@ -73,13 +78,21 @@ include_once("../includes/inc_header.php");
     <? $oSales->showVoucherDeleteNotification(); ?>
     <div class="card pos-head">
         <div class="row align-items-end">
-            <div class="col-lg-3 col-md-12 mb-2 mb-lg-0">
-                <h3 class="card-title mb-1"><i class="mdi <?=$isWebsiteInvoice ? 'mdi-web' : 'mdi-point-of-sale'?>"></i> <?=$isWebsiteInvoice ? 'Website Invoice' : 'Order Invoice'?></h3>
+            <div class="<?=$isDineIn ? 'col-lg-2' : 'col-lg-3'?> col-md-12 mb-2 mb-lg-0">
+                <h3 class="card-title mb-1"><i class="mdi mdi-<?=SalesPOS::getIcon($VoucherTypeId)?>"></i> <?=SalesPOS::getTitle($VoucherTypeId)?></h3>
                 <small class="text-muted">
                     <?=$isEdit ? VoucherType::getCode($VoucherTypeId)."-".$oSales->getVoucherNumber()." &middot; ".DateDecode($RowDetails['voucher_date']) : "New Order &middot; ".date('M j, Y')?>
                 </small>
             </div>
-            <div class="col-lg-3 col-md-4">
+            <? if ($isDineIn) { ?>
+                <div class="col-lg-2 col-md-3">
+                    <div class="form-group mb-lg-0">
+                        <label for="table_no">Table No</label>
+                        <input type="text" id="table_no" name="table_no" maxlength="20" placeholder="e.g. T-5" value="<?=htmlspecialchars((string) $TableNo)?>">
+                    </div>
+                </div>
+            <? } ?>
+            <div class="<?=$isDineIn ? 'col-lg-2' : 'col-lg-3'?> col-md-4">
                 <div class="form-group mb-lg-0">
                     <label for="customer_id">Customer</label>
                     <input type="text" id="customer_id" name="customer_id" data-auto-select="Y" <? Autocomplete::ACSearchAccount($CustomerAccountId); ?>>
@@ -164,7 +177,7 @@ include_once("../includes/inc_header.php");
     <span class="pos-fab-total" id="pos_fab_total">0.00</span>
 </button>
 
-<link href="<?=ProjectHelper::SiteURL()?>assets/css/pos.css?v=1" rel="stylesheet" type="text/css" />
+<link href="<?=ProjectHelper::SiteURL()?>assets/css/pos.css?v=2" rel="stylesheet" type="text/css" />
 <script>
     window.POS_CONFIG = {
         catalog: <?=json_encode($Catalog, $JsonFlags)?>,
@@ -173,8 +186,9 @@ include_once("../includes/inc_header.php");
         deliveryFee: <?=(float) ($RowDetails['transport_amount'] ?? 0)?>,
         branchId: <?=(int) $BranchId?>,
         menuStatus: <?=json_encode(SalesPOS::getMenuStatus($BranchId), $JsonFlags)?>,
-        posUrl: <?=json_encode(VoucherType::getLink(VoucherType::OIV), $JsonFlags)?>
+        isDineIn: <?=$isDineIn ? 'true' : 'false'?>,
+        posUrl: <?=json_encode(VoucherType::getLink($isWebsiteInvoice ? VoucherType::OIV : $VoucherTypeId), $JsonFlags)?>
     };
 </script>
-<script src="<?=ProjectHelper::SiteURL()?>js/pos/pos_voucher.js?v=5"></script>
+<script src="<?=ProjectHelper::SiteURL()?>js/pos/pos_voucher.js?v=8"></script>
 <? include_once("../includes/inc_footer.php"); ?>

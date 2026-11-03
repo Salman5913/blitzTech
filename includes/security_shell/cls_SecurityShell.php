@@ -10,6 +10,21 @@ class SecurityShell
 {
     const SUPER_ADMIN_ID = 1;
 
+    /**
+     * Users of this group stay logged in until they log out, others are logged out after IDLE_TIMEOUT
+     */
+    const FULL_ACCESS_GROUP_ID = 1;
+
+    /**
+     * Seconds without a click / key press before a user (not Full Access) is logged out
+     */
+    const IDLE_TIMEOUT = 60;
+
+    /**
+     * Browser tells the server about activity at most this often (seconds), so the server allows this much extra
+     */
+    const IDLE_PING = 15;
+
 	function loginMeIn($Username, $Password, $YearId)
     {
         $Password = md5($Password);
@@ -24,6 +39,8 @@ class SecurityShell
 
             empty($BranchId) ? '' : Branch::setLoginBranchId($BranchId);
             Year::setLoginYearId($YearId);
+
+            $this->startLoginSession($UserId, $Username);
 
 
 
@@ -65,6 +82,7 @@ class SecurityShell
     {
         $_SESSION['__user_name'] = 'tstadmin';
         $_SESSION['__user_id'] = self::SUPER_ADMIN_ID;
+        $_SESSION['__is_full_access'] = true;
         $this->getAllFullAccessAreas();
         Year::setLoginYearId(Year::getLastYearId());
     }
@@ -90,9 +108,81 @@ class SecurityShell
         unset($_SESSION['__constants_coa']);
         unset($_SESSION['__constants_accounts']);
 
+        unset($_SESSION['__is_full_access']);
+        unset($_SESSION['__last_activity']);
+
         Year::removeLoginYearId();
 
         /*Branch::removeLoginBranchId();*/
+    }
+
+    /**
+     * New session id on login; Full Access users get a cookie that lasts until they log out (SESSION_LIFETIME),
+     * others a browser session cookie (they are logged out after IDLE_TIMEOUT anyway)
+     */
+    private function startLoginSession($UserId, $Username)
+    {
+        session_regenerate_id(true);
+
+        $_SESSION['__is_full_access'] = self::isFullAccessUserId($UserId, $Username);
+        $_SESSION['__last_activity'] = time();
+
+        $Cookie = session_get_cookie_params();
+        setcookie(session_name(), session_id(), [
+            'expires' => $_SESSION['__is_full_access'] ? time() + SESSION_LIFETIME : 0,
+            'path' => $Cookie['path'],
+            'domain' => $Cookie['domain'],
+            'secure' => $Cookie['secure'],
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
+    }
+
+    private static function isFullAccessUserId($UserId, $Username)
+    {
+        if ($Username == "tstadmin")
+            return true;
+
+        return (bool) DBQM::fetch_assoc(DBQM::query("SELECT 1 FROM sh_usergroup WHERE login_user_id = ".escape($UserId, 'int')." AND group_id = ".escape(self::FULL_ACCESS_GROUP_ID, 'int')." LIMIT 1"));
+    }
+
+    /**
+     * Logged in user is in Full Access group (stays logged in until logout)
+     */
+    static function isFullAccessUser()
+    {
+        if (!self::isLoggedIn())
+            return false;
+
+        // sessions from before this check was added
+        if (!isset($_SESSION['__is_full_access']))
+            $_SESSION['__is_full_access'] = self::isFullAccessUserId($_SESSION['__user_id'], $_SESSION['__user_name']);
+
+        return $_SESSION['__is_full_access'];
+    }
+
+    /**
+     * Runs on every request: logs out a user (not Full Access) idle for more than IDLE_TIMEOUT.
+     * Background requests (web order polling, header X-Background-Request) do not count as activity.
+     */
+    static function checkIdleTimeout()
+    {
+        if (!self::isLoggedIn() or self::isFullAccessUser())
+            return;
+
+        if (time() - ($_SESSION['__last_activity'] ?? time()) > self::IDLE_TIMEOUT + self::IDLE_PING)
+        {
+            self::logout();
+            ErrorHandler::setError("You were logged out after 1 minute without activity");
+
+            // pages go to login, ajax requests get their own "not logged in" answer
+            if (empty($_SERVER['HTTP_X_BACKGROUND_REQUEST']) and empty($_SERVER['HTTP_X_REQUESTED_WITH']))
+                Utils::redirect(ProjectHelper::SiteURL()."login.php");
+            return;
+        }
+
+        if (empty($_SERVER['HTTP_X_BACKGROUND_REQUEST']))
+            $_SESSION['__last_activity'] = time();
     }
 
     static function redirectIfNotAllowedFormSubmission() {

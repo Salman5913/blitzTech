@@ -265,8 +265,18 @@ class VoucherType
      */
     const WIV = 112;
 
+    /**
+     * Dine-in Invoice Voucher - restaurant table orders, POS screen with Table No, same behaviour as OIV
+     */
+    const DIV = 113;
 
-    private static $SalesVoucherTypes = [self::SIV, self::OIV, self::WIV];
+    /**
+     * WhatsApp Invoice Voucher - orders taken on WhatsApp, POS screen, same behaviour as OIV
+     */
+    const WHIV = 114;
+
+
+    private static $SalesVoucherTypes = [self::SIV, self::OIV, self::WIV, self::DIV, self::WHIV];
 
 
     private $VoucherType;
@@ -331,6 +341,8 @@ class VoucherType
 
             case self::OIV:
             case self::WIV:
+            case self::DIV:
+            case self::WHIV:
                 $Link = ProjectHelper::SiteURL()."pos/pos_voucher.php";
                 break;
 

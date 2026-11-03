@@ -24,7 +24,7 @@ include_once ("../includes/inc_popup_header.php");
 <div class="row voucher_print">
     <div class="col-12 mb-3">
         <div class="row">
-            <div class="col-2"><img src="../assets/images/blitztech.png" class="img-fluid" style="max-width: 160px;"></div>
+            <div class="col-2"><img src="../assets/images/blitzztech.png" class="img-fluid" style="max-width: 160px;"></div>
             <div class="col-8 align-content-center text-center"><h3 class="popup-header_voucher"><?=VoucherType::getName($oVoucherPrint->oVoucher->getVoucherType())?></h3></div>
             <div class="col-2">
                 <h4><?=VoucherType::getCode($oVoucherPrint->oVoucher->getVoucherType())?>-<?=$oVoucherPrint->oVoucher->getVoucherNumber() ?></h4>

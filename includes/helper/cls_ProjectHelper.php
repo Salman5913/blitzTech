@@ -24,7 +24,7 @@ class ProjectHelper {
             return "http://10.0.0.172/demo_erp/";
 
         elseif ($_SERVER['SERVER_NAME'] == 'localhost')
-            return "http://localhost/demos3/";
+            return "http://localhost/blitzztech/";
 
         elseif ($_SERVER['SERVER_NAME'] == 'demo.s3.3dm-sols.com')
 	        return "https://demo.s3.3dm-sols.com/";

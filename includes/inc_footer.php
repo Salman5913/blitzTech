@@ -6,10 +6,10 @@
 <footer class="footer">
     <div class="finac-footer-inner">
         <div class="finac-footer-left">
-            &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://3dm-sols.com" target="_blank">Blitztech Solutions</a>. All rights reserved.
+            &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://3dm-sols.com" target="_blank">Blitzztech Solutions</a>. All rights reserved.
         </div>
         <div class="finac-footer-right d-none d-sm-flex">
-            <span>Powered by <strong>Blitz-ERP</strong></span>
+            <span>Powered by <strong>Blitzz-ERP</strong></span>
             <span class="finac-footer-sep"></span>
             <a href="https://app.s3.3dm-sols.com" target="_blank"><i class="mdi mdi-help-circle-outline"></i> Help Center</a>
         </div>
@@ -23,6 +23,9 @@
 
 </div>
 <!-- END layout-wrapper -->
+
+<!-- report pages: filter chips and totals strip -->
+<script src="<?=ProjectHelper::SiteURL()?>assets/js/report-ui.js?v=1"></script>
 
 <?
 SuccessHandler::displayMessages();
@@ -69,7 +72,7 @@ ErrorHandler::displayErrors();
     <div class="popup-data"></div>
 </div>
 <!-- ==========================================================================
-     BLITZ AI FINANCIAL ANALYST SYSTEM (FLOATING BUTTON & PANEL)
+     BLITZZ AI FINANCIAL ANALYST SYSTEM (FLOATING BUTTON & PANEL)
      ========================================================================== -->
 
 <!-- Floating Sparkle Button -->

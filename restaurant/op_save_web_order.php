@@ -13,4 +13,15 @@ if ($isSuccess)
 else
     ErrorHandler::setError($Message);
 
+// Completed & invoiced: open the new Website Invoice
+if ($isSuccess and ($_POST['status'] ?? '') == RestaurantOrder::STATUS_COMPLETED)
+{
+    $Order = RestaurantOrder::getOrder((int)$_POST['id']);
+    if (!empty($Order['erp_sales_id']))
+    {
+        $InvoiceVoucherTypeId = RestaurantOrder::getInvoiceVoucherTypeId($Order['erp_sales_id']);
+        Utils::redirect(VoucherType::getLink($InvoiceVoucherTypeId, $Order['erp_sales_id']));
+    }
+}
+
 Utils::redirectToReferer();

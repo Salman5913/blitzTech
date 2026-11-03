@@ -1,5 +1,9 @@
 <?php
 include_once("connection/localhost.php");
+
+// Already logged in: no login page until the user logs out
+if (SecurityShell::isLoggedIn())
+    Utils::redirect(ProjectHelper::SiteURL());
 /*$oBranch = new Branch();*/
 $oYear = new Year();
 ?>
@@ -8,9 +12,9 @@ $oYear = new Year();
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Login | Blitztech ERP</title>
+    <title>Login | Blitzztech ERP</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta content="Login - Blitztech ERP" name="description" />
+    <meta content="Login - Blitzztech ERP" name="description" />
     <meta content="3DM Solutions" name="author" />
     <!-- App favicon -->
     <link rel="shortcut icon" href="assets/images/blitztech2.png">
@@ -199,7 +203,7 @@ $oYear = new Year();
             color: #94a3b8;
         }
 
-        /* ================= Right Side: 50% Blitztech Cover ================= */
+        /* ================= Right Side: 50% Blitzztech Cover ================= */
         .login-right-pane {
             flex: 0 0 50%;
             width: 50%;
@@ -304,7 +308,7 @@ $oYear = new Year();
     <div class="login-left-pane">
         <div class="login-form-box">
             <div class="logo-container">
-                <svg class="brand-logo" viewBox="0 0 260 64" role="img" aria-label="Blitztech Logo" xmlns="http://www.w3.org/2000/svg">
+                <svg class="brand-logo" viewBox="0 0 260 64" role="img" aria-label="Blitzztech Logo" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <linearGradient id="blitzGrad" x1="0" y1="0" x2="1" y2="1">
                             <stop offset="0%" stop-color="#0b3866"/>
@@ -313,7 +317,7 @@ $oYear = new Year();
                     </defs>
                     <rect x="2" y="4" width="56" height="56" rx="14" fill="url(#blitzGrad)"/>
                     <path d="M34 11 L19 36 H29 L25 53 L41 27 H31 Z" fill="#ffffff"/>
-                    <text x="70" y="30" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" fill="#0b3866">Blitz<tspan fill="#b57bee">tech</tspan></text>
+                    <text x="70" y="30" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="28" font-weight="700" fill="#0b3866">Blitzz<tspan fill="#b57bee">tech</tspan></text>
                     <text x="71" y="50" font-family="Poppins, 'Segoe UI', Arial, sans-serif" font-size="10" font-weight="600" letter-spacing="3" fill="url(#blitzGrad)">Innovation</text>
                 </svg>
             </div>
@@ -361,14 +365,14 @@ $oYear = new Year();
             </form>
 
             <div class="login-footer">
-                <p>© <?=date('Y')?> Blitztech Innovation. All rights reserved.</p>
+                <p>© <?=date('Y')?> Blitzztech Innovation. All rights reserved.</p>
             </div>
         </div>
     </div>
 
-    <!-- RIGHT 50%: Blitztech Cover Showcase -->
+    <!-- RIGHT 50%: Blitzztech Cover Showcase -->
     <div class="login-right-pane">
-        <img src="assets/images/blitztechcover.png" alt="Blitztech Cover" class="cover-poster-img" onerror="this.onerror=null; this.src='assets/images/blitzcover.png';">
+        <img src="assets/images/blitzztechcover.png" alt="Blitzztech Cover" class="cover-poster-img" onerror="this.onerror=null; this.src='assets/images/blitzztechcover.png';">
     </div>
 </div>
 

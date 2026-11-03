@@ -16,12 +16,9 @@ $Type = $_GET['type'] ?? '';
 $Counts = RestaurantOrder::countByFilter();
 $SelectOrders = RestaurantOrder::getOrders($Filter, $Type);
 
-// Status chips: key => [label, icon]
+// Status chips: key => [label, icon]. Received / Preparing / On the way are all under Active (status shows on each card)
 $StatusChips = [
     RestaurantOrder::FILTER_ACTIVE => ['Active', 'mdi-clock-outline'],
-    RestaurantOrder::STATUS_RECEIVED => ['Received', 'mdi-bell-outline'],
-    RestaurantOrder::STATUS_PREPARING => ['Preparing', 'mdi-silverware-fork-knife'],
-    RestaurantOrder::STATUS_ON_THE_WAY => ['On the way', 'mdi-moped'],
     RestaurantOrder::STATUS_COMPLETED => ['Completed', 'mdi-check-circle-outline'],
     RestaurantOrder::STATUS_CANCELLED => ['Cancelled', 'mdi-close-circle-outline'],
     '' => ['All', 'mdi-format-list-bulleted'],
@@ -54,7 +51,9 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
     .order-items td { border-top: 1px dashed #e6e9ef; padding: 7px 4px; vertical-align: top; font-size: 14px; }
     .order-items tr:first-child td { border-top: 0; }
     .order-total { font-size: 17px; font-weight: 700; }
-    .order-footer { background: #fff; border-top: 1px solid #eef0f4; padding: 10px 14px; }
+    .order-footer { background: #fff; border-top: 1px solid #eef0f4; padding: 10px 14px; gap: 8px; }
+    .order-actions { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
+    .order-footer .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; line-height: 1.5; }
 
     .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745; margin-right: 4px; animation: live-pulse 2s infinite; }
     .live-dot.offline { background: #adb5bd; animation: none; }
@@ -168,10 +167,13 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
                 </div>
 
                 <div class="order-footer d-flex justify-content-between align-items-center">
-                    <form method="post" action="op_save_web_order.php" class="m-0">
+                    <form method="post" action="op_save_web_order.php" class="m-0 order-actions">
                         <input type="hidden" name="id" value="<?=(int)$Order['id']?>">
                         <? if ($CanCancel) { ?>
                             <button class="btn btn-sm btn-outline-danger" name="status" value="<?=RestaurantOrder::STATUS_CANCELLED?>" onclick="return confirm('Cancel <?=h($Order['order_code'])?>?')"><i class="mdi mdi-close"></i> Cancel order</button>
+                            <? if (RestaurantOrder::isEditable($Order)) { ?>
+                                <a href="web_order_edit.php?id=<?=(int)$Order['id']?>" class="btn btn-sm btn-outline-primary"><i class="mdi mdi-pencil-outline"></i> Edit</a>
+                            <? } ?>
                         <? } elseif ($isInvoiced && !$isCancelled) { ?>
                             <span class="small text-muted" title="Invoiced orders are cancelled with a sales return in the ERP"><i class="mdi mdi-lock-outline"></i> Invoiced</span>
                         <? } ?>
@@ -279,7 +281,7 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
 
     // Re-render the cards and filter counts from the server, keeping the search and the scroll position
     function refreshOrders(previousLatestId) {
-        return fetch(location.href, { cache: 'no-store', credentials: 'same-origin' })
+        return fetch(location.href, { cache: 'no-store', credentials: 'same-origin', headers: {'X-Background-Request': '1'} })
             .then(function (res) { return res.text(); })
             .then(function (html) {
                 var doc = new DOMParser().parseFromString(html, 'text/html');
@@ -303,7 +305,7 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
     }
 
     function poll() {
-        fetch('ajax_web_orders_state.php', { cache: 'no-store', credentials: 'same-origin' })
+        fetch('ajax_web_orders_state.php', { cache: 'no-store', credentials: 'same-origin', headers: {'X-Background-Request': '1'} })
             .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
             .then(function (now) {
                 setLive(true);

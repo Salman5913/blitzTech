@@ -657,4 +657,123 @@ class StockReport extends Reporting
                 category ASC
         ");
     }
+    /**
+     * Restaurant profit: purchases are raw material, sales are finished goods (no stock posted on sale),
+     * raw material is taken out with Stock Use vouchers. Profit = sales invoices less returns less Stock Use cost.
+     * @param string $GroupBy 'day' or 'month'
+     * @return array [period (Y-m-d or Y-m) => ['sales' => [voucher type id => amount], 'returns' => amount, 'material' => cost]]
+     */
+    function getSalesProfitByPeriod($DateFrom, $DateTill, $GroupBy)
+    {
+        $Format = $GroupBy == 'month' ? '%Y-%m' : '%Y-%m-%d';
+        $Periods = [];
+
+        $Select = DBQM::query("
+            SELECT
+                DATE_FORMAT(did.voucher_date, '{$Format}') AS period,
+                did.voucher_type_id,
+                SUM(did.voucher_total) AS amount
+            FROM
+                sl_sales s,
+                distinct_id did
+            WHERE
+                s.distinct_id = did.id AND
+                did.is_deleted <> 'Y' AND
+                did.voucher_type_id IN (".VoucherType::getSalesVoucherTypes().", ".escape(VoucherType::SRV).")
+                ".UtilsQueryMaker::date("did.voucher_date", $DateFrom, $DateTill)."
+                ".CostCenter::getFilterSql("did.cost_center_id", true)."
+            GROUP BY
+                period, did.voucher_type_id
+        ");
+        while ($Row = DBQM::fetch_assoc($Select))
+        {
+            if ($Row['voucher_type_id'] == VoucherType::SRV)
+                $Periods[$Row['period']]['returns'] = (float) $Row['amount'];
+            else
+                $Periods[$Row['period']]['sales'][$Row['voucher_type_id']] = (float) $Row['amount'];
+        }
+
+        $Select = DBQM::query("
+            SELECT
+                DATE_FORMAT(stl.date_time, '{$Format}') AS period,
+                SUM(stl.qty * stb.cost * -1) AS material
+            FROM
+                st_stock_ledger stl,
+                st_stock_batch stb,
+                distinct_id did
+            WHERE
+                stl.batch_id = stb.id AND
+                stl.distinct_id = did.id AND
+                did.is_deleted <> 'Y' AND
+                stl.voucher_type_id = ".escape(VoucherType::SU)."
+                ".UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill)."
+                ".CostCenter::getFilterSql("did.cost_center_id", true)."
+            GROUP BY
+                period
+        ");
+        while ($Row = DBQM::fetch_assoc($Select))
+            $Periods[$Row['period']]['material'] = (float) $Row['material'];
+
+        ksort($Periods);
+        return $Periods;
+    }
+
+    /**
+     * Raw material taken out with Stock Use vouchers, item wise, at purchase (batch) cost
+     */
+    function getRawMaterialUsage($DateFrom, $DateTill, $CombineStockId, $CategoryId)
+    {
+        list($StockId, $AttributeId) = Stock::splitStockIdAttributeId($CombineStockId);
+
+        $Where = UtilsQueryMaker::equal("st.id", $StockId);
+        $Where .= UtilsQueryMaker::equal("st.attribute_id", $AttributeId);
+        $Where .= UtilsQueryMaker::equal("st.category_id", $CategoryId);
+        $Where .= UtilsQueryMaker::date("stl.date_time", $DateFrom, $DateTill);
+        $Where .= CostCenter::getFilterSql("did.cost_center_id", true);
+
+        return DBQM::query("
+            SELECT
+                st.id,
+                st.attribute_id,
+                st.ac_stock,
+                IFNULL(c.name, 'Other') AS category,
+                SUM(stl.qty * -1) AS qty,
+                SUM(stl.qty * stb.cost * -1) AS cost
+            FROM
+                st_stock_ledger stl
+                JOIN st_stock_batch stb ON stb.id = stl.batch_id
+                JOIN distinct_id did ON did.id = stl.distinct_id
+                JOIN vw_ac_stock st ON st.id = stb.stock_id AND st.attribute_id <=> stb.attribute_id
+                LEFT JOIN st_stock_category c ON c.id = st.category_id
+            WHERE
+                did.is_deleted <> 'Y' AND
+                stl.voucher_type_id = ".escape(VoucherType::SU)." AND
+                st.company_id = ".escape(Company::getLoggedInCompanyId(), 'int')."
+                {$Where}
+            GROUP BY
+                st.id, st.attribute_id
+            ORDER BY
+                cost DESC
+        ");
+    }
+
+    /**
+     * Net sales (sales invoices less returns) for a period, to compare raw material used against
+     */
+    function getNetSales($DateFrom, $DateTill)
+    {
+        return (float) DBQM::result(DBQM::query("
+            SELECT
+                SUM(IF(did.voucher_type_id = ".escape(VoucherType::SRV).", -did.voucher_total, did.voucher_total))
+            FROM
+                sl_sales s,
+                distinct_id did
+            WHERE
+                s.distinct_id = did.id AND
+                did.is_deleted <> 'Y' AND
+                did.voucher_type_id IN (".VoucherType::getSalesVoucherTypes().", ".escape(VoucherType::SRV).")
+                ".UtilsQueryMaker::date("did.voucher_date", $DateFrom, $DateTill)."
+                ".CostCenter::getFilterSql("did.cost_center_id", true)."
+        "), 0);
+    }
 }

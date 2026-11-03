@@ -187,7 +187,7 @@ class ImportAccounts
 
     function updateLedgerEntries()
     {
-        $Select = DBQM::query("select sl.*, did.voucher_id from st_stock_ledger sl, distinct_id did where sl.distinct_id = did.id and sl.batch_id not in (select id from st_stock_batch) and sl.voucher_type_id in (2, 27, 28, 29, 15) group by sl.voucher_type_id, sl.voucher_number");
+        $Select = DBQM::query("select sl.*, did.voucher_id from st_stock_ledger sl, distinct_id did where sl.distinct_id = did.id and sl.batch_id not in (select id from st_stock_batch) and sl.voucher_type_id in (2, 27, 28, 29, 15, ".VoucherType::OIV.", ".VoucherType::WIV.", ".VoucherType::DIV.", ".VoucherType::WHIV.") group by sl.voucher_type_id, sl.voucher_number");
 
         while ($Row = DBQM::fetch_assoc($Select))
         {

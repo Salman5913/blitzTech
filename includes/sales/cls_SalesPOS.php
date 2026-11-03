@@ -1,11 +1,52 @@
 <?php
 
 /**
- * Helpers for Order Invoice Voucher (POS screen).
- * Voucher itself is saved through Sales class (sl_sales / sl_sales_data).
+ * Helpers for the POS screen: Order Invoice (OIV), Dine-in Invoice (DIV, with Table No) and WhatsApp Invoice (WHIV).
+ * Voucher itself is saved through Sales class (sl_sales / sl_sales_data), Table No of a Dine-in Invoice in sl_sales_dine_in.
  */
 class SalesPOS
 {
+    /**
+     * Invoices made on the POS screen: voucher type => [title, mdi icon]
+     */
+    private static $POSVoucherTypes = [
+        VoucherType::OIV => ['Order Invoice', 'point-of-sale'],
+        VoucherType::DIV => ['Dine-in Invoice', 'silverware-fork-knife'],
+        VoucherType::WHIV => ['WhatsApp Invoice', 'whatsapp'],
+    ];
+
+    /**
+     * POS voucher type from request value, Order Invoice when not a POS voucher type
+     */
+    static function getVoucherTypeId($VoucherTypeId)
+    {
+        return isset(self::$POSVoucherTypes[$VoucherTypeId]) ? (int) $VoucherTypeId : VoucherType::OIV;
+    }
+
+    static function getTitle($VoucherTypeId)
+    {
+        return self::$POSVoucherTypes[$VoucherTypeId][0] ?? 'Website Invoice';
+    }
+
+    static function getIcon($VoucherTypeId)
+    {
+        return self::$POSVoucherTypes[$VoucherTypeId][1] ?? 'web';
+    }
+
+    static function getTableNo($SalesId)
+    {
+        if (empty($SalesId))
+            return '';
+
+        $Row = DBQM::fetch_assoc(DBQM::query("SELECT table_no FROM sl_sales_dine_in WHERE sales_id = ".escape($SalesId, 'int')));
+        return $Row ? $Row['table_no'] : '';
+    }
+
+    static function saveTableNo($SalesId, $TableNo)
+    {
+        DBQM::query("REPLACE INTO sl_sales_dine_in (sales_id, table_no) VALUES (".escape($SalesId, 'int').", ".escape(mb_substr(trim($TableNo), 0, 20)).")");
+    }
+
     /**
      * All sellable items with their category, for POS item grid
      * @return array

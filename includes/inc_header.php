@@ -596,10 +596,10 @@ $oHeaderBranch = new Branch();
     <!-- Custom Css -->
     <link href="<?=$SiteURL?>assets/css/custom.css?v=4" rel="stylesheet" type="text/css" />
     <!-- FINAC redesign (loads last) -->
-    <link href="<?=$SiteURL?>assets/css/finac-theme.css?v=12" rel="stylesheet" type="text/css" />
+    <link href="<?=$SiteURL?>assets/css/finac-theme.css?v=19" rel="stylesheet" type="text/css" />
     <!-- Global app font: Plus Jakarta Sans (loads last) -->
     <link href="<?=$SiteURL?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
-    <link href="<?=$SiteURL?>assets/css/header-v2.css?v=1" rel="stylesheet" type="text/css" />
+    <link href="<?=$SiteURL?>assets/css/header-v2.css?v=2" rel="stylesheet" type="text/css" />
     <!-- Sweet Alert -->
     <link href="<?=$SiteURL?>assets/libs/sweetalert2/src/sweetalert2.scss" rel="stylesheet" type="text/css" />
 
@@ -625,7 +625,7 @@ $oHeaderBranch = new Branch();
     <? Autocomplete::getJS(); ?>
 
     <script src="<?=$SiteURL?>assets/js/stock-row.js?v=2"></script>
-    <script src="<?= $SiteURL ?>assets/js/finac-app.js?v=2"></script>
+    <script src="<?= $SiteURL ?>assets/js/finac-app.js?v=3"></script>
     <script src="<?= $SiteURL ?>assets/js/table.dynamic.js?v=1"></script>
     <script src="<?= $SiteURL ?>assets/js/jquery.table2excel.min.js"></script>
     <script src="<?= $SiteURL ?>assets/js/ai.js"></script>
@@ -660,7 +660,7 @@ $oHeaderBranch = new Branch();
                         <span class="finac-brand-mark" aria-hidden="true">
                             <svg viewBox="0 0 24 24" width="20" height="20"><path d="M13.5 2 5 13.2h5.6L9.5 22 19 9.8h-5.7z" fill="#0b3866"/></svg>
                         </span>
-                        <span class="finac-brand-text">BLITZTECH</span>
+                        <span class="finac-brand-text">BLITZZTECH</span>
                     </a>
 
                     <button type="button" class="btn btn-sm header-item toggle-btn waves-effect" id="vertical-menu-btn" title="Show / hide menu" aria-label="Show or hide menu">
@@ -672,7 +672,11 @@ $oHeaderBranch = new Branch();
 
 
                 <div class="d-flex align-items-center hdr-right">
-                   
+                    <? $HeaderWebOrders = RestaurantOrder::getNewOrdersState(); ?>
+                    <a href="<?=$SiteURL?>restaurant/manage_web_orders.php?filter=<?=RestaurantOrder::FILTER_ACTIVE?>" class="hdr-icon-btn hdr-bell" id="hdr-web-orders" title="New web orders" aria-label="New web orders">
+                        <i class="mdi mdi-bell-outline"></i>
+                        <span class="hdr-badge <?=$HeaderWebOrders['count'] ? '' : 'd-none'?>" id="hdr-web-orders-count"><?=$HeaderWebOrders['count']?></span>
+                    </a>
 
                     <button type="button" class="hdr-icon-btn d-none d-md-inline-flex" id="hdr-fullscreen" title="Full screen" aria-label="Toggle full screen">
                         <i class="mdi mdi-fullscreen"></i>
@@ -711,7 +715,89 @@ $oHeaderBranch = new Branch();
                 ic.className = 'mdi mdi-fullscreen';
             }
         });
-    </script> <!-- ========== Left Sidebar Start ========== -->
+
+        /* ************* New web orders: bell badge + popup, polled on every page; click opens Web Orders ************* */
+        (function () {
+            var bell = document.getElementById('hdr-web-orders');
+            var badge = document.getElementById('hdr-web-orders-count');
+            var ordersUrl = bell.getAttribute('href');
+            var latestId = <?=(int)$HeaderWebOrders['latestId']?>;
+            // Web Orders page has its own live toast and sound
+            var isWebOrdersPage = location.pathname.indexOf('/restaurant/manage_web_orders.php') !== -1;
+            var popup = null;
+
+            function showCount(count) {
+                badge.textContent = count > 99 ? '99+' : count;
+                badge.classList.toggle('d-none', !count);
+                bell.classList.toggle('has-new', count > 0);
+            }
+
+            function showPopup(state) {
+                if (isWebOrdersPage) return;
+                if (!popup) {
+                    popup = document.createElement('a');
+                    popup.className = 'hdr-order-popup';
+                    popup.href = ordersUrl;
+                    document.body.appendChild(popup);
+                }
+                popup.innerHTML = '<i class="mdi mdi-bell-ring-outline"></i><span><b></b><small>Click to open Web Orders</small></span>';
+                popup.querySelector('b').textContent = 'New web order ' + state.latestCode + (state.latestName ? ' - ' + state.latestName : '');
+                popup.classList.add('show');
+            }
+
+            function poll() {
+                fetch('<?=$SiteURL?>restaurant/ajax_new_web_orders.php', {cache: 'no-store', credentials: 'same-origin', headers: {'X-Background-Request': '1'}})
+                    .then(function (res) { if (!res.ok) throw new Error(res.status); return res.json(); })
+                    .then(function (state) {
+                        showCount(state.count);
+                        if (state.latestId > latestId && state.count > 0) showPopup(state);
+                        latestId = Math.max(latestId, state.latestId);
+                    })
+                    .catch(function () {})
+                    .then(function () { setTimeout(poll, 10000); });
+            }
+
+            showCount(<?=(int)$HeaderWebOrders['count']?>);
+            setTimeout(poll, 10000);
+        })();
+    </script>
+    <? if (!SecurityShell::isFullAccessUser()) { ?>
+    <script>
+        // Logs out after 1 minute without a click / key press (Full Access users stay logged in until they log out).
+        // Last activity is shared between tabs, and sent to the server (at most every IDLE_PING seconds) so it does not log out an active user.
+        (function () {
+            var TIMEOUT = <?=SecurityShell::IDLE_TIMEOUT?> * 1000, PING = <?=SecurityShell::IDLE_PING?> * 1000, KEY = 'erp_last_activity';
+            var keepAliveUrl = '<?=$SiteURL?>security_shell/ajax_keep_alive.php', logoutUrl = '<?=$SiteURL?>security_shell/op_logout.php?idle=Y';
+            var lastActivity = Date.now(), lastPing = Date.now();
+
+            function sharedLastActivity() {
+                var shared = 0;
+                try { shared = parseInt(localStorage.getItem(KEY), 10) || 0; } catch (e) {}
+                return Math.max(lastActivity, shared);
+            }
+
+            function onActivity() {
+                lastActivity = Date.now();
+                try { localStorage.setItem(KEY, lastActivity); } catch (e) {}
+
+                if (lastActivity - lastPing >= PING) {
+                    lastPing = lastActivity;
+                    fetch(keepAliveUrl, {cache: 'no-store', credentials: 'same-origin'}).catch(function () {});
+                }
+            }
+
+            ['mousedown', 'mousemove', 'keydown', 'wheel', 'scroll', 'touchstart'].forEach(function (name) {
+                document.addEventListener(name, onActivity, {passive: true, capture: true});
+            });
+            onActivity();
+
+            setInterval(function () {
+                if (Date.now() - sharedLastActivity() >= TIMEOUT)
+                    window.location.href = logoutUrl;
+            }, 5000);
+        })();
+    </script>
+    <? } ?> <!-- ========== Left Sidebar Start ========== -->
     <div class="vertical-menu">
 
         <div class="h-100 pb-5">
@@ -843,7 +929,7 @@ $oHeaderBranch = new Branch();
                             </ul>
                         </li>
                     <? } ?>
-                    <li>
+                    <li class="hidden">
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="mdi mdi-trending-up"></i>
                             <span>Sales</span>
@@ -865,7 +951,7 @@ $oHeaderBranch = new Branch();
 
                     </li>
 
-                    <? if (CompanyModule::isModuleActive(CompanyModule::SALES) and SecurityShell::isVoucherAccess(VoucherType::OIV)) { ?>
+                    <? if (CompanyModule::isModuleActive(CompanyModule::SALES) and (SecurityShell::isVoucherAccess(VoucherType::OIV) or SecurityShell::isVoucherAccess(VoucherType::DIV) or SecurityShell::isVoucherAccess(VoucherType::WHIV))) { ?>
                     <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="mdi mdi-point-of-sale"></i>
@@ -873,8 +959,21 @@ $oHeaderBranch = new Branch();
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <? $oHeaderUtils->menuVoucherType(VoucherType::OIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::OIV, false, "Order Invoice"); ?>
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::DIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::DIV, false, "Dine-in Invoice"); ?>
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::WHIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::WHIV, false, "WhatsApp Invoice"); ?>
                         </ul>
                     </li>
+                    <? } ?>
+                    <? if (CompanyModule::isModuleActive(CompanyModule::SALES) and SecurityShell::isVoucherAccess(VoucherType::OIV)) { ?>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-point-of-sale"></i>
+                                <span>Website Sales</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::WIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::WIV, false, "Order Invoice"); ?>
+                            </ul>
+                        </li>
                     <? } ?>
 
                     <li>
@@ -884,7 +983,6 @@ $oHeaderBranch = new Branch();
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
                             <? $oHeaderUtils->menuReport('Web Orders', 'restaurant/manage_web_orders.php'); ?>
-                            <? if (SecurityShell::isVoucherAccess(VoucherType::WIV)) $oHeaderUtils->menuReport('Website Invoices', 'sales/report_sales.php?voucher_type_id='.VoucherType::WIV); ?>
                             <? $oHeaderUtils->menuReport('Website Menu', 'restaurant/manage_menu.php'); ?>
                             <? $oHeaderUtils->menuReport('Deals', 'restaurant/deals.php'); ?>
                             <? $oHeaderUtils->menuReport('Deals Report', 'restaurant/deals_report.php'); ?>
@@ -895,33 +993,7 @@ $oHeaderBranch = new Branch();
 
 
 
-                    <? if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-swap-horizontal"></i>
-                            <span>Payment/Receipts</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::CPV, '', false, "Cash Payment"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::BPV, '', false, "Bank Payment"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::CRV, '', false,"Cash Receipts"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::BRV, '', false, "Bank Receipts"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::CQV, '', false, "Cheque Receipts"); ?>
-                        </ul>
-                    </li>
-                    <? } if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow waves-effect">
-                            <i class="mdi mdi-cash-minus"></i>
-                            <span>Expenses</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::CPV, '', false, "Cash Expenses"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::BPV, '', false, "Bank Expenses"); ?>
 
-                        </ul>
-                    </li>
-                    <? } ?>
 
 <!--                    <li>-->
 <!--                        <a href="javascript: void(0);" class="has-arrow waves-effect">-->
@@ -1141,6 +1213,7 @@ $oHeaderBranch = new Branch();
                             <? $oHeaderUtils->menuReport("Avg Price & Qty", "sales/report_avg.php",'',false,CompanyModule::SALES, 'Avg Price & Qty'); ?>
                             <? $oHeaderUtils->menuReport("Datewise Sales", "sales/daily_report.php",'',false,CompanyModule::SALES, 'Datewise Sales Report'); ?>
                             <? $oHeaderUtils->menuReport("Brand/Category Wise Sales", "sales/report_stock_brand_category.php",'',false,CompanyModule::SALES, 'Brand/Category Wise Sales'); ?>
+                            <? $oHeaderUtils->menuReport("Item Selling", "sales/report_item_selling.php",'',false,CompanyModule::SALES, 'Item Selling'); ?>
                         </ul>
                     </li>
                     <? } ?>
@@ -1179,6 +1252,8 @@ $oHeaderBranch = new Branch();
                         <ul class="sub-menu" aria-expanded="false">
                             <? $oHeaderUtils->menuReport("MIS", "stock_report/mis.php", "", false, CompanyModule::STOCK, "MIS"); ?>
                             <? $oHeaderUtils->menuReport("Monthly Profit", "stock_report/monthly_profit.php", "", false, CompanyModule::STOCK, "Monthly Profit"); ?>
+                            <? $oHeaderUtils->menuReport("Sales Profit", "stock_report/sales_profit.php", "", false, CompanyModule::STOCK, "Sales Profit"); ?>
+                            <? $oHeaderUtils->menuReport("Raw Material Usage", "stock_report/raw_material_usage.php", "", false, CompanyModule::STOCK, "Raw Material Usage"); ?>
                         </ul>
                         <ul class="sub-menu" aria-expanded="false">
                             <? $oHeaderUtils->menuReport("Zero Stock Ledger", "stock_report/zero_stock_ledger.php", "", false, CompanyModule::STOCK, "Zero Stock Ledger"); ?>

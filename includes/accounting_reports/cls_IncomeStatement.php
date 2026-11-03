@@ -10,6 +10,11 @@ class IncomeStatement extends AccountingReport
 {
     private $TotalExpenses;
 
+    /**
+     * Skip heads that are zero along with all their sub heads
+     */
+    private $HideZeroRows = false;
+
     function __construct() {
         parent::__construct();
     }
@@ -36,6 +41,11 @@ class IncomeStatement extends AccountingReport
         return [$OpeningStock, $Purchases, $ClosingStock];
     }
 
+    function setHideZeroRows($HideZeroRows)
+    {
+        $this->HideZeroRows = $HideZeroRows;
+    }
+
     function getHeads($COAId, $ShowInverseAmount=false, $ExcludeAccounts=[])
     {
         $ArraySubCategories = [];
@@ -60,13 +70,19 @@ class IncomeStatement extends AccountingReport
             $Amount = $this->getAmountByCOAId($Key) * ($ShowInverseAmount ? -1 : 1);
             $this->TotalExpenses += $Amount;
 
+            ob_start();
+            $this->makeRow($ArraySubCategories[$Key], $Count + 1, $ArraySubCategories, $Level1Code, $ShowInverseAmount, $ExcludeAccount);
+            $SubRows = ob_get_clean();
+
+            if ($this->HideZeroRows and round($Amount, 2) == 0 and $SubRows == '')
+                continue;
             ?>
             <tr>
                 <td><?=str_repeat(" &nbsp;", $Count*3)?>- <a href="expanded_report.php?date_from=<?=$this->DateFrom?>&date_till=<?=$this->DateTill?>&coa_id=<?=$Key?><?=self::costCenterUrlParam()?>"><?=$Name?></a></td>
                 <td class="text-right"><?=Utils::format($Amount)?></td>
             </tr>
             <?
-            $this->makeRow($ArraySubCategories[$Key], $Count + 1, $ArraySubCategories, $Level1Code, $ShowInverseAmount, $ExcludeAccount);
+            echo $SubRows;
         }
     }
 

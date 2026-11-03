@@ -82,6 +82,19 @@ class RestaurantOrder
         return ['signature' => $Row['n'] . '-' . $Row['latest_id'] . '-' . $Row['updated'], 'latestId' => (int)$Row['latest_id']];
     }
 
+    /**
+     * New website orders (Received, not started yet) of this branch, for the header notification bell:
+     * count, and the newest order so pages can tell when another one arrives.
+     */
+    static function getNewOrdersState()
+    {
+        $Where = "status = " . escape(self::STATUS_RECEIVED) . " AND " . self::branchWhere();
+        $Row = DBQM::fetch_assoc(DBQM::query("SELECT COUNT(*) AS n, COALESCE(MAX(id), 0) AS latest_id FROM rs_orders WHERE $Where"));
+        $Latest = $Row['latest_id'] ? self::getOrder($Row['latest_id']) : null;
+
+        return ['count' => (int)$Row['n'], 'latestId' => (int)$Row['latest_id'], 'latestCode' => $Latest['order_code'] ?? '', 'latestName' => $Latest['customer_name'] ?? ''];
+    }
+
     static function countActive()
     {
         return (int)DBQM::result(DBQM::query("SELECT COUNT(*) FROM rs_orders WHERE (" . self::WHERE_ACTIVE . ") AND " . self::branchWhere()), 0);
@@ -127,6 +140,127 @@ class RestaurantOrder
             $Modifiers[] = $Row;
 
         return $Modifiers;
+    }
+
+    /* ************************* Edit ************************* */
+    /** Orders can be edited only until the kitchen starts them (Preparing) */
+    static function isEditable(array $Order)
+    {
+        return $Order['status'] == self::STATUS_RECEIVED && empty($Order['erp_sales_id']);
+    }
+
+    /** Dishes of the order's branch that can be added, priced like the website (ERP variation price, else item price) */
+    static function getMenuOptions($BranchId)
+    {
+        $Options = [];
+        $Select = DBQM::query("SELECT m.id, m.name, COALESCE(NULLIF(sa.selling_price, 0), s.sp, m.price) AS price, m.erp_stock_id, m.erp_attribute_id,
+                                      IFNULL(NULLIF(m.category, ''), 'Other') AS category, m.image, m.emoji
+                               FROM rs_menu_items m
+                               LEFT JOIN st_stock s ON s.id = m.erp_stock_id
+                               LEFT JOIN st_stock_attribute sa ON sa.stock_id = m.erp_stock_id AND sa.attribute_id = m.erp_attribute_id
+                               WHERE m.branch_id = " . escape($BranchId, 'int') . " AND m.available = 1 AND m.is_visible = 1
+                                 AND (m.erp_stock_id IS NULL OR (s.id IS NOT NULL AND (m.erp_attribute_id IS NULL OR (sa.id IS NOT NULL AND sa.is_inactive <> 'Y'))))
+                               ORDER BY m.category, m.sort_order, m.id");
+        while ($Row = DBQM::fetch_assoc($Select))
+            $Options[(int)$Row['id']] = $Row;
+
+        return $Options;
+    }
+
+    /**
+     * Saves the order edit form: branch, customer details, qty of each line (0 removes it), added dishes and delivery fee.
+     * Added dishes must be on the chosen branch's menu and take their price from it; totals are worked out again.
+     *
+     * @param array $Data branch_id, customer_name, customer_phone, customer_address, notes, delivery_fee, qty[order item id], add_item[], add_qty[]
+     * @return array [bool success, string message]
+     */
+    static function saveEdit($OrderId, array $Data)
+    {
+        $Order = self::getOrder($OrderId);
+        if (!$Order)
+            return [false, "Order not found."];
+
+        if (!self::isEditable($Order))
+            return [false, $Order['order_code'] . " can't be edited once it is " . self::getStatusLabel($Order['status'], $Order['order_type']) . "."];
+
+        $Name = trim($Data['customer_name'] ?? '');
+        $Phone = trim($Data['customer_phone'] ?? '');
+        if ($Name === '' || $Phone === '')
+            return [false, "Customer name and phone are required."];
+
+        $BranchId = (int)($Data['branch_id'] ?? $Order['branch_id']);
+        if (!RestaurantBranch::isCompanyBranch($BranchId))
+            return [false, "Please choose a branch."];
+
+        $isPickup = $Order['order_type'] == 'pickup';
+        $DeliveryFee = $isPickup ? 0 : max(0, (float)($Data['delivery_fee'] ?? 0));
+
+        /* ************* Lines after the edit ************* */
+        $Lines = 0;
+        $Updates = [];
+        foreach (self::getItems($OrderId) as $Item)
+        {
+            $Qty = max(0, min(50, (int)($Data['qty'][$Item['id']] ?? $Item['qty'])));
+            $Updates[$Item['id']] = $Qty;
+            if ($Qty > 0)
+                $Lines++;
+        }
+
+        $MenuOptions = self::getMenuOptions($BranchId);
+        $Additions = [];
+        foreach ((array)($Data['add_item'] ?? []) as $k => $MenuItemId)
+        {
+            $Qty = max(0, min(50, (int)($Data['add_qty'][$k] ?? 0)));
+            if (empty($MenuItemId) || $Qty == 0)
+                continue;
+            if (!isset($MenuOptions[(int)$MenuItemId]))
+                return [false, "Dish #" . (int)$MenuItemId . " is not available on " . Branch::getName($BranchId) . "'s menu."];
+
+            $Additions[] = [$MenuOptions[(int)$MenuItemId], $Qty];
+            $Lines++;
+        }
+
+        if (!$Lines)
+            return [false, "The order needs at least one item. Cancel the order instead."];
+
+        /* ************* Save ************* */
+        $Connection = DatabaseHelper::getConnection();
+        $Connection->begin_transaction();
+
+        foreach ($Updates as $ItemId => $Qty)
+        {
+            if ($Qty > 0)
+                DBQM::query("UPDATE rs_order_items SET qty = " . escape($Qty, 'int') . " WHERE id = " . escape($ItemId, 'int') . " AND order_id = " . escape($OrderId, 'int'));
+            else
+            {
+                DBQM::query("DELETE FROM rs_order_item_modifiers WHERE order_item_id = " . escape($ItemId, 'int'));
+                DBQM::query("DELETE FROM rs_order_items WHERE id = " . escape($ItemId, 'int') . " AND order_id = " . escape($OrderId, 'int'));
+            }
+        }
+
+        foreach ($Additions as list($Dish, $Qty))
+        {
+            DBQM::query("INSERT INTO rs_order_items (order_id, menu_item_id, item_name, unit_price, qty, erp_stock_id, erp_attribute_id, deal_id)
+                         VALUES (" . escape($OrderId, 'int') . ", " . escape($Dish['id'], 'int') . ", " . escape($Dish['name']) . ", " . escape((float)$Dish['price']) . ", " . escape($Qty, 'int') . ",
+                                 " . escape($Dish['erp_stock_id'], 'int', true) . ", " . escape($Dish['erp_attribute_id'], 'int', true) . ", NULL)");
+        }
+
+        $Subtotal = (float)DBQM::result(DBQM::query("SELECT COALESCE(SUM(qty * unit_price), 0) FROM rs_order_items WHERE order_id = " . escape($OrderId, 'int')), 0);
+
+        DBQM::query("UPDATE rs_orders SET
+                        branch_id = " . escape($BranchId, 'int') . ",
+                        customer_name = " . escape(mb_substr($Name, 0, 120)) . ",
+                        customer_phone = " . escape(mb_substr($Phone, 0, 40)) . ",
+                        customer_address = " . escape(mb_substr(trim($Data['customer_address'] ?? ''), 0, 255)) . ",
+                        notes = " . escape(mb_substr(trim($Data['notes'] ?? ''), 0, 255)) . ",
+                        subtotal = " . escape($Subtotal) . ",
+                        delivery_fee = " . escape($DeliveryFee) . ",
+                        total = " . escape($Subtotal + $DeliveryFee) . "
+                     WHERE id = " . escape($OrderId, 'int') . " AND status = " . escape(self::STATUS_RECEIVED));
+
+        $Connection->commit();
+
+        return [true, $Order['order_code'] . " updated."];
     }
 
     /* ************************* Status ************************* */

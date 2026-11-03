@@ -80,31 +80,30 @@ class DashboardStats
     }
 
     /**
-     * Dashboard indicators for a date range (default: this month till today), each with the same length period before it:
-     * website sales (WIV, and SIV from before WIV), sales (OIV / POS), purchases, receipts, payments and gross profit on sales (sale price - cost, less returns).
-     * @return array [Row with current_* and previous_*, DateFrom timestamp, DateTill timestamp, compare from, compare till]
+     * Dashboard indicators for a date range (default: today):
+     * website sales (WIV, and SIV from before WIV), sales (OIV / POS), purchases, receipts, payments, profit (sales less returns, less raw material taken out with Stock Use),
+     * number of sales orders (OIV / POS), number of website orders placed (rs_orders, not cancelled),
+     * dine-in sales / orders (DIV) and WhatsApp sales / orders (WHIV).
+     * @return array [Row with current_*, DateFrom timestamp, DateTill timestamp]
      */
     function getIndicatorsData($DateFrom, $DateTill)
     {
-        $From = $DateFrom != '' ? strtotime(DateEncode($DateFrom)) : strtotime(date('Y-m-01'));
+        $From = $DateFrom != '' ? strtotime(DateEncode($DateFrom)) : strtotime(date('Y-m-d'));
         $Till = $DateTill != '' ? strtotime(DateEncode($DateTill)) : strtotime(date('Y-m-d'));
         if ($Till < $From)
             list($From, $Till) = [$Till, $From];
 
-        $Days = (int)round(($Till - $From) / 86400) + 1;
-        $CompareTill = strtotime("-1 day", $From);
-        $CompareFrom = strtotime("-" . ($Days - 1) . " days", $CompareTill);
-
         $CashBank = escape(getConstantCategory()->getBank()) . ", " . escape(getConstantCategory()->getCashInHand());
 
         $Row = [];
-        foreach (['current' => [$From, $Till], 'previous' => [$CompareFrom, $CompareTill]] as $Key => list($PeriodFrom, $PeriodTill))
+        foreach (['current' => [$From, $Till]] as $Key => list($PeriodFrom, $PeriodTill))
         {
             $PeriodFrom = date("m/d/Y", $PeriodFrom);
             $PeriodTill = date("m/d/Y", $PeriodTill);
             $Ledger = UtilsQueryMaker::date("l.date_time", $PeriodFrom, $PeriodTill);
             $Voucher = UtilsQueryMaker::date("did.voucher_date", $PeriodFrom, $PeriodTill);
             $StockLedger = UtilsQueryMaker::date("stl.date_time", $PeriodFrom, $PeriodTill);
+            $WebOrder = UtilsQueryMaker::date("o.created_at", $PeriodFrom, $PeriodTill);
 
             $Values = DBQM::fetch_assoc(DBQM::query("
                 SELECT
@@ -113,21 +112,31 @@ class DashboardStats
                     (SELECT SUM(did.voucher_total) FROM pr_purchase p, distinct_id did WHERE p.distinct_id = did.id AND did.is_deleted <> 'Y' {$Voucher}) AS purchase,
                     (SELECT SUM(debit - credit) FROM ledger l, ledger_data ld, acc_accounts a WHERE l.id = ld.ledger_id AND ld.account_id = a.id AND voucher_type_id IN (" . escape(VoucherType::CRV) . ", " . escape(VoucherType::BRV) . ") AND a.coa_id IN ({$CashBank}) {$Ledger}) AS receipt,
                     (SELECT SUM(credit - debit) FROM ledger l, ledger_data ld, acc_accounts a WHERE l.id = ld.ledger_id AND ld.account_id = a.id AND voucher_type_id IN (" . escape(VoucherType::CPV) . ", " . escape(VoucherType::BPV) . ") AND a.coa_id IN ({$CashBank}) {$Ledger}) AS payment,
-                    (SELECT SUM(stl.qty * (stl.sp - stb.cost) * -1) FROM st_stock_batch stb, st_stock_ledger stl WHERE stb.id = stl.batch_id AND stl.voucher_type_id IN (" . VoucherType::getSalesVoucherTypes() . ", " . escape(VoucherType::SRV) . ") {$StockLedger}) AS profit
+                    (SELECT SUM(IF(did.voucher_type_id = " . escape(VoucherType::SRV) . ", -did.voucher_total, did.voucher_total)) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id IN (" . VoucherType::getSalesVoucherTypes() . ", " . escape(VoucherType::SRV) . ") {$Voucher}) AS net_sales,
+                    (SELECT SUM(stl.qty * stb.cost * -1) FROM st_stock_batch stb, st_stock_ledger stl, distinct_id did WHERE stb.id = stl.batch_id AND stl.distinct_id = did.id AND did.is_deleted <> 'Y' AND stl.voucher_type_id = " . escape(VoucherType::SU) . " {$StockLedger}) AS raw_material,
+                    (SELECT COUNT(*) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::OIV) . " {$Voucher}) AS sales_orders,
+                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::DIV) . " {$Voucher}) AS dine_in_sales,
+                    (SELECT COUNT(*) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::DIV) . " {$Voucher}) AS dine_in_orders,
+                    (SELECT SUM(did.voucher_total) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::WHIV) . " {$Voucher}) AS whatsapp_sales,
+                    (SELECT COUNT(*) FROM sl_sales s, distinct_id did WHERE s.distinct_id = did.id AND did.is_deleted <> 'Y' AND did.voucher_type_id = " . escape(VoucherType::WHIV) . " {$Voucher}) AS whatsapp_orders,
+                    (SELECT COUNT(*) FROM rs_orders o WHERE o.status <> " . escape(RestaurantOrder::STATUS_CANCELLED) . " {$WebOrder}) AS website_orders
             "));
 
             foreach ($Values as $Name => $Value)
                 $Row[$Key . '_' . $Name] = (float)$Value;
+
+            // purchases are raw material taken out with Stock Use, sales are finished goods: profit = net sales - Stock Use cost
+            $Row[$Key . '_profit'] = $Row[$Key . '_net_sales'] - $Row[$Key . '_raw_material'];
         }
 
-        return [$Row, $From, $Till, $CompareFrom, $CompareTill];
+        return [$Row, $From, $Till];
     }
 
     /**
      * Indicator card filled with a gradient
-     * @param string $Gradient green, blue, warning, teal, danger or purple
+     * @param string $Gradient green, blue, warning, teal, danger, purple, indigo or pink
      */
-    function designGradientStat($Name, $Gradient, $Icon, $CurrentStat, $PreviousStat, $Note = '', $isReverse = false)
+    function designGradientStat($Name, $Gradient, $Icon, $CurrentStat, $Note = '')
     {
         $Gradients = [
             'green'   => ['#16a34a', '#22c55e', '#0d9488'],
@@ -136,17 +145,10 @@ class DashboardStats
             'teal'    => ['#0f766e', '#14b8a6', '#06b6d4'],
             'danger'  => ['#be123c', '#e11d48', '#f43f5e'],
             'purple'  => ['#6d28d9', '#8b5cf6', '#c026d3'],
+            'indigo'  => ['#3730a3', '#6366f1', '#818cf8'],
+            'pink'    => ['#be185d', '#ec4899', '#f472b6'],
         ];
         list($ColorA, $ColorB, $ColorC) = $Gradients[$Gradient] ?? $Gradients['blue'];
-
-        $PercentageChange = 0;
-        if (!empty($PreviousStat))
-            $PercentageChange = round((($CurrentStat - $PreviousStat) / abs($PreviousStat)) * 100);
-        elseif (!empty($CurrentStat))
-            $PercentageChange = 100;
-
-        $isUp = $PercentageChange >= 0;
-        $isGood = $PercentageChange == 0 || ($isReverse ? !$isUp : $isUp);
         ?>
         <?/* not a .card: the theme (finac-theme.css) forces a plain background on every .card */?>
         <div class="gradient-kpi-card" style="background: linear-gradient(135deg, <?=$ColorA?> 0%, <?=$ColorB?> 55%, <?=$ColorC?> 100%); box-shadow: 0 8px 22px <?=$ColorB?>4d;">
@@ -159,10 +161,6 @@ class DashboardStats
                         <? if ($Note) { ?><small class="gradient-kpi-note"><?=$Note?></small><? } ?>
                     </div>
                     <div class="gradient-kpi-icon"><i class="mdi mdi-<?=$Icon?>"></i></div>
-                </div>
-                <div class="gradient-kpi-trend" title="Compared with the same number of days before">
-                    <span class="<?=$isGood ? 'good' : 'bad'?>"><i class="mdi mdi-<?=$isUp ? 'arrow-up-bold' : 'arrow-down-bold'?>"></i><?=abs($PercentageChange)?>%</span>
-                    vs <?=Utils::format($PreviousStat, 0)?>
                 </div>
             </div>
         </div>

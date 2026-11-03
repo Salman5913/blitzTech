@@ -86,7 +86,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -146,7 +146,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -206,7 +206,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -239,7 +239,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -269,7 +269,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -311,7 +311,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -364,7 +364,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>
@@ -394,7 +394,7 @@ $_GET['__filename'] = $RowInquiryDetails['client_name']." - FINAC Profile";
         <table style="width: 100%; border-collapse: collapse">
             <tr>
                 <td style="width: 50%"><img style="max-width: 120px; height: auto" src="../assets/images/logo-quote.jpg" alt=""></td>
-                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitztech.png" alt=""></td>
+                <td style="width: 50%; text-align: right"><img style="max-width: 160px; height: auto" src="../assets/images/blitzztech.png" alt=""></td>
             </tr>
         </table>
     </page_header>

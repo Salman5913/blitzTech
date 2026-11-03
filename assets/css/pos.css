@@ -110,3 +110,9 @@
     .pos-search { flex: 1 1 100%; }
     .pos-cart-fab { left: 16px; right: 16px; justify-content: space-between; }
 }
+
+/* save notification: toast from the right with receipt summary and print button */
+.swal2-container.swal2-top-end { top: 78px !important; }
+.swal2-popup.pos-toast { width: 360px !important; padding: 12px 14px !important; border-radius: 12px !important; box-shadow: 0 12px 32px rgba(16, 24, 40, .18) !important; }
+.swal2-popup.pos-toast .swal2-html-container { margin: 6px 0 0 !important; font-size: .85rem; }
+.swal2-popup.pos-toast .swal2-actions { justify-content: flex-end; margin-top: 8px !important; }

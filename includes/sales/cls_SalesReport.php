@@ -174,4 +174,51 @@ class SalesReport extends Sales
 
         return DBQM::query($Query);
     }
+
+    /**
+     * Item Selling report: qty and amount of each item sold per day and branch (sales invoices less returns).
+     * Filters are optional: item ("stock::attribute"), branch and date range.
+     */
+    function getItemSelling($DateFrom, $DateTill, $CombineStockId, $BranchId)
+    {
+        list($StockId, $AttributeId) = array_pad(Stock::splitStockIdAttributeId($CombineStockId), 2, '');
+
+        $Where = '';
+        $Where .= UtilsQueryMaker::date("did.voucher_date", $DateFrom, $DateTill);
+        $Where .= UtilsQueryMaker::equal("sld.stock_id", $StockId);
+        $Where .= UtilsQueryMaker::equal("sld.attribute_id", $AttributeId);
+        $Where .= UtilsQueryMaker::equal("sl.branch_id", $BranchId);
+        $Where .= CostCenter::getFilterSql('did.cost_center_id', true);
+
+        return DBQM::query("
+                SELECT
+                    DATE(did.voucher_date) AS sale_date,
+                    sl.branch_id,
+                    b.name AS branch_name,
+                    s.id,
+                    s.attribute_id,
+                    s.ac_stock,
+                    SUM(sld.qty - sld.qty_return) AS total_quantity,
+                    SUM(sld.discounted_rate * (sld.qty - sld.qty_return)) AS total_sale_price
+                FROM
+                    sl_sales sl
+                    LEFT JOIN branch b ON b.id = sl.branch_id,
+                    sl_sales_data sld,
+                    distinct_id did,
+                    vw_ac_stock s
+                WHERE
+                    s.id = sld.stock_id AND
+                    s.attribute_id <=> sld.attribute_id AND
+                    sld.sales_id = sl.id AND
+                    did.id = sl.distinct_id AND
+                    did.voucher_type_id IN (".VoucherType::getSalesVoucherTypes().", ".escape(VoucherType::SRV).") AND
+                    did.is_deleted <> 'Y' AND
+                    (sld.qty > 0 OR sld.qty_return > 0)
+                    {$Where}
+                GROUP BY
+                    DATE(did.voucher_date), sl.branch_id, s.id, s.attribute_id
+                ORDER BY
+                    sale_date DESC, branch_name, s.ac_stock
+        ");
+    }
 }

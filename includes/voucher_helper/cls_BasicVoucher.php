@@ -535,31 +535,12 @@ abstract class BasicVoucher extends BasicForm
     /* ********************** Setting Page Headers *************************** */
     private function setHeader()
     {
-        $Where = '';
-        if (SecurityShell::isAccess("Master Details", "Own Vouchers Only"))
-            $Where .= UtilsQueryMaker::equal("created_by", SecurityShell::getLoggedInUserId());
-
         $_GET['_page_title'] = $this->getVoucherNumberForDisplay()." <small>(".VoucherType::getName($this->getVoucherType()).") - ".($this->isCopy() ? "Copy " : ($this->isEdit() ? "Edit " : "New "))."</small>";
         //$_GET['_page_title_text'] = ;
 
-        $SelectNextId = null;
+        // no previous / next / new buttons in the heading: only edit (when viewing) and print (saved voucher)
         $VoucherTypeId = $this->getVoucherType();
         $CurrentVoucherId = $this->getVoucherId();
-
-        /* ****** Prev Voucher Id ******* */
-        if (!$this->isNew())
-            $SelectPreviousId = DBQM::query("SELECT voucher_id FROM distinct_id WHERE voucher_type_id = ".escape($VoucherTypeId)." AND voucher_id < ".escape($CurrentVoucherId)." {$Where} ORDER BY id DESC LIMIT 1");
-        else
-            $SelectPreviousId = DBQM::query("SELECT voucher_id FROM distinct_id WHERE voucher_type_id = ".escape($VoucherTypeId)." {$Where} ORDER BY voucher_id DESC LIMIT 1");
-        $PreviousId = DatabaseHelper::isRecordSetEmpty($SelectPreviousId) ? null : DBQM::result($SelectPreviousId, 0);
-        /* ****** Prev Voucher Id ******* */
-
-
-        /* ****** Next Voucher Id ******* */
-        if (!$this->isNew())
-            $SelectNextId = DBQM::query("SELECT voucher_id FROM distinct_id WHERE voucher_type_id = ".escape($VoucherTypeId)." AND voucher_id > ".escape($CurrentVoucherId)." {$Where} ORDER BY id DESC LIMIT 1");
-        $NextId = DatabaseHelper::isRecordSetEmpty($SelectNextId) ? null : DBQM::result($SelectNextId, 0);
-        /* ****** Next Voucher Id ******* */
 
 
         /* ****** Print Link ******* */
@@ -573,28 +554,12 @@ abstract class BasicVoucher extends BasicForm
         ob_start();
         ?>
         <div class="btn-toolbar voucher-action-button" role="toolbar" aria-label="Voucher Actions">
-            <div class="btn-group mr-2" role="group" aria-label="Navigation">
-
-                <? if ($PreviousId) { ?>
-                <button type="button" class="btn btn-secondary">
-                        <a href="<?=$this->getViewVoucherLink($VoucherTypeId, $PreviousId)?>" class="btn btn-sm btn-white"><i class="mdi mdi-chevron-left"></i></a>
-                </button>
-                <? } ?>
-                <? if ($NextId) { ?>
-                <button type="button" class="btn btn-secondary">
-                        <a href="<?=$this->getViewVoucherLink($VoucherTypeId, $NextId)?>" class="btn btn-sm btn-white"><i class="mdi mdi-chevron-right"></i></a>
-                </button>
-                <? } ?>
-            </div>
             <div class="btn-group mr-2" role="group" aria-label="Second group">
                 <? if (SecurityShell::isVoucherEditAccess($VoucherTypeId) and $this->isView()) { ?>
                     <button type="button" class="btn btn-secondary">
                         <a href="<?=VoucherType::getLink($VoucherTypeId, $CurrentVoucherId)?>" class="btn btn-sm btn-white"><i class="mdi mdi-pencil-outline"></i></a>
                     </button>
                 <? } ?>
-                <button type="button" class="btn btn-secondary">
-                    <a href="<?=VoucherType::getLink($VoucherTypeId)?>" target="_blank" class="btn btn-sm btn-white"><i class="mdi mdi-plus"></i></a>
-                </button>
             </div>
             <div class="btn-group" role="group" aria-label="Third group">
                 <? if ($this->isEdit()) { ?>
@@ -793,7 +758,10 @@ abstract class BasicVoucher extends BasicForm
 
     function redirectToStatus($ClassName, $VoucherTypeId)
     {
-        if ($this->isOpenNew())
+        // new voucher saved (or copied): open a blank new voucher of the same type
+        $isCreated = !$this->isDelete() && (!$this->isEdit() || $this->isCopy()) && !in_array($VoucherTypeId, [VoucherType::BMV, VoucherType::SM]);
+
+        if ($this->isOpenNew() or ($isCreated and !$this->isDraft()))
         {
             Utils::redirect(VoucherType::getLink($VoucherTypeId, ''));
         }

@@ -69,11 +69,9 @@ if (isset($_GET['search']))
                         <div class="form-group">
                             <label for="voucher_type_id">Voucher Type</label>
                             <select id="voucher_type_id" name="voucher_type_id"><? Utils::getDropDownOptionsFromArray(
-                                    [
-                                        '' => 'ALL',
-                                        VoucherType::SIV => 'Sales Invoice Voucher',
-                                        VoucherType::SRV => 'Sales Return Voucher'
-                                    ], $_GET['voucher_type_id']); ?>
+                                    ['' => 'ALL'] +
+                                    VoucherType::getSalesVoucherTypesDropdown() +
+                                    [VoucherType::SRV => VoucherType::getName(VoucherType::SRV)], $_GET['voucher_type_id']); ?>
                             </select>
                         </div>
                     </div>

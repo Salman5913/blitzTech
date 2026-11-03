@@ -285,7 +285,8 @@ class Sales extends BasicVoucher
             $SelectPayments = $this->getData(self::IND_PAYMENT);
             while($RowPayment = DBQM::fetch_assoc($SelectPayments))
             {
-                $oPaymentLedger = new Ledger($this->getDistinctId(), $RowPayment['payment_date'], VoucherType::SIPV, Ledger::getNewVoucherNumber(VoucherType::SIPV), $this->getVoucherId());
+                // sl_sales_payment has no date of its own: payment is dated with the invoice
+                $oPaymentLedger = new Ledger($this->getDistinctId(), $RowPayment['payment_date'] ?? $RowDetails['voucher_date'], VoucherType::SIPV, Ledger::getNewVoucherNumber(VoucherType::SIPV), $this->getVoucherId());
 
                 $oPaymentLedger->saveData($RowDetails['customer_account_id'], "-".$RowPayment['amount'] * $Multiplier,1, $RowPayment['description'], $RowPayment['cash_bank_id']);
                 $oPaymentLedger->saveData($RowPayment['cash_bank_id'], ($RowPayment['amount'] * $Multiplier),1, $RowPayment['description'], $RowDetails['customer_account_id']);

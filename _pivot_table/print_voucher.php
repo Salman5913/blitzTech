@@ -42,7 +42,7 @@ $SiteURL = ProjectHelper::SiteURL();
 </head>
 <body class="report customized-report container-fluid">
     <div class="row">
-        <div class="col-md-2 col-4"><img src="<?=$SiteURL?>assets/images/blitztech.png" class="img-fluid" style="max-width: 160px;"></div>
+        <div class="col-md-2 col-4"><img src="<?=$SiteURL?>assets/images/blitzztech.png" class="img-fluid" style="max-width: 160px;"></div>
         <div class="col-md-10 col-8 align-content-center text-left">
             <h3 class="popup-header_voucher"><?=$RowDetails['report_name']?></h3>
             <div class="subheading"><?=$oPivotTableView->getSubheading()?></div>

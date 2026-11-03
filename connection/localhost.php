@@ -4,7 +4,7 @@ set_time_limit(90);
 
 date_default_timezone_set("Asia/Karachi");
 
-session_start();
+include_once(__DIR__ . "/../includes/inc_session.php");
 
 if (is_file("includes/functions.php"))
 	include("includes/functions.php");	
@@ -15,7 +15,7 @@ elseif (is_file("../../includes/functions.php"))
 				
 # =-=-=-=-=-=-=-=- Donot Edit This -=-=-=-=-=-=-=-=-=-=-			
 $hostname_localhost = "localhost";
-$database_localhost = "demofinac";
+$database_localhost = "blitzzdb";
 $username_localhost = "root";
 $password_localhost = "";
 
@@ -25,3 +25,6 @@ $localhost->set_charset("utf8mb4");
 if ($localhost->connect_errno)
 	ErrorHandler::showOnErrorPage("Database Connection Error");
 # =-=-=-=-=-=-=-=- Donot Edit This -=-=-=-=-=-=-=-=-=-=-
+
+// Logs out users (not Full Access) after 1 minute without activity
+SecurityShell::checkIdleTimeout();
