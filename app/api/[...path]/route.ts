@@ -3,10 +3,10 @@ import { backendRequest, BackendError } from "@/lib/fetcher";
 
 /**
  * Same-origin proxy to the restaurant API. The browser calls /api/branches, /api/branches/1/areas, /api/orders, ...;
- * this forwards them to demos3/restaurant_bridge/api/index.php and adds the API key on the server.
+ * this forwards them to blitzztech/restaurant_bridge/api/index.php and adds the API key on the server.
  * Only the routes the website uses are allowed.
  */
-const ALLOWED = new Set(["branches", "orders", "health"]);
+const ALLOWED = new Set(["branches", "orders", "health", "status"]);
 const METHODS = new Set(["GET", "POST"]);
 
 export const dynamic = "force-dynamic";

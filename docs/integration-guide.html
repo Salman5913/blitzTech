@@ -81,7 +81,7 @@
   <div class="wrap">
     <span class="tag">Integration guide</span>
     <h1>Restaurant website and ERP integration</h1>
-    <p>What was changed to connect the RestNext website to the ERP (demos3): the hero slider, category bar, deals, menu, orders and delivery areas. Each section lists the files that changed, before and after.</p>
+    <p>What was changed to connect the RestNext website to the ERP (blitzztech): the hero slider, category bar, deals, menu, orders and delivery areas. Each section lists the files that changed, before and after.</p>
   </div>
 </header>
 
@@ -117,7 +117,7 @@
     <section id="architecture">
       <h2>2. How it fits together</h2>
       <div class="flow">
-        <div><b>ERP (demos3)</b>Stock items, attributes, prices, deals, delivery areas, Web Orders screens. PHP on XAMPP.</div>
+        <div><b>ERP (blitzztech)</b>Stock items, attributes, prices, deals, delivery areas, Web Orders screens. PHP on XAMPP.</div>
         <div><b>Restaurant API</b><span class="mono">htdocs/restaurant/api/index.php</span>. Reads and writes the <span class="mono">rs_</span> tables in <span class="mono">demofinac</span>.</div>
         <div><b>RestNext website</b>Next.js. Calls the API on the server (menu, deals, areas) and through a same-origin proxy in the browser.</div>
       </div>
@@ -221,7 +221,7 @@
       <h3>Dishes and images</h3>
       <ul>
         <li>Every dish in the ERP website menu is shown, grouped by its category. Hidden or sold-out dishes are not sold.</li>
-        <li>Image paths saved in the ERP (for example <span class="mono">/demos3/assets/images/...</span>) are sent to the website as full URLs, so the website can load them.</li>
+        <li>Image paths saved in the ERP (for example <span class="mono">/blitzztech/assets/images/...</span>) are sent to the website as full URLs, so the website can load them.</li>
       </ul>
       <h3>Sizes from stock attributes</h3>
       <ul>
@@ -270,7 +270,7 @@
         <tr><td><span class="mono">api/config.php</span></td><td><span class="mono">public_url</span> for ERP image paths.</td></tr>
       </table>
 
-      <h3>ERP (<span class="mono">demos3</span>)</h3>
+      <h3>ERP (<span class="mono">blitzztech</span>)</h3>
       <table>
         <tr><th>File</th><th>What changed</th></tr>
         <tr><td><span class="mono">stock/stock_management.php</span>, <span class="mono">stock/op_save_stock.php</span></td><td>"Show on hero slider" switch, saved with the item.</td></tr>

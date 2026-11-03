@@ -82,7 +82,7 @@ export type OrderType = "delivery" | "pickup";
 // Same values the restaurant API and the ERP use
 export type OrderStatus = "received" | "preparing" | "on_the_way" | "completed" | "cancelled";
 
-/* ---------- restaurant API (demos3/restaurant_bridge/api/index.php) ---------- */
+/* ---------- restaurant API (blitzztech/restaurant_bridge/api/index.php) ---------- */
 
 export interface ApiMenuItem {
   id: number;
@@ -120,6 +120,13 @@ export interface ApiBranch {
   name: string;
   address: string;
   phone: string;
+}
+
+/** Website open or closed (ERP: Restaurant > Website On/Off); message is the "we're closed" popup text */
+export interface WebsiteStatus {
+  open: boolean;
+  message: string;
+  opensAt: string | null;
 }
 
 export interface ApiArea {
