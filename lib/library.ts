@@ -293,8 +293,8 @@ export function useCart(): CartItem[] {
 /* ---------- misc ---------- */
 
 /** Restaurant helpline, shown after placing an order and on cancelled orders */
-export const COMPANY_PHONE = "+923131186728";
-export const COMPANY_PHONE_DISPLAY = "+92 313 1186728";
+export const COMPANY_PHONE = "+923131384133";
+export const COMPANY_PHONE_DISPLAY = "+923131384133";
 
 /** Customer phone: +92 followed by exactly 10 digits (e.g. +923001234567) */
 export const PHONE_PATTERN = /^\+92\d{10}$/;

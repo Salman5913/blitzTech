@@ -20,7 +20,7 @@ export default function Footer() {
         <div>
           <p className="font-semibold mb-3">Contact</p>
           <ul className="text-sm text-gray-400 space-y-2">
-            <li><a href="tel:+923131186728" className="hover:text-white">📞 +92 313 1186728</a></li>
+            <li><a href="tel:+923231384133" className="hover:text-white">📞 +923231384133</a></li>
             <li>📧 order@restaurant.com</li>
             <li>📍 Main Boulevard, Karachi</li>
           </ul>
