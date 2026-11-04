@@ -958,9 +958,9 @@ $oHeaderBranch = new Branch();
                             <span>POS</span>
                         </a>
                         <ul class="sub-menu" aria-expanded="false">
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::OIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::OIV, false, "Order Invoice"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::DIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::DIV, false, "Dine-in Invoice"); ?>
-                            <? $oHeaderUtils->menuVoucherType(VoucherType::WHIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::WHIV, false, "WhatsApp Invoice"); ?>
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::OIV, 'pos/report_sales.php?voucher_type_id='.VoucherType::OIV, false, "Order Invoice"); ?>
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::DIV, 'pos/report_sales.php?voucher_type_id='.VoucherType::DIV, false, "Dine-in Invoice"); ?>
+                            <? $oHeaderUtils->menuVoucherType(VoucherType::WHIV, 'pos/report_sales.php?voucher_type_id='.VoucherType::WHIV, false, "WhatsApp Invoice"); ?>
                         </ul>
                     </li>
                     <? } ?>
@@ -971,7 +971,7 @@ $oHeaderBranch = new Branch();
                                 <span>Website Sales</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
-                                <? $oHeaderUtils->menuVoucherType(VoucherType::WIV, 'sales/report_sales.php?voucher_type_id='.VoucherType::WIV, false, "Order Invoice"); ?>
+                                <? $oHeaderUtils->menuVoucherType(VoucherType::WIV, 'pos/report_sales.php?voucher_type_id='.VoucherType::WIV, false, "Website Invoice"); ?>
                             </ul>
                         </li>
                     <? } ?>
