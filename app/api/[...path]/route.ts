@@ -13,13 +13,13 @@ export const dynamic = "force-dynamic";
 
 async function forward(req: NextRequest, path: string[]) {
   const [first] = path;
+  console.log('in')
   if (!ALLOWED.has(first) || !METHODS.has(req.method)) {
     return NextResponse.json({ error: "Not found" }, { status: 404 });
   }
 
   const route = "/" + path.join("/");
   const body = req.method === "GET" ? undefined : await req.text();
-
   try {
     const data = await backendRequest(route, { method: req.method, body });
     return NextResponse.json(data);

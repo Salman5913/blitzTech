@@ -21,7 +21,6 @@ export async function backendRequest<T>(route: string, init: RequestInit = {}): 
   const headers: Record<string, string> = { Accept: "application/json" };
   if (init.body) headers["Content-Type"] = "application/json";
   if (BACKEND_KEY) headers["X-API-Key"] = BACKEND_KEY;
-
   const res = await fetch(`${BACKEND_URL}?route=${encodeURIComponent(route)}`, {
     ...init,
     headers: { ...headers, ...(init.headers as Record<string, string> | undefined) },
@@ -35,6 +34,7 @@ export async function backendRequest<T>(route: string, init: RequestInit = {}): 
 /* ---------- browser side: same-origin proxy ---------- */
 
 async function browserRequest<T>(method: string, endpoint: string, body?: unknown): Promise<T> {
+  console.log('${BROWSER_BASE}${endpoint}',`${BROWSER_BASE}${endpoint}`)
   const res = await fetch(`${BROWSER_BASE}${endpoint}`, {
     method,
     headers: { "Content-Type": "application/json", Accept: "application/json" },

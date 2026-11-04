@@ -88,34 +88,34 @@ export default function ProductModal({ product, onClose }: Props) {
       {/* modal card */}
       <div className="relative z-10 w-full max-w-4xl bg-white rounded-3xl shadow-2xl overflow-hidden grid md:grid-cols-2 max-h-[90vh]">
         {/* LEFT — image + name overlay */}
-        <div className="relative h-56 md:h-auto md:min-h-[540px]">
+        <div className="relative h-40 md:h-auto md:min-h-[540px]">
           <Image src={product.image} alt={product.name} fill className="object-cover" />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6">
-            <h2 className="text-white text-2xl md:text-3xl font-extrabold">{product.name}</h2>
-            <p className="text-white/80 text-sm mt-1">{product.description}</p>
+            <h2 className="text-white text-xl md:text-3xl font-extrabold">{product.name}</h2>
+            <p className="text-white/80 text-xs md:text-sm mt-1">{product.description}</p>
           </div>
         </div>
 
         {/* RIGHT — price, attributes, add to cart */}
         {/* on phones the image sits above (h-56 = 14rem), so this column gets the rest of the 90vh */}
-        <div className="flex flex-col max-h-[calc(90vh-14rem)] md:max-h-[90vh]">
-          <div className="flex items-start justify-between p-6 pb-0">
-            <p className="text-2xl md:text-3xl font-extrabold">
+        <div className="flex flex-col max-h-[calc(90vh-10rem)] md:max-h-[90vh]">
+          <div className="flex items-start justify-between p-4 md:p-6 pb-0">
+      <p className="text-xl md:text-3xl font-extrabold">
               {(sizeGroup && !sizeChosen) || variantMissing ? getPriceLabel(product) : formatPrice(unitPrice)}
             </p>
             <div className="flex gap-2">
               <button
                 onClick={share}
                 aria-label="Share"
-                className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition"
+                className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary text-white flex items-center justify-center hover:bg-primary-dark transition"
               >
                 🔗
               </button>
               <button
                 onClick={onClose}
                 aria-label="Close"
-                className="w-10 h-10 rounded-full bg-primary text-white text-xl flex items-center justify-center hover:bg-primary-dark transition"
+                className="w-9 h-9 md:w-10 md:h-10 rounded-full bg-primary text-white text-xl flex items-center justify-center hover:bg-primary-dark transition"
               >
                 ✕
               </button>
@@ -123,7 +123,7 @@ export default function ProductModal({ product, onClose }: Props) {
           </div>
 
           {/* scrollable attributes */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-6">
+          <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 md:space-y-6">
             {/* attributes of the stock item (e.g. Medium, Full), each with its own price */}
             {product.variants && product.variants.length > 0 && (
               <div className="border border-gray-100 rounded-2xl p-4">
@@ -224,7 +224,7 @@ export default function ProductModal({ product, onClose }: Props) {
           </div>
 
           {/* bottom bar — qty + add */}
-          <div className="border-t p-4 flex items-center gap-3">
+          <div className="border-t p-2 md:p-4 flex items-center gap-3">
             <div className="flex items-center border border-gray-200 rounded-full">
               <button
                 onClick={() => setQty((q) => Math.max(1, q - 1))}
