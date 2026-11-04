@@ -13,7 +13,7 @@ export default function DealsSection({ deals }: { deals: Product[] }) {
           </h2>
           <p className="text-gray-500 text-sm mt-1">Limited-time combos and savings</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
           {deals.map((deal) => (
             <ProductCard key={deal.id} product={deal} />
           ))}
