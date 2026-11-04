@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [
       { protocol: "https", hostname: "images.unsplash.com" },
       // dish photos uploaded in the ERP (served by XAMPP)
-      { protocol: "http", hostname: "localhost", pathname: "/demos3/**" },
+      { protocol: "http", hostname: "localhost", pathname: "/blitzztech/**" },
     ],
   },
 };
