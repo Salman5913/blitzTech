@@ -12,6 +12,8 @@ export default function Header() {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const { branches, branch } = useBranch();
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   // First visit (or the chosen branch left the website): ask for the branch before anything else
   const branchRequired = branches !== null && branch === null;
   // Derive from hook state (empty on server + first client render) to avoid hydration mismatch
@@ -24,6 +26,7 @@ export default function Header() {
       <div className="fixed top-0 left-0 right-0 z-40 px-3 pt-3">
         <header className="mx-auto max-w-7xl bg-white/95 backdrop-blur rounded-2xl border border-gray-100 shadow-lg shadow-black/5">
           <div className="px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
+            {/* Logo */}
             <Link href="/" className="flex items-center gap-1.5 sm:gap-2 min-w-0">
               <span className="text-xl sm:text-2xl">🍽️</span>
               <span className="text-lg sm:text-xl font-extrabold tracking-tight text-primary">
@@ -31,6 +34,7 @@ export default function Header() {
               </span>
             </Link>
 
+            {/* Desktop nav — unchanged */}
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-gray-600">
               <Link href="/" className="hover:text-primary">Home</Link>
               <a href="/#popular" className="hover:text-primary">Popular</a>
@@ -40,15 +44,7 @@ export default function Header() {
             </nav>
 
             <div className="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
-              {/* nav is hidden on small screens; keep My Orders reachable there */}
-              <Link
-                href="/orders"
-                className="md:hidden whitespace-nowrap text-xs font-semibold text-gray-600 hover:text-primary px-2.5 py-2 rounded-full border border-gray-200"
-              >
-                📋 My Orders
-              </Link>
-
-              {/* Cart button */}
+              {/* Cart button — always visible */}
               <button
                 onClick={() => setDrawerOpen(true)}
                 className="relative flex items-center gap-1.5 sm:gap-2 whitespace-nowrap bg-primary text-white text-xs sm:text-sm font-semibold px-3 sm:px-4 py-2 rounded-full hover:bg-primary-dark transition"
@@ -61,11 +57,11 @@ export default function Header() {
                 )}
               </button>
 
-              {/* Branch selector — white + elevated shadow, at the end */}
+              {/* Branch selector — desktop only */}
               <button
                 onClick={() => setPickerOpen(true)}
                 title="Change branch"
-                className="group flex max-w-[140px] sm:max-w-[200px] items-center gap-1.5 sm:gap-2 rounded-full border border-gray-100 bg-white px-2.5 sm:px-3 py-1.5 text-ink shadow-md shadow-black/10 transition hover:border-gray-200 hover:shadow-lg"
+                className="hidden md:flex group max-w-[140px] sm:max-w-[200px] items-center gap-1.5 sm:gap-2 rounded-full border border-gray-100 bg-white px-2.5 sm:px-3 py-1.5 text-ink shadow-md shadow-black/10 transition hover:border-gray-200 hover:shadow-lg"
               >
                 <span className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-xs">
                   📍
@@ -79,6 +75,24 @@ export default function Header() {
                 <span className="flex-shrink-0 text-[10px] text-gray-400 group-hover:text-primary">
                   ▾
                 </span>
+              </button>
+
+              {/* Hamburger — mobile only, rightmost */}
+              <button
+                onClick={() => setMobileMenuOpen(true)}
+                className="md:hidden flex items-center justify-center w-10 h-10 rounded-full border border-gray-200 bg-white text-ink hover:bg-gray-50 transition"
+                aria-label="Open menu"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="w-5 h-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
               </button>
             </div>
           </div>
@@ -110,6 +124,112 @@ export default function Header() {
               </span>
             </button>
           )}
+        </div>
+      </div>
+
+      {/* Mobile menu drawer */}
+      <div
+        className={`fixed inset-0 z-50 md:hidden transition-opacity duration-300 ${
+          mobileMenuOpen
+            ? "opacity-100 pointer-events-auto"
+            : "opacity-0 pointer-events-none"
+        }`}
+      >
+        {/* Backdrop */}
+        <div
+          className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+          onClick={() => setMobileMenuOpen(false)}
+        />
+
+        {/* Panel */}
+        <div
+          className={`absolute top-0 right-0 h-full w-[min(320px,85vw)] bg-white shadow-2xl flex flex-col
+            transform transition-transform duration-300 ease-out
+            ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"}`}
+        >
+          {/* Header of the drawer */}
+          <div className="flex items-center justify-between px-5 h-16 border-b border-gray-100">
+            <span className="font-bold text-lg text-primary">Menu</span>
+            <button
+              onClick={() => setMobileMenuOpen(false)}
+              className="w-9 h-9 flex items-center justify-center rounded-full hover:bg-gray-100 transition"
+              aria-label="Close menu"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="w-5 h-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+
+          {/* Nav links */}
+          <nav className="flex-1 overflow-y-auto py-4 px-3">
+            <div className="flex flex-col gap-1">
+              <Link
+                href="/"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-base font-medium text-gray-800 hover:bg-primary/10 hover:text-primary transition"
+              >
+                Home
+              </Link>
+              <a
+                href="/#popular"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-base font-medium text-gray-800 hover:bg-primary/10 hover:text-primary transition"
+              >
+                Popular
+              </a>
+              <a
+                href="/#deals"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-base font-medium text-gray-800 hover:bg-primary/10 hover:text-primary transition"
+              >
+                Deals
+              </a>
+              <a
+                href="/#menu"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-base font-medium text-gray-800 hover:bg-primary/10 hover:text-primary transition"
+              >
+                Menu
+              </a>
+              <Link
+                href="/orders"
+                onClick={() => setMobileMenuOpen(false)}
+                className="px-4 py-3 rounded-xl text-base font-medium text-gray-800 hover:bg-primary/10 hover:text-primary transition"
+              >
+                My Orders
+              </Link>
+            </div>
+          </nav>
+
+          {/* Branch picker at the bottom of the menu */}
+          <div className="border-t border-gray-100 p-4">
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setPickerOpen(true);
+              }}
+              className="w-full flex items-center gap-3 rounded-2xl border border-gray-200 bg-gray-50 px-4 py-3 text-left hover:border-primary/40 hover:bg-primary/5 transition"
+            >
+              <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full bg-primary-light text-base">
+                📍
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="text-xs text-gray-400">Branch</span>
+                <span className="font-bold text-sm truncate">
+                  {branch ? branch.name : "Choose branch"}
+                </span>
+              </span>
+              <span className="ml-auto text-gray-400">▾</span>
+            </button>
+          </div>
         </div>
       </div>
 

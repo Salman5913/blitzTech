@@ -42,7 +42,8 @@ export default function ProductCard({ product }: { product: Product }) {
         onClick={() => setModalOpen(true)}
         className="bg-white rounded-2xl shadow-sm hover:shadow-md transition overflow-hidden flex flex-col cursor-pointer"
       >
-        <div className="relative h-44 w-full">
+        {/* Image — shorter on mobile */}
+        <div className="relative h-32 sm:h-44 w-full">
           <Image
             src={product.image}
             alt={product.name}
@@ -50,23 +51,27 @@ export default function ProductCard({ product }: { product: Product }) {
             className="object-cover"
           />
           {product.tag && (
-            <span className="absolute top-3 left-3 bg-primary text-white text-xs font-bold px-2.5 py-1 rounded-full">
+            <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-primary text-white text-[10px] sm:text-xs font-bold px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full">
               {product.tag}
             </span>
           )}
         </div>
-        <div className="p-4 flex flex-col flex-1">
-          <h3 className="font-bold text-base leading-snug">{product.name}</h3>
-          <p className="text-sm text-gray-500 mt-1 line-clamp-2 flex-1">
+
+        {/* Content — tighter padding + smaller text on mobile */}
+        <div className="p-3 sm:p-4 flex flex-col flex-1">
+          <h3 className="font-bold text-sm sm:text-base leading-snug">
+            {product.name}
+          </h3>
+          <p className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1 line-clamp-2 flex-1">
             {product.description}
           </p>
-          <p className="mt-2 font-extrabold text-primary">
+          <p className="mt-1.5 sm:mt-2 font-extrabold text-sm sm:text-base text-primary">
             {getPriceLabel(product)}
           </p>
 
           {/* stopPropagation so these buttons don't trigger the card's onClick */}
           <div
-            className="mt-3 flex flex-wrap items-center gap-2"
+            className="mt-2 sm:mt-3 flex flex-wrap items-center gap-1.5 sm:gap-2"
             onClick={(e) => e.stopPropagation()}
           >
             {/* − / + only shows once the item is in the cart */}
@@ -74,25 +79,28 @@ export default function ProductCard({ product }: { product: Product }) {
               <div className="flex items-center justify-between border border-gray-200 rounded-full w-full sm:w-auto">
                 <button
                   onClick={() => updateCartQty(lineId, line.qty - 1)}
-                  className="px-3 py-1.5 text-gray-500 hover:text-primary"
+                  className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-gray-500 hover:text-primary text-sm"
                   aria-label="Decrease quantity"
                 >
                   −
                 </button>
-                <span className="w-6 text-center text-sm font-semibold">{line.qty}</span>
+                <span className="w-5 sm:w-6 text-center text-xs sm:text-sm font-semibold">
+                  {line.qty}
+                </span>
                 <button
                   onClick={() => updateCartQty(lineId, line.qty + 1)}
-                  className="px-3 py-1.5 text-gray-500 hover:text-primary"
+                  className="px-2.5 py-1 sm:px-3 sm:py-1.5 text-gray-500 hover:text-primary text-sm"
                   aria-label="Increase quantity"
                 >
                   +
                 </button>
               </div>
             )}
+
             <button
               onClick={handleQuickAdd}
               disabled={product.available === false}
-              className={`flex-1 min-w-0 whitespace-nowrap flex items-center justify-center gap-1.5 text-white disabled:opacity-40 disabled:cursor-not-allowed text-sm font-semibold px-4 py-2 rounded-full transition ${
+              className={`flex-1 min-w-0 whitespace-nowrap flex items-center justify-center gap-1 sm:gap-1.5 text-white disabled:opacity-40 disabled:cursor-not-allowed text-xs sm:text-sm font-semibold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full transition ${
                 added ? "bg-green-600 hover:bg-green-700" : "bg-ink hover:bg-primary"
               }`}
             >
@@ -101,7 +109,7 @@ export default function ProductCard({ product }: { product: Product }) {
               ) : added ? (
                 <>
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                     viewBox="0 0 24 24"
                     fill="none"
                     stroke="currentColor"

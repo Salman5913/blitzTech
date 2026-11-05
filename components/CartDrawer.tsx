@@ -89,7 +89,14 @@ export default function CartDrawer({ open, onClose, items }: Props) {
               </div>
             ))
           )}
+          <button
+            onClick={onClose}
+            className="w-full flex items-center justify-center gap-2 border-2 border-dashed border-primary bg-primary/5 text-primary font-semibold py-3 px-4 rounded-full hover:bg-primary/10 active:bg-primary/15 transition"
+          >
+            + Add more items
+          </button>
         </div>
+        
 
         {items.length > 0 && (
           <div className="border-t p-4 space-y-3">
