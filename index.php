@@ -97,7 +97,7 @@ $LedgerLink = ProjectHelper::SiteURL().'accounting_reports/ledger.php?date_from=
             <? $oDashBoard->designGradientStat("Payments", "danger", "arrow-up-bold-circle-outline", $RowIconsData['current_payment'], "Cash / bank paid"); ?>
         </div>
         <div class="col-xl-3 col-md-6">
-            <? $oDashBoard->designGradientStat("Profit", "purple", "chart-line", $RowIconsData['current_profit'], "Net sales less raw material used (Stock Use)"); ?>
+            <? $oDashBoard->designGradientStat("Profit", "purple", "chart-line", $RowIconsData['current_profit'], "Profit"); ?>
         </div>
     </div>
     <div class="row">

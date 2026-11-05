@@ -1117,12 +1117,22 @@ $oHeaderBranch = new Branch();
                     <? if (CompanyModule::isModuleActive(CompanyModule::PAYMENT_RECEIPTS)) { ?>
                         <li>
                             <a href="javascript: void(0);" class="has-arrow waves-effect">
-                                <i class="mdi mdi-swap-horizontal"></i>
-                                <span>Payment/Receipts</span>
+                                <i class="mdi mdi-cash"></i>
+                                <span>Payments</span>
                             </a>
                             <ul class="sub-menu" aria-expanded="false">
                                 <? $oHeaderUtils->menuVoucherType(VoucherType::CPV, '', false, "Cash Payment"); ?>
                                 <? $oHeaderUtils->menuVoucherType(VoucherType::BPV, '', false, "Bank Payment"); ?>
+
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow waves-effect">
+                                <i class="mdi mdi-receipt"></i>
+                                <span>Receipts</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+
                                 <? $oHeaderUtils->menuVoucherType(VoucherType::CRV, '', false,"Cash Receipts"); ?>
                                 <? $oHeaderUtils->menuVoucherType(VoucherType::BRV, '', false, "Bank Receipts"); ?>
                                 <? $oHeaderUtils->menuVoucherType(VoucherType::CQV, '', false, "Cheque Receipts"); ?>

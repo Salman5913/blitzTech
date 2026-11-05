@@ -6,7 +6,7 @@
 <footer class="footer">
     <div class="finac-footer-inner">
         <div class="finac-footer-left">
-            &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://3dm-sols.com" target="_blank">Blitzztech Solutions</a>. All rights reserved.
+            &copy; <script>document.write(new Date().getFullYear())</script> <a href="https://3dm-sols.com" target="_blank">Blitzztech Innovation</a>. All rights reserved.
         </div>
         <div class="finac-footer-right d-none d-sm-flex">
             <span>Powered by <strong>Blitzz-ERP</strong></span>

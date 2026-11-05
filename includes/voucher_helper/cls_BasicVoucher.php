@@ -875,13 +875,8 @@ abstract class BasicVoucher extends BasicForm
             <div class="col-md-6 text-right">
                 <div class="col-auto ml-auto">
                     <div class="mab bg-info">
-                        <button type="button" class="mab__button mab__button--primary text-white">
-                            <span class="material-icons mab__icon"><i class="fa fa-cog"></i></span>
-                            <span class="mab__text">Actions</span>
-                        </button>
-                        <button type="button" class="mab__button mab__button--menu text-white">
-                            <span class="material-icons mab__icon"><i class="fa fa-angle-down"></i></span>
-                        </button>
+
+
                         <div class="mab__list" style="color: black;">
                             <button formaction="<?=ProjectHelper::SiteURL()?>vouchers/op_approve_voucher.php" type="submit" class="mab__button mab__button--secondary" name="btn_approve" id="btn_approve" value="btn_approve" data-bulk-click="Y" onclick="return confirm('<?=$ApproveConfirmationPopUpText?>');">
                                 <span class="mab__text"> Approve all selected Vouchers</span>
@@ -898,12 +893,9 @@ abstract class BasicVoucher extends BasicForm
                             <span class="material-icons mab__icon"><i class="mdi mdi-plus-circle"></i></span>
                             <span class="mab__text">
                                 <a href="<?=VoucherType::getLink($VoucherTypesList[0], '').$VoucherTypesParam[$VoucherTypesList[0]]?>" class="text-white">
-                                    Add New
+                                    New
                                 </a>
                             </span>
-                        </button>
-                        <button type="button" class="mab__button mab__button--menu color">
-                            <span class="material-icons mab__icon"><i class="fa fa-angle-down"></i></span>
                         </button>
                         <div class="mab__list">
                             <? foreach ($VoucherTypesList as $i => $VoucherTypeId) { if ($i == 0) continue; ?>
