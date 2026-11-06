@@ -8,39 +8,63 @@ export default function CategorySlider({ categories }: { categories: Category[] 
 
   if (!categories.length) return null;
 
-  // Arrows move the row sideways (a mouse wheel only scrolls the page, and the scrollbar is hidden)
   const scrollTrack = (direction: 1 | -1) => {
-    // Most of the visible width per click, so it fits small phone screens too
     const track = trackRef.current;
-    if (track) track.scrollBy({ left: direction * Math.max(160, track.clientWidth * 0.7), behavior: "smooth" });
+    if (track) {
+      track.scrollBy({
+        left: direction * Math.max(160, track.clientWidth * 0.7),
+        behavior: "smooth",
+      });
+    }
   };
 
   const arrowClass =
-    "flex flex-shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/10 hover:bg-white/20 text-white text-xl leading-none items-center justify-center transition";
+    "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center " +
+    "rounded-full bg-primary text-white shadow-md " +
+    "hover:bg-white hover:text-primary transition " +
+    "w-7 h-7 text-lg " +          // mobile
+    "sm:w-8 sm:h-8 sm:text-xl " + // sm+
+    "md:w-9 md:h-9";              // desktop (original)
 
   return (
-    <section id="menu" className="bg-primary">
-      <div className="mx-auto max-w-7xl flex items-center gap-2 px-2">
-        <button type="button" onClick={() => scrollTrack(-1)} aria-label="Scroll categories left" className={arrowClass}>
-          ‹
-        </button>
-
+    <section id="menu" className="sticky top-0 z-40 bg-transparent">
+      <div className="relative mx-auto max-w-7xl">
         <div
           ref={trackRef}
-          className="flex flex-1 min-w-0 items-center gap-1 overflow-x-auto no-scrollbar py-3"
+          className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar 
+                     py-2 sm:py-3 
+                     px-9 sm:px-11 md:px-12"
         >
           {categories.map((cat) => (
             <a
               key={cat.id}
               href={`#category-${cat.slug}`}
-              className="flex-shrink-0 whitespace-nowrap rounded-full px-4 py-2 capitalize font-semibold text-white hover:bg-white hover:text-primary transition"
+              className="flex-shrink-0 whitespace-nowrap rounded-full 
+                         px-3 py-1.5 text-xs          /* mobile only */
+                         sm:px-4 sm:py-2 sm:text-base /* desktop original */
+                         capitalize font-semibold text-white bg-primary 
+                         hover:bg-white hover:text-primary transition"
             >
               {cat.name}
             </a>
           ))}
         </div>
 
-        <button type="button" onClick={() => scrollTrack(1)} aria-label="Scroll categories right" className={arrowClass}>
+        <button
+          type="button"
+          onClick={() => scrollTrack(-1)}
+          aria-label="Scroll categories left"
+          className={`${arrowClass} left-1 sm:left-2`}
+        >
+          ‹
+        </button>
+
+        <button
+          type="button"
+          onClick={() => scrollTrack(1)}
+          aria-label="Scroll categories right"
+          className={`${arrowClass} right-1 sm:right-2`}
+        >
           ›
         </button>
       </div>

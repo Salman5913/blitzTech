@@ -9,6 +9,7 @@ import PopularItems from "@/components/PopularItems";
 import DealsSection from "@/components/DealsSection";
 import CategorySection from "@/components/CategorySection";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 export default async function Home() {
   // The menu of the branch the customer picked (cookie set by the branch picker in the header).
@@ -46,6 +47,8 @@ export default async function Home() {
         ))}
       </main>
       <Footer />
+      {/* Floating scroll-to-top button */}
+      <ScrollToTop />
     </>
   );
 }

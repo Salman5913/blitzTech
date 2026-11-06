@@ -22,8 +22,8 @@ export default function Header() {
 
   return (
     <>
-      {/* FIXED floating header — overlays content, takes no space in layout */}
-      <div className="fixed top-0 left-0 right-0 z-40 px-3 pt-3">
+    {/* NORMAL FLOW header — scrolls away with the page */}
+      <div className="relative z-40 px-3 pt-3">
         <header className="mx-auto max-w-7xl bg-white/95 backdrop-blur rounded-2xl border border-gray-100 shadow-lg shadow-black/5">
           <div className="px-3 sm:px-4 h-16 flex items-center justify-between gap-2">
             {/* Logo */}
