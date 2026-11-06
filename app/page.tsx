@@ -25,7 +25,7 @@ export default async function Home() {
     <>
       <Header />
       {/* without a hero the content starts below the fixed header and its hanging tabs */}
-      <main className={data.heroSlides.length ? "pb-16" : "pt-36 pb-16"}>
+      <main className={data.heroSlides.length ? "pb-16" : "pt-28 pb-16"}>
         {/* SECTION 1 — dynamic hero slider */}
         <HeroSlider slides={data.heroSlides} />
 
