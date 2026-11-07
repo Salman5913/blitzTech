@@ -7,7 +7,7 @@
  * - apiGet / apiPost / ...: browser side. Calls the same-origin /api proxy (app/api/[...path]/route.ts).
  */
 
-const BACKEND_URL = process.env.RESTAURANT_API_URL || "http://localhost/blitzztech/restaurant_bridge/api/index.php";
+const BACKEND_URL = process.env.RESTAURANT_API_URL || "https://erp.blitzztech.com/blitzztech/restaurant_bridge/api/index.php";
 const BACKEND_KEY = process.env.RESTAURANT_API_KEY || "";
 const BROWSER_BASE = "/api";
 

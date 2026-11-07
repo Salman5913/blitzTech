@@ -23,9 +23,9 @@ and modifiers come from the restaurant API; orders are placed through it and tra
 The API lives in `D:\xampp\htdocs\blitzztech\restaurant_bridge\api\index.php` (part of the ERP) and reads the ERP database (`rs_` tables).
 
 1. Start Apache and MySQL in XAMPP.
-2. Check the API: http://localhost/blitzztech/restaurant_bridge/api/index.php?route=/health
+2. Check the API: https://erp.blitzztech.com/restaurant_bridge/api/index.php?route=/health
 3. Set the API URL and key in `.env.local` (already created).
-   - `RESTAURANT_API_URL` — the API endpoint (default `http://localhost/blitzztech/restaurant_bridge/api/index.php`)
+   - `RESTAURANT_API_URL` — the API endpoint (default `https://erp.blitzztech.com/restaurant_bridge/api/index.php`)
    - `RESTAURANT_API_KEY` — must equal `api_key` in `blitzztech/restaurant_bridge/api/config.php` (empty when the API has no key)
    - These variables are server-side only. Do not prefix them with `NEXT_PUBLIC_`.
 
