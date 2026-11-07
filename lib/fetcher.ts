@@ -34,7 +34,6 @@ export async function backendRequest<T>(route: string, init: RequestInit = {}): 
 /* ---------- browser side: same-origin proxy ---------- */
 
 async function browserRequest<T>(method: string, endpoint: string, body?: unknown): Promise<T> {
-  console.log('${BROWSER_BASE}${endpoint}',`${BROWSER_BASE}${endpoint}`)
   const res = await fetch(`${BROWSER_BASE}${endpoint}`, {
     method,
     headers: { "Content-Type": "application/json", Accept: "application/json" },
