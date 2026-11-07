@@ -14,7 +14,7 @@ elseif (is_file("../../includes/functions.php"))
 	include("../../includes/functions.php");
 				
 # =-=-=-=-=-=-=-=- Donot Edit This -=-=-=-=-=-=-=-=-=-=-			
-$hostname_localhost = "127.0.0.1";
+$hostname_localhost = "13.140.214.164";
 $database_localhost = "erp_db";
 $username_localhost = "erp_user";
 $password_localhost = "SA$12345";
