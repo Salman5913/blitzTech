@@ -21,19 +21,19 @@ class ProjectHelper {
     static function SiteURL() {
 
         if ($_SERVER['SERVER_NAME'] == '10.0.0.172')
-            return "http://10.0.0.172/demo_erp/";
+            return "http://10.0.0.172/blitzztech/";
 
         elseif ($_SERVER['SERVER_NAME'] == 'localhost')
             return "http://localhost/blitzztech/";
 
-        elseif ($_SERVER['SERVER_NAME'] == 'demo.s3.3dm-sols.com')
-	        return "https://demo.s3.3dm-sols.com/";
+        elseif ($_SERVER['SERVER_NAME'] == 'erp.blitzztech.com')
+	        return "https://erp.blitzztech.com/";
 
         return "";
     }
 
     static function allowedServerNames() {
-        return ['localhost', '10.0.0.172', 'demo.s3.3dm-sols.com'];
+        return ['localhost', '10.0.0.172', 'erp.blitzztech.com'];
     }
 
     static function getServer()
