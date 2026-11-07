@@ -5,5 +5,5 @@ return [
     'customer_account_id' => 6482,
     'branch_id' => 1,
     // The restnext website, for "View on website" links in the ERP
-    'website_url' => 'http://localhost:3000',
+    'website_url' => 'https://blitzztech.com',
 ];
