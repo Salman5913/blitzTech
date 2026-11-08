@@ -1,10 +1,11 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
 import type { Category } from "@/lib/types";
 
 export default function CategorySlider({ categories }: { categories: Category[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
+  const [activeSlug, setActiveSlug] = useState<string | null>(null);
 
   if (!categories.length) return null;
 
@@ -18,38 +19,57 @@ export default function CategorySlider({ categories }: { categories: Category[] 
     }
   };
 
+  useEffect(() => {
+  const observer = new IntersectionObserver(
+    (entries) => {
+      const visible = entries
+        .filter((e) => e.isIntersecting)
+        .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+
+      if (visible.length > 0) {
+        const id = visible[0].target.id;
+        setActiveSlug(id.replace(/^category-/, ""));
+        return;
+      }
+
+      // Nothing is intersecting
+      const firstSection = document.getElementById(
+        `category-${categories[0].slug}`
+      );
+
+      if (firstSection) {
+        const rect = firstSection.getBoundingClientRect();
+
+        // We are still above the first category → clear highlight
+        if (rect.top > 100) {
+          setActiveSlug(null);
+        }
+      }
+    },
+    {
+      rootMargin: "-100px 0px -55% 0px",
+      threshold: 0.15,
+    }
+  );
+
+  categories.forEach((cat) => {
+    const el = document.getElementById(`category-${cat.slug}`);
+    if (el) observer.observe(el);
+  });
+
+  return () => observer.disconnect();
+}, [categories]);
+
   const arrowClass =
     "absolute top-1/2 -translate-y-1/2 z-10 flex items-center justify-center " +
     "rounded-full bg-primary text-white shadow-md " +
-    "hover:bg-white hover:text-primary transition " +
-    "w-7 h-7 text-lg " +          // mobile
-    "sm:w-8 sm:h-8 sm:text-xl " + // sm+
-    "md:w-9 md:h-9";              // desktop (original)
+    "w-7 h-7 text-lg " +
+    "sm:w-8 sm:h-8 sm:text-xl " +
+    "md:w-9 md:h-9";
 
   return (
     <section id="menu" className="sticky top-0 z-40 bg-transparent">
       <div className="relative mx-auto max-w-7xl">
-        <div
-          ref={trackRef}
-          className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar 
-                     py-2 sm:py-3 
-                     px-9 sm:px-11 md:px-12"
-        >
-          {categories.map((cat) => (
-            <a
-              key={cat.id}
-              href={`#category-${cat.slug}`}
-              className="flex-shrink-0 whitespace-nowrap rounded-full 
-                         px-3 py-1.5 text-xs          /* mobile only */
-                         sm:px-4 sm:py-2 sm:text-base /* desktop original */
-                         capitalize font-semibold text-white bg-primary 
-                         hover:bg-white hover:text-primary transition"
-            >
-              {cat.name}
-            </a>
-          ))}
-        </div>
-
         <button
           type="button"
           onClick={() => scrollTrack(-1)}
@@ -67,6 +87,38 @@ export default function CategorySlider({ categories }: { categories: Category[] 
         >
           ›
         </button>
+
+        <div className="mx-9 sm:mx-11 md:mx-12 overflow-hidden">
+          <div
+            ref={trackRef}
+            className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar 
+                       py-2 sm:py-3"
+          >
+            {categories.map((cat) => {
+              const isActive = activeSlug === cat.slug;
+
+              return (
+                <a
+                  key={cat.id}
+                  href={`#category-${cat.slug}`}
+                  className={`
+                    flex-shrink-0 whitespace-nowrap rounded-full 
+                    px-3 py-1.5 text-xs
+                    sm:px-4 sm:py-2 sm:text-base
+                    capitalize font-semibold transition
+                    ${
+                      isActive
+                        ? "bg-white text-primary"
+                        : "bg-primary text-white hover:bg-white hover:text-primary"
+                    }
+                  `}
+                >
+                  {cat.name}
+                </a>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );
