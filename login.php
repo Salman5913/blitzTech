@@ -270,33 +270,55 @@ $oYear = new Year();
         }
 
         /* Responsive Breakpoints */
+        /* Tablet & mobile: hide the cover, form takes the full screen */
         @media (max-width: 991.98px) {
-            .login-split-wrapper {
-                flex-direction: column;
+            .login-right-pane {
+                display: none !important;
             }
 
             .login-left-pane {
-                flex: none;
+                flex: 1 1 100%;
                 width: 100%;
                 max-width: 100%;
-                min-height: auto;
-                padding: 40px 20px 60px 20px;
+                min-height: 100vh;
+                min-height: 100dvh;
+                padding: 32px 20px;
+            }
+        }
+
+        @media (max-width: 575.98px) {
+            .login-left-pane {
+                align-items: flex-start;
+                padding: 40px 16px 24px 16px;
             }
 
-            .login-right-pane {
-                flex: none;
-                width: 100%;
+            .logo-container {
+                padding: 0 0 20px 0;
+            }
+
+            .logo-container .brand-logo {
+                height: 52px;
                 max-width: 100%;
-                height: 260px;
-                min-height: 260px;
-                order: -1;
             }
 
-            .cover-poster-img {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-                object-position: center;
+            .form-group {
+                margin-bottom: 16px;
+            }
+
+            /* 16px prevents iOS zoom on input focus */
+            .form-control {
+                font-size: 16px;
+            }
+
+            .login-footer {
+                margin-top: 24px;
+            }
+
+            .login-alerts {
+                left: 16px;
+                right: 16px;
+                bottom: 16px;
+                max-width: none;
             }
         }
     </style>
