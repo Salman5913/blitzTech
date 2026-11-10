@@ -367,7 +367,7 @@ $oYear = new Year();
                     </div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group hidden">
                     <label for="year_id">Financial Year</label>
                     <div class="input-group">
                         <select class="form-control" id="year_id" name="year_id" required>

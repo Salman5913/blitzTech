@@ -73,7 +73,8 @@ function profitPercent($Profit, $Sales)
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="table data-table-report color table-striped <? UtilsPrint::makePrintable() ?>">
+                    <? /* data-rpt-no-rows / data-rpt-colorful: totals strip above the table without the Rows tile, in colour (assets/js/report-ui.js) */ ?>
+                    <table class="table data-table-report color table-striped <? UtilsPrint::makePrintable() ?>" data-rpt-no-rows data-rpt-colorful>
                         <thead>
                         <tr>
                             <th><?=$GroupBy == 'month' ? 'Month' : 'Date'?></th>

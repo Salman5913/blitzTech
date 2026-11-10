@@ -596,7 +596,7 @@ $oHeaderBranch = new Branch();
     <!-- Custom Css -->
     <link href="<?=$SiteURL?>assets/css/custom.css?v=4" rel="stylesheet" type="text/css" />
     <!-- FINAC redesign (loads last) -->
-    <link href="<?=$SiteURL?>assets/css/finac-theme.css?v=19" rel="stylesheet" type="text/css" />
+    <link href="<?=$SiteURL?>assets/css/finac-theme.css?v=20" rel="stylesheet" type="text/css" />
     <!-- Global app font: Plus Jakarta Sans (loads last) -->
     <link href="<?=$SiteURL?>assets/css/app-font.css?v=1" rel="stylesheet" type="text/css" />
     <link href="<?=$SiteURL?>assets/css/header-v2.css?v=2" rel="stylesheet" type="text/css" />
@@ -625,7 +625,7 @@ $oHeaderBranch = new Branch();
     <? Autocomplete::getJS(); ?>
 
     <script src="<?=$SiteURL?>assets/js/stock-row.js?v=2"></script>
-    <script src="<?= $SiteURL ?>assets/js/finac-app.js?v=3"></script>
+    <script src="<?= $SiteURL ?>assets/js/finac-app.js?v=4"></script>
     <script src="<?= $SiteURL ?>assets/js/table.dynamic.js?v=1"></script>
     <script src="<?= $SiteURL ?>assets/js/jquery.table2excel.min.js"></script>
     <script src="<?= $SiteURL ?>assets/js/ai.js"></script>
@@ -1360,13 +1360,6 @@ $oHeaderBranch = new Branch();
             <div class="page-content">
                 <!-- start page title -->
                 <div class="row">
-                    <div class="col-12">
-                        <form class="app-search d-block d-lg-none">
-                            <div class="position-relative">
-                                <input type="text" data-type="erp-search" class="form-control" placeholder="Search...">
-                            </div>
-                        </form>
-                    </div>
                     <div class="col-12">
                         <div class="page-title-box d-block d-sm-flex align-items-center justify-content-between">
                             <h4 class="page-title mb-0 font-size-18"><?=$_GET['_page_title']?></h4>

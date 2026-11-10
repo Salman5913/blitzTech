@@ -231,7 +231,9 @@ class Sales extends BasicVoucher
 
             if (!empty($RowData['stock_id']))
             {
-//                $oStockLedger->recordSales($RowData['stock_id'], $RowData['attribute_id'], $Qty, $SellingPrice, $RowDetails['branch_id']);
+                if($VoucherTypeId == VoucherType::SIV || $VoucherTypeId == VoucherType::SRV) {
+                    $oStockLedger->recordSales($RowData['stock_id'], $RowData['attribute_id'], $Qty, $SellingPrice, $RowDetails['branch_id']);
+                }
 
                 $oLedger->saveData($RowDetails['customer_account_id'], $RowTotal,1,'Stock', getConstantAccount()->getSalesAccount(), 'N', 'N', $RowData['stock_id'], $RowData['attribute_id'], $Qty, $SellingPrice, $RowDetails['invoice_type']);
             }

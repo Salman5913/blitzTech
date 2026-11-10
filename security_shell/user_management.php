@@ -43,7 +43,7 @@ include('../includes/inc_header.php');
                     <div class="col-xl-3 col-lg-6">
                         <div class="form-group">
                             <label for="branch_id">Branch </label>
-                            <input type="text" name="branch_id" id="branch_id" <?Autocomplete::Search(Autocomplete::TYPE_BRANCH_ALL, $RowDetails['branch_id'])?>>
+                            <input type="text" name="branch_id" id="branch_id" <?Autocomplete::Search(Autocomplete::TYPE_BRANCH, $RowDetails['branch_id'])?>>
                         </div>
                     </div>
                     <div class="col-xl-3 col-md-6">

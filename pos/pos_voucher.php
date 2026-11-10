@@ -60,7 +60,8 @@ if ($isLoadData)
 /* ************* Existing cart (edit / copy) ************* */
 
 $CustomerAccountId = $isLoadData ? $RowDetails['customer_account_id'] : getConstantAccount()->getCashCustomer();
-$BranchId = $isLoadData ? $RowDetails['branch_id'] : $_SESSION['__branch_id'];
+// New order: the user's login branch, else the restaurant branch (same one Restaurant > Website Menu saves the POS hidden categories / items for)
+$BranchId = $isLoadData ? $RowDetails['branch_id'] : (($_SESSION['__branch_id'] ?? '') ?: RestaurantBranch::getCurrentId());
 $VoucherDate = $isEdit ? date('m/d/Y', strtotime($RowDetails['voucher_date'])) : '';
 $TableNo = $isDineIn && $isLoadData ? SalesPOS::getTableNo($oSales->getVoucherId()) : '';
 
@@ -78,35 +79,36 @@ include_once("../includes/inc_header.php");
     <? $oSales->showVoucherDeleteNotification(); ?>
     <div class="card pos-head">
         <div class="row align-items-end">
-            <div class="<?=$isDineIn ? 'col-lg-2' : 'col-lg-3'?> col-md-12 mb-2 mb-lg-0">
+            <? /* Below 1200px (iPad mini portrait + landscape) Cost Center and Mobile Number move to their own row; one row on xl */ ?>
+            <div class="<?=$isDineIn ? 'col-xl-2' : 'col-xl-3'?> col-12 mb-2 mb-xl-0">
                 <h3 class="card-title mb-1"><i class="mdi mdi-<?=SalesPOS::getIcon($VoucherTypeId)?>"></i> <?=SalesPOS::getTitle($VoucherTypeId)?></h3>
                 <small class="text-muted">
                     <?=$isEdit ? VoucherType::getCode($VoucherTypeId)."-".$oSales->getVoucherNumber()." &middot; ".DateDecode($RowDetails['voucher_date']) : "New Order &middot; ".date('M j, Y')?>
                 </small>
             </div>
             <? if ($isDineIn) { ?>
-                <div class="col-lg-2 col-md-3">
-                    <div class="form-group mb-lg-0">
+                <div class="col-xl-2 col-md-4">
+                    <div class="form-group mb-xl-0">
                         <label for="table_no">Table No</label>
                         <input type="text" id="table_no" name="table_no" maxlength="20" placeholder="e.g. T-5" value="<?=htmlspecialchars((string) $TableNo)?>">
                     </div>
                 </div>
             <? } ?>
-            <div class="<?=$isDineIn ? 'col-lg-2' : 'col-lg-3'?> col-md-4">
-                <div class="form-group mb-lg-0">
+            <div class="<?=$isDineIn ? 'col-xl-2 col-md-4' : 'col-xl-3 col-md-6'?>">
+                <div class="form-group mb-xl-0">
                     <label for="customer_id">Customer</label>
                     <input type="text" id="customer_id" name="customer_id" data-auto-select="Y" <? Autocomplete::ACSearchAccount($CustomerAccountId); ?>>
                 </div>
             </div>
-            <div class="col-lg-2 col-md-3">
-                <div class="form-group mb-lg-0">
+            <div class="<?=$isDineIn ? 'col-xl-2 col-md-4' : 'col-xl-2 col-md-6'?>">
+                <div class="form-group mb-xl-0">
                     <label for="branch_id">Warehouse</label>
                     <input type="text" id="branch_id" name="branch_id" <? Autocomplete::Search(Autocomplete::TYPE_BRANCH, $BranchId); ?>>
                 </div>
             </div>
-            <? CostCenter::designVoucherField($RowDetails['cost_center_id'] ?? '', $isEdit, 'col-lg-2 col-md-3', 'mb-lg-0'); ?>
-            <div class="col-lg-2 col-md-2">
-                <div class="form-group mb-lg-0">
+            <? CostCenter::designVoucherField($RowDetails['cost_center_id'] ?? '', $isEdit, 'col-xl-2 col-md-6 col-sm-6', 'mb-xl-0'); ?>
+            <div class="col-xl-2 col-md-6 col-sm-6">
+                <div class="form-group mb-xl-0">
                     <label for="mobile_number">Mobile Number</label>
                     <input type="text" id="mobile_number" name="mobile_number" inputmode="tel" value="<?=htmlspecialchars((string) $RowDetails['mobile_number'])?>">
                 </div>

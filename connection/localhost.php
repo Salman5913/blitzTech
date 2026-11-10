@@ -14,10 +14,10 @@ elseif (is_file("../../includes/functions.php"))
 	include("../../includes/functions.php");
 				
 # =-=-=-=-=-=-=-=- Donot Edit This -=-=-=-=-=-=-=-=-=-=-			
-$hostname_localhost = "13.140.214.164";
-$database_localhost = "erp_db";
-$username_localhost = "erp_user";
-$password_localhost = "SA$12345";
+$hostname_localhost = "localhost";
+$database_localhost = "blitzzdb";
+$username_localhost = "root";
+$password_localhost = "";
 
 $localhost = new mysqli($hostname_localhost, $username_localhost, $password_localhost, $database_localhost);
 $localhost->set_charset("utf8mb4");

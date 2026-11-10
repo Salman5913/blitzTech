@@ -917,6 +917,16 @@ html body .status-list ul li i { margin-top: 1px; }
     .rpt-total { background: #fff; border: 1px solid #e4e7ec; border-radius: 12px; padding: 12px 16px; }
     .rpt-total span { display: block; font-size: .72rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: #667085; }
     .rpt-total b { display: block; font-size: 1.3rem; font-weight: 800; color: #0b2240; font-variant-numeric: tabular-nums; margin-top: 2px; }
+    /* Colourful totals strip (table data-rpt-colorful): soft tint, coloured top bar and label per tile */
+    .rpt-totals-colorful .rpt-total { --tone: #2563eb; --tint: #eff6ff; position: relative; overflow: hidden; border: 1px solid var(--tone-border, #dbeafe); background: linear-gradient(135deg, var(--tint) 0%, #fff 100%); box-shadow: 0 4px 14px rgba(15, 23, 42, .06); }
+    .rpt-totals-colorful .rpt-total::before { content: ""; position: absolute; left: 0; top: 0; right: 0; height: 4px; background: var(--tone); }
+    html body .page-content .rpt-totals-colorful .rpt-total span { color: var(--tone); }
+    .rpt-totals-colorful .rpt-tone-0 { --tone: #2563eb; --tint: #eff6ff; --tone-border: #dbeafe; }
+    .rpt-totals-colorful .rpt-tone-1 { --tone: #059669; --tint: #ecfdf5; --tone-border: #d1fae5; }
+    .rpt-totals-colorful .rpt-tone-2 { --tone: #ea580c; --tint: #fff7ed; --tone-border: #ffedd5; }
+    .rpt-totals-colorful .rpt-tone-3 { --tone: #7c3aed; --tint: #f5f3ff; --tone-border: #ede9fe; }
+    .rpt-totals-colorful .rpt-tone-4 { --tone: #db2777; --tint: #fdf2f8; --tone-border: #fce7f3; }
+    .rpt-totals-colorful .rpt-tone-5 { --tone: #0891b2; --tint: #ecfeff; --tone-border: #cffafe; }
 
     html body table.data-table-report { border-collapse: separate !important; border-spacing: 0; font-size: .85rem; }
     html body table.data-table-report thead th { background: #f8fafc !important; color: #475467 !important; font-size: .72rem !important; font-weight: 700 !important; letter-spacing: .05em; text-transform: uppercase; border-bottom: 1px solid #e4e7ec !important; border-top: 0 !important; padding: 10px 12px !important; white-space: nowrap; }

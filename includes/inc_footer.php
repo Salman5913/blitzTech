@@ -25,7 +25,7 @@
 <!-- END layout-wrapper -->
 
 <!-- report pages: filter chips and totals strip -->
-<script src="<?=ProjectHelper::SiteURL()?>assets/js/report-ui.js?v=1"></script>
+<script src="<?=ProjectHelper::SiteURL()?>assets/js/report-ui.js?v=2"></script>
 
 <?
 SuccessHandler::displayMessages();

@@ -40,26 +40,66 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
     .order-filters .chip.active .count { background: rgba(255,255,255,.25); }
     .order-search { max-width: 320px; }
 
-    .order-card { border: 0; border-radius: 14px; border-left: 5px solid #adb5bd; box-shadow: 0 2px 10px rgba(0,0,0,.06); overflow: hidden; }
-    .order-card.st-received { border-left-color: #28a745; }
-    .order-card.st-preparing { border-left-color: #ffc107; }
-    .order-card.st-on_the_way { border-left-color: #17a2b8; }
-    .order-card.st-completed { border-left-color: #28a745; }
-    .order-card.st-cancelled { border-left-color: #adb5bd; opacity: .75; }
+    /* Status colours: --c1/--c2 gradient, --soft tint, --ink text on the tint */
+    .st-received   { --c1: #22c55e; --c2: #059669; --soft: #ecfdf5; --ink: #047857; }
+    .st-preparing  { --c1: #fbbf24; --c2: #f97316; --soft: #fff7ed; --ink: #c2410c; }
+    .st-on_the_way { --c1: #22d3ee; --c2: #3b82f6; --soft: #eff6ff; --ink: #1d4ed8; }
+    .st-completed  { --c1: #a78bfa; --c2: #6366f1; --soft: #f5f3ff; --ink: #4338ca; }
+    .st-cancelled  { --c1: #cbd5e1; --c2: #94a3b8; --soft: #f8fafc; --ink: #475569; }
+
+    .order-card { border: 0; border-radius: 16px; background: #fff; box-shadow: 0 4px 18px rgba(15,23,42,.08); overflow: hidden; transition: transform .15s, box-shadow .15s; }
+    .order-card:hover { transform: translateY(-2px); box-shadow: 0 10px 26px rgba(15,23,42,.12); }
+    .order-card.st-cancelled { opacity: .8; }
+    .order-head { background: linear-gradient(135deg, var(--c1), var(--c2)); color: #fff; border-radius: 12px; padding: 12px 14px; }
+    .order-head .order-time { color: rgba(255,255,255,.88); font-size: 12px; }
     .order-code { font-size: 18px; font-weight: 700; letter-spacing: .3px; }
-    .order-customer { background: #f7f8fa; border-radius: 10px; padding: 10px 12px; font-size: 13px; }
+    .order-pill { display: inline-flex; align-items: center; gap: 3px; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+    .order-pill.status { background: #fff; color: var(--ink); box-shadow: 0 1px 4px rgba(0,0,0,.12); }
+    .order-pill.type { background: rgba(255,255,255,.22); color: #fff; border: 1px solid rgba(255,255,255,.45); }
+    .order-customer { background: var(--soft); border: 1px solid rgba(0,0,0,.04); border-radius: 12px; padding: 10px 12px; font-size: 13px; }
+    .order-customer a { color: var(--ink); font-weight: 600; }
     .order-items td { border-top: 1px dashed #e6e9ef; padding: 7px 4px; vertical-align: top; font-size: 14px; }
     .order-items tr:first-child td { border-top: 0; }
-    .order-total { font-size: 17px; font-weight: 700; }
-    .order-footer { background: #fff; border-top: 1px solid #eef0f4; padding: 10px 14px; gap: 8px; }
+    .order-qty { display: inline-block; min-width: 26px; text-align: center; background: var(--soft); color: var(--ink); border-radius: 6px; padding: 0 5px; font-weight: 700; margin-right: 4px; }
+    .order-total td { font-size: 17px; font-weight: 700; background: var(--soft); color: var(--ink); border-top: 0 !important; }
+    .order-total td:first-child { border-radius: 10px 0 0 10px; padding-left: 10px; }
+    .order-total td:last-child { border-radius: 0 10px 10px 0; padding-right: 10px; }
+    .order-footer { background: #fafbfd; border-top: 1px solid #eef0f4; padding: 10px 14px; gap: 8px; flex-wrap: wrap; }
     .order-actions { display: flex; align-items: center; gap: 6px; flex-wrap: nowrap; }
-    .order-footer .btn { white-space: nowrap; display: inline-flex; align-items: center; gap: 4px; line-height: 1.5; }
+    .order-footer .btn { white-space: nowrap; display: inline-flex; align-items: center; justify-content: center; gap: 4px; line-height: 1.5; }
+    .order-icon-btn { width: 36px; height: 36px; padding: 0; border-radius: 10px; font-size: 18px; border: 0 !important; }
+    .order-icon-btn.ic-print  { background: #f3e8ff; color: #7e22ce; }
+    .order-icon-btn.ic-edit   { background: #dbeafe; color: #1d4ed8; }
+    .order-icon-btn.ic-cancel { background: #fee2e2; color: #b91c1c; }
+    .order-icon-btn.ic-print:hover  { background: #7e22ce; color: #fff; }
+    .order-icon-btn.ic-edit:hover   { background: #1d4ed8; color: #fff; }
+    .order-icon-btn.ic-cancel:hover { background: #b91c1c; color: #fff; }
+    .order-icon-btn.disabled, .order-icon-btn:disabled { opacity: .35; pointer-events: none; }
+    .order-status-form { margin: 0; margin-left: auto; }
+    .order-status-btn { min-height: 36px; border-radius: 10px; padding: 4px 14px; font-weight: 600; border: 0; color: #fff !important; background: linear-gradient(135deg, var(--c1), var(--c2)); box-shadow: 0 3px 10px rgba(0,0,0,.15); }
+    .order-status-btn:hover { filter: brightness(1.06); }
+    .order-locked { font-size: 12px; }
+
+    /* Responsive: tablets / phones */
+    @media (max-width: 767.98px) {
+        .order-filters .d-flex.align-items-center { width: 100%; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+        .order-search { max-width: none; flex: 1 1 100%; margin-right: 0 !important; }
+        .order-code { font-size: 16px; }
+        .order-items td { font-size: 13px; }
+        #new_order_toast { left: 12px; right: 12px; top: 70px; text-align: center; }
+    }
+    @media (max-width: 400px) {
+        .order-status-form { flex: 1 1 100%; margin-left: 0; }
+        .order-status-btn { width: 100%; }
+        .order-actions { flex: 1 1 100%; justify-content: space-between; }
+        .order-icon-btn { flex: 1 1 0; width: auto; }
+    }
 
     .live-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: #28a745; margin-right: 4px; animation: live-pulse 2s infinite; }
     .live-dot.offline { background: #adb5bd; animation: none; }
     @keyframes live-pulse { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
     .order-col.new-order .order-card { box-shadow: 0 0 0 3px #28a745, 0 2px 10px rgba(0,0,0,.06); animation: new-order-flash 1s 3; }
-    keyframes new-order-flash { 50% { box-shadow: 0 0 0 6px rgba(40,167,69,.35); } }
+    @keyframes new-order-flash { 50% { box-shadow: 0 0 0 6px rgba(40,167,69,.35); } }
     #new_order_toast { position: fixed; top: 80px; right: 20px; z-index: 2000; background: #28a745; color: #fff; border-radius: 10px; padding: 12px 16px; box-shadow: 0 6px 20px rgba(0,0,0,.2); font-weight: 600; cursor: pointer; display: none; }
 </style>
 
@@ -105,18 +145,18 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
         $Items = RestaurantOrder::getItems($Order['id']);
         $SearchText = strtolower($Order['order_code'] . ' ' . $Order['customer_name'] . ' ' . $Order['customer_phone'] . ' ' . $Order['delivery_area']);
     ?>
-        <div class="col-xl-4 col-lg-6 col-md-6 mb-3 order-col" data-search="<?=h($SearchText)?>" data-order-id="<?=(int)$Order['id']?>" data-order-code="<?=h($Order['order_code'])?>">
+        <div class="col-12 col-md-6 col-xl-4 mb-3 order-col" data-search="<?=h($SearchText)?>" data-order-id="<?=(int)$Order['id']?>" data-order-code="<?=h($Order['order_code'])?>">
             <div class="card order-card st-<?=h($Order['status'])?> h-100 mb-0">
                 <div class="card-body pb-2">
-                    <div class="d-flex justify-content-between align-items-start mb-2">
+                    <div class="order-head d-flex justify-content-between align-items-start mb-2">
                         <div>
                             <div class="order-code"><?=h($Order['order_code'])?></div>
-                            <div class="text-muted small"><i class="mdi mdi-clock-outline"></i> <?=date('M j, g:i A', strtotime($Order['created_at']))?></div>
+                            <div class="order-time"><i class="mdi mdi-clock-outline"></i> <?=date('M j, g:i A', strtotime($Order['created_at']))?></div>
                         </div>
                         <div class="text-right">
-                            <span class="badge <?=RestaurantOrder::getStatusBadge($Order['status'])?> px-2 py-1"><?=h(RestaurantOrder::getStatusLabel($Order['status'], $Order['order_type']))?></span>
+                            <span class="order-pill status"><?=h(RestaurantOrder::getStatusLabel($Order['status'], $Order['order_type']))?></span>
                             <div class="mt-1">
-                                <span class="badge badge-light border"><i class="mdi <?=$isPickup ? 'mdi-shopping-outline' : 'mdi-moped'?>"></i> <?=$isPickup ? 'Pickup' : 'Delivery'?></span>
+                                <span class="order-pill type"><i class="mdi <?=$isPickup ? 'mdi-shopping-outline' : 'mdi-moped'?>"></i> <?=$isPickup ? 'Pickup' : 'Delivery'?></span>
                             </div>
                         </div>
                     </div>
@@ -140,7 +180,7 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
                         <? foreach ($Items as $Item) { ?>
                             <tr>
                                 <td>
-                                    <b><?=(int)$Item['qty']?>×</b> <?=h($Item['item_name'])?>
+                                    <span class="order-qty"><?=(int)$Item['qty']?>×</span> <?=h($Item['item_name'])?>
                                     <? if (!empty($Item['deal_id'])) { ?> <span class="badge badge-soft-info">Deal</span><? } ?>
                                     <? foreach (RestaurantOrder::getModifiers($Item['id']) as $Modifier) { ?>
                                         <div class="text-muted small pl-3">+ <?=h($Modifier['name'])?> (<?=number_format($Modifier['price'])?>)</div>
@@ -166,26 +206,35 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
                     <? } ?>
                 </div>
 
-                <div class="order-footer d-flex justify-content-between align-items-center">
+                <? $isEditable = $CanCancel && RestaurantOrder::isEditable($Order); ?>
+                <div class="order-footer d-flex align-items-center">
                     <form method="post" action="op_save_web_order.php" class="m-0 order-actions">
                         <input type="hidden" name="id" value="<?=(int)$Order['id']?>">
-                        <? if ($CanCancel) { ?>
-                            <button class="btn btn-sm btn-outline-danger" name="status" value="<?=RestaurantOrder::STATUS_CANCELLED?>" onclick="return confirm('Cancel <?=h($Order['order_code'])?>?')"><i class="mdi mdi-close"></i> Cancel order</button>
-                            <? if (RestaurantOrder::isEditable($Order)) { ?>
-                                <a href="web_order_edit.php?id=<?=(int)$Order['id']?>" class="btn btn-sm btn-outline-primary"><i class="mdi mdi-pencil-outline"></i> Edit</a>
+                        <button type="button" class="btn btn-sm order-icon-btn ic-print" onclick="printOrder(this)" title="Print order" aria-label="Print order"><i class="mdi mdi-printer"></i></button>
+                        <? if (!$isCancelled) { ?>
+                            <? if ($isEditable) { ?>
+                                <a href="web_order_edit.php?id=<?=(int)$Order['id']?>" class="btn btn-sm order-icon-btn ic-edit" title="Edit order" aria-label="Edit order"><i class="mdi mdi-pencil-outline"></i></a>
+                            <? } else { ?>
+                                <span class="btn btn-sm order-icon-btn ic-edit disabled" title="Only received, not invoiced orders can be edited" aria-disabled="true"><i class="mdi mdi-pencil-outline"></i></span>
                             <? } ?>
-                        <? } elseif ($isInvoiced && !$isCancelled) { ?>
-                            <span class="small text-muted" title="Invoiced orders are cancelled with a sales return in the ERP"><i class="mdi mdi-lock-outline"></i> Invoiced</span>
+                            <? if ($CanCancel) { ?>
+                                <button class="btn btn-sm order-icon-btn ic-cancel" name="status" value="<?=RestaurantOrder::STATUS_CANCELLED?>" onclick="return confirm('Cancel <?=h($Order['order_code'])?>?')" title="Cancel order" aria-label="Cancel order"><i class="mdi mdi-close"></i></button>
+                            <? } else { ?>
+                                <span class="btn btn-sm order-icon-btn ic-cancel disabled" title="Invoiced orders are cancelled with a sales return in the ERP" aria-disabled="true"><i class="mdi mdi-close"></i></span>
+                            <? } ?>
+                        <? } ?>
+                        <? if ($isInvoiced && !$isCancelled) { ?>
+                            <span class="text-muted order-locked text-nowrap" title="Invoiced orders are cancelled with a sales return in the ERP"><i class="mdi mdi-lock-outline"></i> Invoiced</span>
                         <? } ?>
                     </form>
-                    <form method="post" action="op_save_web_order.php" class="m-0">
+                    <form method="post" action="op_save_web_order.php" class="order-status-form">
                         <input type="hidden" name="id" value="<?=(int)$Order['id']?>">
                         <? if ($NextStatus) { ?>
-                            <button class="btn btn-sm button color" name="status" value="<?=$NextStatus?>">
-                                <?=$NextStatus == RestaurantOrder::STATUS_COMPLETED ? '<i class="mdi mdi-check"></i> Complete &amp; Invoice' : '<i class="mdi mdi-arrow-right"></i> ' . h(RestaurantOrder::getStatusLabel($NextStatus, $Order['order_type']))?>
+                            <button class="btn btn-sm order-status-btn st-<?=h($NextStatus)?>" name="status" value="<?=$NextStatus?>" title="Move order to: <?=h(RestaurantOrder::getStatusLabel($NextStatus, $Order['order_type']))?>">
+                                <?=$NextStatus == RestaurantOrder::STATUS_COMPLETED ? '<i class="mdi mdi-check"></i> Complete &amp; Invoice' : '<i class="mdi ' . ($NextStatus == RestaurantOrder::STATUS_PREPARING ? 'mdi-chef-hat' : 'mdi-arrow-right') . '"></i> ' . h(RestaurantOrder::getStatusLabel($NextStatus, $Order['order_type']))?>
                             </button>
                         <? } elseif ($Order['status'] == RestaurantOrder::STATUS_COMPLETED && !$isInvoiced) { ?>
-                            <button class="btn btn-sm button color" name="status" value="<?=RestaurantOrder::STATUS_COMPLETED?>"><i class="mdi mdi-refresh"></i> Retry Invoice</button>
+                            <button class="btn btn-sm order-status-btn st-completed" name="status" value="<?=RestaurantOrder::STATUS_COMPLETED?>"><i class="mdi mdi-refresh"></i> Retry Invoice</button>
                         <? } ?>
                     </form>
                 </div>
@@ -205,6 +254,26 @@ function filterUrl($Status, $Type) { return 'manage_web_orders.php?filter=' . ur
 </div>
 
 <script>
+function printOrder(btn) {
+    var card = btn.closest('.order-card');
+    if (!card) return;
+    var body = card.querySelector('.card-body').cloneNode(true);
+    body.querySelectorAll('.alert').forEach(function (el) { el.remove(); });
+    var win = window.open('', '_blank', 'width=380,height=600');
+    if (!win) { alert('Please allow pop-ups to print the order.'); return; }
+    win.document.write('<!doctype html><html><head><meta charset="utf-8"><title>' + card.querySelector('.order-code').textContent + '</title>' +
+        '<style>body{font-family:Arial,sans-serif;font-size:13px;margin:10px;color:#000}' +
+        '.order-code{font-size:18px;font-weight:700}.badge{border:1px solid #000;border-radius:4px;padding:1px 5px;font-size:11px;margin-left:4px}' +
+        '.d-flex{display:flex;justify-content:space-between}.text-right{text-align:right}.mt-1{margin-top:4px}' +
+        '.order-customer{border-top:1px dashed #000;border-bottom:1px dashed #000;padding:6px 0;margin:8px 0}' +
+        'table{width:100%;border-collapse:collapse}td{padding:4px 0;vertical-align:top;border-top:1px dashed #ccc}' +
+        '.order-total td{font-weight:700;font-size:15px;border-top:1px solid #000}.small,.text-muted{font-size:11px}.pl-3{padding-left:12px}' +
+        'a{color:#000;text-decoration:none}.mdi{display:none}</style></head><body>' + body.innerHTML + '</body></html>');
+    win.document.close();
+    win.focus();
+    setTimeout(function () { win.print(); win.close(); }, 250);
+}
+
 (function () {
     var search = document.getElementById('order_search');
 

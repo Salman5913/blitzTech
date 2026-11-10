@@ -93,6 +93,10 @@ class App
     }
     
     erpSearchAttach() {
+        // No ERP search box on the page: autocomplete("instance") would be undefined and stop init() before the other autocompletes attach
+        if (!$("input[data-type='erp-search']").length)
+            return;
+
         $("input[data-type='erp-search']").autocomplete({
             source: SiteURL + "ac_erp_search.php",
             minLength: 2,

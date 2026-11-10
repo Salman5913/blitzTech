@@ -101,7 +101,9 @@ $(function () {
     if ($(".sales-metric-card").length)
         return;   // page has its own summary cards
 
-    var $strip = $('<div class="rpt-totals"></div>');
+    // Options on the table: data-rpt-no-rows = no "Rows" tile, data-rpt-colorful = a colour per tile
+    var showRows = !$table.is("[data-rpt-no-rows]");
+    var $strip = $('<div class="rpt-totals"></div>').toggleClass("rpt-totals-colorful", $table.is("[data-rpt-colorful]"));
     $table.closest(".card").before($strip);
 
     function headerLabels() {
@@ -130,18 +132,20 @@ $(function () {
     }
 
     function renderTotals() {
-        var labels = headerLabels(), tiles = [{label: "Rows", value: rowCount().toLocaleString()}];
-        var column = 0;
+        var labels = headerLabels(), tiles = showRows ? [{label: "Rows", value: rowCount().toLocaleString()}] : [];
+        var column = 0, footerTiles = 0;
         $table.find("tfoot tr").last().children("td, th").each(function () {
             var span = parseInt($(this).attr("colspan"), 10) || 1, text = $.trim($(this).text());
-            if (tiles.length < 5 && parseNumber(text) !== null && labels[column + span - 1])
+            if (footerTiles < 4 && parseNumber(text) !== null && labels[column + span - 1]) {
                 tiles.push({label: labels[column + span - 1], value: text});
+                footerTiles++;
+            }
             column += span;
         });
 
-        $strip.empty().toggle(tiles.length > 1);   // only when the table has footer totals
-        tiles.forEach(function (tile) {
-            $('<div class="rpt-total"></div>')
+        $strip.empty().toggle(footerTiles > 0);   // only when the table has footer totals
+        tiles.forEach(function (tile, i) {
+            $('<div class="rpt-total"></div>').addClass("rpt-tone-" + (i % 6))
                 .append($("<span></span>").text(tile.label))
                 .append($("<b></b>").text(tile.value))
                 .appendTo($strip);
